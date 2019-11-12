@@ -11,10 +11,10 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(catkin REQUIRED)
 find_package (Threads REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
-  sensor_msgs
+	roscpp
+	rospy
+	std_msgs
+	sensor_msgs
 )
 
 catkin_package()
