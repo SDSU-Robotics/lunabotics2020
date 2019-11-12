@@ -10,4 +10,6 @@
   <param name="motor_pwm"           type="int"    value="400"/> 
 
   </node>
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="beacon_frame_broadcaster" args="1 0 0 0 0 0 1 map beacon_frame" />
 </launch>

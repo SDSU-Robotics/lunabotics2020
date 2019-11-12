@@ -15,8 +15,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sensor_msgs
-  tf2
-  tf2_geometry_msgs
 )
 
 catkin_package()
@@ -24,7 +22,5 @@ catkin_package()
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
 add_executable(Localization ${PROJECT_SOURCE_DIR}/src/Localization.cpp)
-add_executable(tf_broadcaster src/tf_broadcaster.cpp)
 
 target_link_libraries(Localization ${catkin_LIBRARIES})
-target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
