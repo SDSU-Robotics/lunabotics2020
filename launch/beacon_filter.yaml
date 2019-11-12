@@ -7,7 +7,7 @@ scan_filter_chain:
     neighbors: 20
     window: 1
 
-# Filter out South wall
+# Filter out East wall
 - name: box
   type: laser_filters/LaserScanBoxFilter
   params:
