@@ -1,20 +1,46 @@
 scan_filter_chain:
-- name: shadows
-  type: laser_filters/ScanShadowsFilter
-  params:
-    min_angle: 10
-    max_angle: 170
-    neighbors: 20
-    window: 1
 
 # Filter out East wall
-- name: box
+- name: east
   type: laser_filters/LaserScanBoxFilter
   params:
     box_frame: map
-    min_x: -10.0
+    min_x: -0.25
     max_x: 10.0
-    min_y: 2.4
+    min_y: -10.0
+    max_y: 10.0
+    min_z: -10.0
+    max_z: 10.0
+
+- name: south
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: map
+    min_x: -10
+    max_x: 10.0
+    min_y: -10.0
+    max_y: 0.1
+    min_z: -10.0
+    max_z: 10.0
+
+- name: west
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: map
+    min_x: -10
+    max_x: -1.5
+    min_y: -10.0
+    max_y: 10.0
+    min_z: -10.0
+    max_z: 10.0
+
+- name: north
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: map
+    min_x: -10
+    max_x: 10
+    min_y: 1.05
     max_y: 10.0
     min_z: -10.0
     max_z: 10.0

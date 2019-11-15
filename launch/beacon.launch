@@ -13,7 +13,7 @@
 		<remap from="scan" to="beacon_scan"/>
 	</node>
 
-	<node pkg="tf2_ros" type="static_transform_publisher" name="beacon_frame_broadcaster" args="1 0 0 0 0 0 1 map beacon_frame" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="beacon_frame_broadcaster" args="-0.05 0.255 0 0 0 0 1 map beacon_frame" />
 
 	<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
 		<remap from="scan" to="beacon_scan" />  <!--Topic to subscribe to-->

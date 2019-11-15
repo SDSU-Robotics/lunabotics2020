@@ -9,6 +9,7 @@
      - Perform full desktop installation
  3. Install ROS packages
      - `sudo apt install ros-melodic-joy`
+     - `sudo apt install ros-melodic-laser-geometry`
  
 ## Setup
  1. Setup catkin workspace
