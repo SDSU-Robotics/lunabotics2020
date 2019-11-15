@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 	rospy
 	std_msgs
 	sensor_msgs
+	laser_geometry
 )
 
 catkin_package()
