@@ -7,13 +7,13 @@
 		<param name="angle_compensate"    type="bool"   value="true"/>
 		
 		<!--Parameter for using setting motor speed, change value between 200 and 1000-->
-		<param name="motor_pwm"           type="int"    value="800"/> 
+		<param name="motor_pwm"           type="int"    value="650"/> 
 
 		<!--Change topic name to beacon_scan-->
 		<remap from="scan" to="front_lidar_scan"/>
 	</node>
 
-	<node pkg="tf2_ros" type="static_transform_publisher" name="front_lidar_frame_broadcaster" args="0 0 0.25 0 -0.2618 0 map front_lidar_frame" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="front_lidar_frame_broadcaster" args="0 0 0.275 0 -0.174 0 map front_lidar_frame" />
 
 	<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
 		<remap from="scan" to="front_lidar_scan" />  <!--Topic to subscribe to-->
