@@ -9,6 +9,7 @@
 #include "laser_geometry/laser_geometry.h"
 #include <tf2_ros/transform_listener.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <math.h>
 
 using namespace std;
 
@@ -32,6 +33,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	
 	float xsum = 0;
 	float ysum = 0;
+
 	
 	std::cout << n << std::endl; //cloud_.points.size() is number of points scanned after filters
 	
@@ -46,6 +48,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	avgPt_.point.x = xsum / n;
 	avgPt_.point.y = ysum / n;
 	avgPt_.point.z = 0;
+	
 
 	avgPt_.header.frame_id = "beacon_frame";	//Specifying what frame in header 
 }
