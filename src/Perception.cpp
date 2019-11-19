@@ -33,6 +33,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	
 	float xsum = 0;
 	float ysum = 0;
+	float zsum = 0;
 
 	
 	std::cout << n << std::endl; //cloud_.points.size() is number of points scanned after filters
@@ -42,15 +43,16 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	{
 		xsum += cloud.points[i].x;
 		ysum += cloud.points[i].y;
+		zsum += cloud.points[i].z;
 	}
 
 	// Averaging x and y values
 	avgPt_.point.x = xsum / n;
 	avgPt_.point.y = ysum / n;
-	avgPt_.point.z = 0;
+	avgPt_.point.z = zsum / n;
 	
 
-	avgPt_.header.frame_id = "beacon_frame";	//Specifying what frame in header 
+	avgPt_.header.frame_id = "front_lidar_frame";	//Specifying what frame in header 
 }
 
 int main (int argc, char **argv)
@@ -61,7 +63,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber scan_sub = n.subscribe("beacon_scan_filtered", 100, &Listener::scanCB, &listener);
+	ros::Subscriber scan_sub = n.subscribe("front_lidar_scan_filtered", 100, &Listener::scanCB, &listener);
 
 	ros::Publisher point_pub = n.advertise<geometry_msgs::PointStamped>("point", 1000);
 
