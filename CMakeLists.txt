@@ -21,5 +21,8 @@ catkin_package()
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
 add_executable(Localization ${PROJECT_SOURCE_DIR}/src/Localization.cpp)
-
+add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
+add_executable(TwistPub ${PROJECT_SOURCE_DIR}/src/TwistPub.cpp)
 target_link_libraries(Localization ${catkin_LIBRARIES})
+target_link_libraries(DriveController ${catkin_LIBRARIES})
+target_link_libraries(TwistPub ${catkin_LIBRARIES})
