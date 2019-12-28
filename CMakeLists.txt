@@ -16,6 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sensor_msgs
   laser_geometry
+  geometry_msgs
+  tf2
+  tf2_ros
 )
 
 catkin_package()
@@ -25,7 +28,9 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 add_executable(Localization ${PROJECT_SOURCE_DIR}/src/Localization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(Perception ${PROJECT_SOURCE_DIR}/src/Perception.cpp)
+add_executable(PerceptionTF ${PROJECT_SOURCE_DIR}/src/PerceptionTF.cpp)
 
 target_link_libraries(Localization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
 target_link_libraries(Perception ${catkin_LIBRARIES})
+target_link_libraries(PerceptionTF ${catkin_LIBRARIES})
