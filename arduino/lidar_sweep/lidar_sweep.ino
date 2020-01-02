@@ -1,18 +1,14 @@
-//#include <ros.h>
-//#include <std_msgs/Float32.h>
-
+#include <ros.h>
+#include <std_msgs/Float32.h>
 #include <Servo.h>
 
 Servo lidarServo;
 
-//define pin name
-const int servoPin = 3;
+ros::NodeHandle nh;
 
-//ros::NodeHandle nh;
+std_msgs::Float32 angle_msg;
 
-//std_msgs::Float32 angle_msg;
-
-//ros::Publisher angle_pub("lidar_angle", &angle_msg);
+ros::Publisher angle_pub("lidar_angle", &angle_msg);
 
 float pos = 0;
 
@@ -27,27 +23,25 @@ float micro2deg(float micro)
 }
 
 void setup() {
-  lidarServo.attach(servoPin);
-  Serial.begin(9600);
+  lidarServo.attach(3);
 
-  //nh.initNode();
-  //nh.advertise(angle_pub);
+  nh.initNode();
+  nh.advertise(angle_pub);
 }
 
 void loop() {
   for (pos = 0; pos <= 45; pos += 0.2) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
     lidarServo.writeMicroseconds(deg2micro(pos));
-    Serial.println(pos);
-    
-    //nh.spinOnce();
+    angle_msg.data = pos;
+    angle_pub.publish(&angle_msg);
+    nh.spinOnce();
     delay(10);
   }
   for (pos = 45; pos >= 0; pos -= 0.2) { // goes from 180 degrees to 0 degrees
-    //angle_msg.data = pos;
     lidarServo.writeMicroseconds(deg2micro(pos));
-    Serial.println(pos);
-    //nh.spinOnce();
+    angle_msg.data = pos;
+    angle_pub.publish(&angle_msg);
+    nh.spinOnce();
     delay(10);
   }
 }
