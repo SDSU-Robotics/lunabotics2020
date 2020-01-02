@@ -38,7 +38,7 @@
     <collision name='collision'>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size='.1 .1 .02'/>
+        <box size='.1 .1 0.02'/>
       </geometry>
     </collision>
     <visual name='front_visual'>
@@ -49,7 +49,7 @@
     </visual>
     <inertial>
       <mass value="10.0"/>
-      <origin xyz="0.0 0 0.1" rpy=" 0 0 0"/>
+      <origin xyz="0.0 0 0" rpy=" 0 0 0"/>
       <inertia
           ixx="0.5" ixy="0" ixz="0"
           iyy="1.0" iyz="0"
