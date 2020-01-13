@@ -2,19 +2,24 @@
 
 <robot name="transportation" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+<!--http://gazebosim.org/tutorials?tut=guided_i1 for lidar-->
+<!--http://gazebosim.org/tutorials?tut=ros_gzplugins for sensors-->
 
+  <xacro:include filename="$(find lunabotics2020)/models/transportation/transportation.gazebo" />
+  <xacro:include filename="$(find lunabotics2020)/models/transportation/materials.xacro" />
+  <xacro:include filename="$(find lunabotics2020)/models/transportation/macros.xacro" />
 
-  <xacro:include filename="$(find lunabotics2020)/models/transportation.gazebo" />
-  <xacro:include filename="$(find lunabotics2020)/models/materials.xacro" />
-  <xacro:include filename="$(find lunabotics2020)/models/macros.xacro" />
-
+  <!--Macros-->
+  <xacro:property name="wheel_height" value="-0.05"/>
+ 
+  <!--End Macros-->
 
   <link name='chassis'>
     <pose>0 0 0.1 0 0 0</pose>
 
     <inertial>
       <mass value="10.0"/>
-      <origin xyz="0.0 0 0.1" rpy=" 0 0 0"/>
+      <origin xyz="0.0 0.0 0.1" rpy="0.0 0.0 0.0"/>
       <inertia
           ixx="0.5" ixy="0" ixz="0"
           iyy="1.0" iyz="0"
@@ -23,18 +28,18 @@
     </inertial>
     <collision name='collision'>
       <geometry>
-        <box size=".4 .2 .1"/>
+        <box size=".4 .2 .15"/>
       </geometry>
     </collision>
     <visual name='chassis_visual'>
-      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size=".4 .2 .1"/>
+        <box size=".4 .2 .15"/>
       </geometry>
     </visual>
   </link>
 
-  <link name='front'>
+  <!--link name='front'>
     <collision name='collision'>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -56,10 +61,9 @@
           izz="0.1"
       />
     </inertial>
-  </link>
+  </link-->
 
   <link name="left_wheel">
-    <!--origin xyz="0.1 0.13 0.1" rpy="0 1.5707 1.5707"/-->
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -84,7 +88,6 @@
   </link>
 
     <link name="left_rear_wheel">
-    <!--origin xyz="0.1 0.13 0.1" rpy="0 1.5707 1.5707"/-->
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -109,7 +112,6 @@
   </link>
 
   <link name="right_wheel">
-    <!--origin xyz="0.1 -0.13 0.1" rpy="0 1.5707 1.5707"/-->
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -134,7 +136,6 @@
   </link>
 
     <link name="right_rear_wheel">
-    <!--origin xyz="0.1 -0.13 0.1" rpy="0 1.5707 1.5707"/-->
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -160,7 +161,7 @@
 
 
   <joint type="continuous" name="left_wheel_hinge">
-    <origin xyz="0.11 0.15 0" rpy="0 0 0"/>
+    <origin  xyz="0.11 0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="left_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -169,7 +170,7 @@
   </joint>
 
   <joint type="continuous" name="left_rear_wheel_hinge">
-    <origin xyz="-0.11 0.15 0" rpy="0 0 0"/>
+    <origin xyz="-0.11 0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="left_rear_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -178,7 +179,7 @@
   </joint>
 
   <joint type="continuous" name="right_wheel_hinge">
-    <origin xyz="0.11 -0.15 0" rpy="0 0 0"/>
+    <origin xyz="0.11 -0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="right_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -187,7 +188,7 @@
   </joint>
 
   <joint type="continuous" name="right_rear_wheel_hinge">
-    <origin xyz="-0.11 -0.15 0" rpy="0 0 0"/>
+    <origin xyz="-0.11 -0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="right_rear_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -195,10 +196,74 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <joint type="fixed" name="front_fixed">
+  <!--joint type="fixed" name="front_fixed">
     <origin xyz="0.1 0 0.05" rpy="0 0 0"/>
     <child link="front"/>
     <parent link="chassis"/>
+  </joint-->
+
+  <!--Lidar-->
+  <link name="lidar_base">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+    </collision>
+    <visual name="lidar_base_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <cylinder_inertia m="0.5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="lidar_head">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+    </collision>
+    <visual name="lidar_head_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.01"/>
+      <cylinder_inertia m="0.5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="0.001" ixy="0.0" ixz="0.0"
+        iyy="0.001" iyz="0.0"
+        izz="0.001"/>
+    </inertial>
+  </link>
+
+  <joint type="fixed" name="lidar_base_fixed">
+    <origin xyz="0.18 0 0.05" rpy="0 0 0"/>
+    <child link="lidar_base"/>
+    <parent link="chassis"/>
+  </joint>
+
+  <joint type="continuous" name="lidar_head_continuous">
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+    <child link="lidar_head"/>
+    <parent link="lidar_base"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100000000000" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
 </robot>

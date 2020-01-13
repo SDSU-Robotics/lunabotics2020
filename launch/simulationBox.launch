@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
+  <rosparam file="$(find lunabotics2020)/models/box/control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/" args="joint1_position_controller joint2_position_controller joint_state_controller"/>
+
   <arg name="world" default="empty"/> 
   <arg name="paused" default="true"/>
   <arg name="use_sim_time" default="true"/>
@@ -25,7 +31,7 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="3.14"/>
 
-  <param name="robot_description" command="$(find xacro)/xacro '$(find lunabotics2020)/models/transportation/transportation.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find lunabotics2020)/models/box/box.xacro'"/>
   <node name="transportation_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
    args="-urdf -param robot_description -model transportation 
       -x $(arg x) -y $(arg y) -z $(arg z)
@@ -33,9 +39,9 @@
 
   <!--Must change the first arg for file type, use urdf for .xacro-->
 
-  <node pkg="joy" type="joy_node" output="screen" name="joy_node"/> 
+  <!--node pkg="joy" type="joy_node" output="screen" name="joy_node"/> 
   <node pkg="lunabotics2020" type="DriveController" output="screen" name="DriveController" /> 
-  <node pkg="lunabotics2020" type="TwistPub" output="screen" name="TwistPub"/> 
+  <node pkg="lunabotics2020" type="TwistPub" output="screen" name="TwistPub"/--> 
 
 
 </launch>

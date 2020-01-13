@@ -7,10 +7,9 @@
       <uri>model://ground_plane</uri>
     </include>
 
-    <include>
-      <uri>model://field</uri>
-      <pose>0 0 0.2 0 0 0</pose>
-    </include>
+    <!--include>
+      <uri>model://home/robotics/catkin_ws/src/lunabotics2020/models/field/model.xacro</uri>
+    </include-->
 
     <!-- Global light source -->
     <include>
