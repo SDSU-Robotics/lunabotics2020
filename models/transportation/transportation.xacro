@@ -11,6 +11,7 @@
 
   <!--Macros-->
   <xacro:property name="wheel_height" value="-0.05"/>
+  <xacro:property name="lidar_base_size" value="0.05 0.05 0.025"/>
  
   <!--End Macros-->
 
@@ -38,30 +39,6 @@
       </geometry>
     </visual>
   </link>
-
-  <!--link name='front'>
-    <collision name='collision'>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size='.1 .1 0.02'/>
-      </geometry>
-    </collision>
-    <visual name='front_visual'>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.1 0.1 0.02"/>
-      </geometry>
-    </visual>
-    <inertial>
-      <mass value="10.0"/>
-      <origin xyz="0.0 0 0" rpy=" 0 0 0"/>
-      <inertia
-          ixx="0.5" ixy="0" ixz="0"
-          iyy="1.0" iyz="0"
-          izz="0.1"
-      />
-    </inertial>
-  </link-->
 
   <link name="left_wheel">
     <collision name="collision">
@@ -196,45 +173,41 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <!--joint type="fixed" name="front_fixed">
-    <origin xyz="0.1 0 0.05" rpy="0 0 0"/>
-    <child link="front"/>
-    <parent link="chassis"/>
-  </joint-->
+  <!--====  Lidar  ========================================-->
 
-  <!--Lidar-->
-  <link name="lidar_base">
-    <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+  <link name='lidar_base'>
+    <pose>0 0 0.1 0 0 0</pose>
+
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0.0 0.0 0.1" rpy="0.0 0.0 0.0"/>
+      <inertia
+          ixx="0.5" ixy="0" ixz="0"
+          iyy="1.0" iyz="0"
+          izz="0.1"
+      />
+    </inertial>
+    <collision name='collision'>
       <geometry>
-        <cylinder radius="0.02" length="0.02"/>
+        <box size="${lidar_base_size}"/>
       </geometry>
     </collision>
-    <visual name="lidar_base_visual">
+    <visual name='lidar_base_pivot_visual'>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.02" length="0.02"/>
+        <box size="${lidar_base_size}"/>
       </geometry>
     </visual>
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.1"/>
-      <cylinder_inertia m="0.5" r="0.1" h="0.05"/>
-      <inertia
-        ixx="1.0" ixy="0.0" ixz="0.0"
-        iyy="1.0" iyz="0.0"
-        izz="1.0"/>
-    </inertial>
   </link>
 
-  <link name="lidar_head">
+  <link name="lidar">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <cylinder radius="0.02" length="0.02"/>
       </geometry>
     </collision>
-    <visual name="lidar_head_visual">
+    <visual name="lidar_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <cylinder radius="0.02" length="0.02"/>
@@ -245,25 +218,22 @@
       <mass value="0.01"/>
       <cylinder_inertia m="0.5" r="0.1" h="0.05"/>
       <inertia
-        ixx="0.001" ixy="0.0" ixz="0.0"
-        iyy="0.001" iyz="0.0"
-        izz="0.001"/>
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
     </inertial>
   </link>
 
   <joint type="fixed" name="lidar_base_fixed">
-    <origin xyz="0.18 0 0.05" rpy="0 0 0"/>
+    <origin xyz="0.18 0 0.0895" rpy="0 0 0"/>
     <child link="lidar_base"/>
     <parent link="chassis"/>
   </joint>
 
-  <joint type="continuous" name="lidar_head_continuous">
-    <origin xyz="0 0 0.02" rpy="0 0 0"/>
-    <child link="lidar_head"/>
+  <joint type="fixed" name="lidar_fixed">
+    <origin xyz="0 0 0.0128" rpy="0 0 0"/>
+    <child link="lidar"/>
     <parent link="lidar_base"/>
-    <axis xyz="0 0 1" rpy="0 0 0"/>
-    <limit effort="100000000000" velocity="100"/>
-    <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
 </robot>

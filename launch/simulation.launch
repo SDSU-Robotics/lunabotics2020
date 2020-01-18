@@ -18,20 +18,34 @@
   </include>
   
   <!--Inital Robot pose, RPY in radians-->
-  <arg name="x" default="0"/>
-  <arg name="y" default="0"/>
-  <arg name="z" default="1.37"/>
-  <arg name="roll" default="0"/>
-  <arg name="pitch" default="0"/>
-  <arg name="yaw" default="3.14"/>
+  <arg name="transp_x" default="0.5"/>
+  <arg name="transp_y" default="0"/>
+  <arg name="transp_z" default="1.37"/>
+  <arg name="transp_roll" default="0"/>
+  <arg name="transp_pitch" default="0"/>
+  <arg name="transp_yaw" default="0"/>
 
+  <!--Spawn Transportation Bot-->
   <param name="robot_description" command="$(find xacro)/xacro '$(find lunabotics2020)/models/transportation/transportation.xacro'"/>
   <node name="transportation_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
    args="-urdf -param robot_description -model transportation 
-      -x $(arg x) -y $(arg y) -z $(arg z)
-      -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+      -x $(arg transp_x) -y $(arg transp_y) -z $(arg transp_z)
+      -R $(arg transp_roll) -P $(arg transp_pitch) -Y $(arg transp_yaw)"/>
+
+  <rosparam file="$(find lunabotics2020)/models/transportation/control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner" respawn="false"
+    output="screen" ns="/"
+    args="joint_state_controller
+      mobile_base_controller"
+  />
 
   <!--Must change the first arg for file type, use urdf for .xacro-->
+
+
 
   <node pkg="joy" type="joy_node" output="screen" name="joy_node"/> 
   <node pkg="lunabotics2020" type="DriveController" output="screen" name="DriveController" /> 
