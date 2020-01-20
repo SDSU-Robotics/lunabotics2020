@@ -52,9 +52,9 @@ int main(int argc, char **argv)
     cmd_vel.linear.x = listener.getRSpeed();
     cmd_vel.linear.y = 0;
     cmd_vel.linear.z = 0;
-    cmd_vel.angular.x = listener.getLSpeed();
+    cmd_vel.angular.x = 0;//listener.getLSpeed();
     cmd_vel.angular.y = 0;
-    cmd_vel.angular.z = 0;
+    cmd_vel.angular.z = listener.getLSpeed();
 
     vel_pub.publish(cmd_vel);
 

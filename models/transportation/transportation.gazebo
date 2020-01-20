@@ -12,7 +12,7 @@
     <wheelSeparation>0.4</wheelSeparation>
     <wheelDiameter>0.215</wheelDiameter>
     <robotBaseFrame>chassis</robotBaseFrame>
-    <torque>20</torque>
+    <torque>15</torque>
     <topicName>cmd_vel</topicName>
     <broadcastTF>false</broadcastTF>
   </plugin>
