@@ -2,7 +2,7 @@
 #include <unistd.h>
 
 #include "ros/ros.h"
-#include "std_msgs/Float32.h"
+#include "std_msgs/Float64.h"
 #include <sensor_msgs/Joy.h>
 
 using namespace std;
@@ -50,11 +50,11 @@ int main (int argc, char **argv)
 	bool buttons[12];
 	double axes[6];
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("speed", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("turn", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float64>("speed", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float64>("turn", 100);
 	
-    std_msgs::Float32 l_speed_msg;
-    std_msgs::Float32 r_speed_msg;
+    std_msgs::Float64 l_speed_msg;
+    std_msgs::Float64 r_speed_msg;
 	
 	while (ros::ok())
 	{

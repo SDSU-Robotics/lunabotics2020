@@ -54,7 +54,8 @@
     <param name="dev" type="string" value="/dev/input/js1"/>
   </node> 
   <node pkg="lunabotics2020" type="DriveController" output="screen" name="DriveController" /> 
-  <node pkg="lunabotics2020" type="TwistPub" output="screen" name="TwistPub"/> 
+  <!--node pkg="lunabotics2020" type="TwistPub" output="screen" name="TwistPub"/-->
+  <node pkg="lunabotics2020" type="TankDrive" output="screen" name="TankDrive"/> 
 
 
 </launch>

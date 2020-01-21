@@ -2,13 +2,13 @@
 #include <math.h>
 #include "geometry_msgs/Twist.h"
 #include "std_msgs/String.h"
-#include "std_msgs/Float32.h"
+#include "std_msgs/Float64.h"
 
 class Listener
 {
 public:
-  void RSpeedListener(std_msgs::Float32 r_speed_msg);
-  void LSpeedListener(std_msgs::Float32 l_speed_msg);
+  void RSpeedListener(std_msgs::Float64 r_speed_msg);
+  void LSpeedListener(std_msgs::Float64 l_speed_msg);
   double getRSpeed() { return r_speed; }
   double getLSpeed() { return l_speed; }
 private:
@@ -17,11 +17,11 @@ private:
 };
 
 
-void Listener::RSpeedListener(std_msgs::Float32 r_speed_msg)
+void Listener::RSpeedListener(std_msgs::Float64 r_speed_msg)
 {
     r_speed = r_speed_msg.data;
 }
-void Listener::LSpeedListener(std_msgs::Float32 l_speed_msg)
+void Listener::LSpeedListener(std_msgs::Float64 l_speed_msg)
 {
     l_speed = l_speed_msg.data;
 }
