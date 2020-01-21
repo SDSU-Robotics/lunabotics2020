@@ -28,7 +28,7 @@ void Listener::LSpeedListener(std_msgs::Float64 l_speed_msg)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "TwistPub");
+  ros::init(argc, argv, "TankDrive");
 
   ros::NodeHandle n;
 
@@ -36,13 +36,13 @@ int main(int argc, char **argv)
 
   double r_speed_val, l_speed_val;
 
-  ros::Subscriber RSpeedSub = n.subscribe("speed", 100, &Listener::RSpeedListener, &listener);
-  ros::Subscriber LSpeedSub = n.subscribe("turn", 100, &Listener::LSpeedListener, &listener);
+  ros::Subscriber RSpeedSub = n.subscribe("r_speed", 100, &Listener::RSpeedListener, &listener);
+  ros::Subscriber LSpeedSub = n.subscribe("l_speed", 100, &Listener::LSpeedListener, &listener);
 
-  ros::Publisher l_vel_pub = n.advertise<std_msgs::Float64>("/transportation/leftWheel_velocity_controller/command", 1);
-  ros::Publisher r_vel_pub = n.advertise<std_msgs::Float64>("/transportation/rightWheel_velocity_controller/command", 1);
-  ros::Publisher lr_vel_pub = n.advertise<std_msgs::Float64>("/transportation/leftRearWheel_velocity_controller/command", 1);
-  ros::Publisher rr_vel_pub = n.advertise<std_msgs::Float64>("/transportation/rightRearWheel_velocity_controller/command", 1);
+  ros::Publisher l_vel_pub = n.advertise<std_msgs::Float64>("/transportation/leftWheel_velocity_controller/command", 100);
+  ros::Publisher r_vel_pub = n.advertise<std_msgs::Float64>("/transportation/rightWheel_velocity_controller/command", 100);
+  ros::Publisher lr_vel_pub = n.advertise<std_msgs::Float64>("/transportation/leftRearWheel_velocity_controller/command", 100);
+  ros::Publisher rr_vel_pub = n.advertise<std_msgs::Float64>("/transportation/rightRearWheel_velocity_controller/command", 100);
 
   ros::Rate loop_rate(5);
 
@@ -51,8 +51,8 @@ int main(int argc, char **argv)
     std_msgs::Float64 left;
     std_msgs::Float64 right;
 
-    right.data = listener.getRSpeed();
-    left.data = listener.getLSpeed();
+    right.data = listener.getRSpeed() * 10;
+    left.data = listener.getLSpeed() * 10;
 
     l_vel_pub.publish(left);
     lr_vel_pub.publish(left);

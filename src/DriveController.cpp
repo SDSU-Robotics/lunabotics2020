@@ -50,8 +50,8 @@ int main (int argc, char **argv)
 	bool buttons[12];
 	double axes[6];
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float64>("speed", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float64>("turn", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float64>("l_speed", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float64>("r_speed", 100);
 	
     std_msgs::Float64 l_speed_msg;
     std_msgs::Float64 r_speed_msg;
@@ -61,11 +61,11 @@ int main (int argc, char **argv)
         listener.getJoyVals(buttons, axes);
 
 		// get controller values
-		float speed = axes[1]; // left Y
-		float turn = -1 * axes[3]; // right X
+		float rightJoy = axes[1]; // left Y
+		float leftJoy = axes[4]; // right X
 
-		l_speed_msg.data = 0.5 * speed + 0.25 * turn;
-        r_speed_msg.data = 0.5 * speed - 0.25 * turn;
+		l_speed_msg.data = 0.5 * rightJoy; // + 0.25; * turn;
+        r_speed_msg.data = 0.5 * leftJoy; // - 0.25; * turn;
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
