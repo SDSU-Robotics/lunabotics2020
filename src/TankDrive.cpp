@@ -39,26 +39,21 @@ int main(int argc, char **argv)
   ros::Subscriber RSpeedSub = n.subscribe("speed", 100, &Listener::RSpeedListener, &listener);
   ros::Subscriber LSpeedSub = n.subscribe("turn", 100, &Listener::LSpeedListener, &listener);
 
-  ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+  ros::Publisher l_vel_pub = n.advertise<std_msgs::Float64>("/transportation/leftWheel_velocity_controller/command", 1);
+  ros::Publisher r_vel_pub = n.advertise<std_msgs::Float64>("/transportation/rightWheel_velocity_controller/command", 1);
+  ros::Publisher lr_vel_pub = n.advertise<std_msgs::Float64>("/transportation/leftRearWheel_velocity_controller/command", 1);
+  ros::Publisher rr_vel_pub = n.advertise<std_msgs::Float64>("/transportation/rightRearWheel_velocity_controller/command", 1);
 
   ros::Rate loop_rate(5);
 
   while (ros::ok())
   {
-    
-
-    geometry_msgs::Twist cmd_vel;
-    cmd_vel.linear.x = listener.getRSpeed();
-    cmd_vel.linear.y = 0;
-    cmd_vel.linear.z = 0;
-    cmd_vel.angular.x = 0;//listener.getLSpeed();
-    cmd_vel.angular.y = 0;
-    cmd_vel.angular.z = listener.getLSpeed();
+  
+    std_msgs::Float64 left;
+    std_msgs::Float64 right;
 
     vel_pub.publish(cmd_vel);
 
-    //vel_pub_0.publish(cmd_vel);
-    //vel_pub_1.publish(cmd_vel);
     ros::spinOnce();
     loop_rate.sleep();
   }

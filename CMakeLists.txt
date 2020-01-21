@@ -33,6 +33,7 @@ add_library(spawn_sphere SHARED ${PROJECT_SOURCE_DIR}/src/SpawnSphere.cc)
 add_executable(Localization ${PROJECT_SOURCE_DIR}/src/Localization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(TwistPub ${PROJECT_SOURCE_DIR}/src/TwistPub.cpp)
+add_executable(Localization ${PROJECT_SOURCE_DIR}/src/TankDrive.cpp)
 target_link_libraries(Localization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
 target_link_libraries(TwistPub ${catkin_LIBRARIES})
@@ -40,3 +41,4 @@ target_link_libraries(spawn_sphere ${GAZEBO_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
     ${PROTOBUF_LIBRARIES})
+target_link_libraries(TankDrive ${GAZEBO_LIBRARIES})

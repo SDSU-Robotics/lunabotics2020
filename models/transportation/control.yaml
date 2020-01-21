@@ -1,3 +1,16 @@
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 50  
+
+  leftWheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: left_wheel_hinge
+  rightWheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: right_wheel_hinge
+  leftRearWheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: left_rear_wheel_hinge
+  rightRearWheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: right_rear_wheel_hinge

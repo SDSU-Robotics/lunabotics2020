@@ -176,46 +176,6 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <transmission name="left_wheel_transm">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_wheel_hinge">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_wheel_motor">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-   </actuator>
-  </transmission>
-
-  <transmission name="right_wheel_transm">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_wheel_hinge">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_wheel_motor">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-   </actuator>
-  </transmission>
-
-  <transmission name="left_rear_wheel_transm">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_rear_wheel_hinge">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_rear_wheel_motor">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-   </actuator>
-  </transmission>
-
-  <transmission name="right_rear_wheel_transm">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_rear_wheel_hinge">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_rear_wheel_motor">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-   </actuator>
-  </transmission>
-
   <!--====  Lidar  ========================================-->
 
   <link name='lidar_base'>

@@ -32,18 +32,15 @@
       -x $(arg transp_x) -y $(arg transp_y) -z $(arg transp_z)
       -R $(arg transp_roll) -P $(arg transp_pitch) -Y $(arg transp_yaw)"/>
 
-  <rosparam file="$(find lunabotics2020)/models/transportation/control.yaml" command="load" ns="transportation"/>
+  <rosparam file="$(find lunabotics2020)/models/transportation/control.yaml" command="load"/>
 
   <!-- load the controllers -->
   <node name="controller_spawner"
     pkg="controller_manager"
     type="spawner" respawn="false"
-    output="screen" ns="/transportation"
+    output="screen" ns="/"
     args="joint_state_controller
-      rightWheel_velocity_controller
-      leftWheel_velocity_controller
-      leftRearWheel_velocity_controller
-      rightRearWheel_velocity_controller"
+      mobile_base_controller"
   />
 
   <!--Must change the first arg for file type, use urdf for .xacro-->
