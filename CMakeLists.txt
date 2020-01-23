@@ -16,6 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
 	std_msgs
 	sensor_msgs
 	laser_geometry
+	tf2
+	tf2_ros
+	geometry_msgs
 )
 
 catkin_package()

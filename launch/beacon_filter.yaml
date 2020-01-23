@@ -1,46 +1,14 @@
 scan_filter_chain:
 
 # Filter out East wall
-- name: east
+- name: walls
   type: laser_filters/LaserScanBoxFilter
   params:
     box_frame: map
-    min_x: -0.05
-    max_x: 10.0
-    min_y: -10.0
-    max_y: 10.0
+    min_x: 0.05
+    max_x: 3.5
+    min_y: 0.05
+    max_y: 5.0
     min_z: -10.0
     max_z: 10.0
-
-- name: south
-  type: laser_filters/LaserScanBoxFilter
-  params:
-    box_frame: map
-    min_x: -10
-    max_x: 10.0
-    min_y: -10.0
-    max_y: 0.05
-    min_z: -10.0
-    max_z: 10.0
-
-- name: west
-  type: laser_filters/LaserScanBoxFilter
-  params:
-    box_frame: map
-    min_x: -10
-    max_x: -1.5
-    min_y: -10.0
-    max_y: 10.0
-    min_z: -10.0
-    max_z: 10.0
-
-- name: north
-  type: laser_filters/LaserScanBoxFilter
-  params:
-    box_frame: map
-    min_x: -10
-    max_x: 10
-    min_y: 1.05
-    max_y: 10.0
-    min_z: -10.0
-    max_z: 10.0
+    invert: true
