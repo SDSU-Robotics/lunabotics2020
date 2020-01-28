@@ -10,6 +10,7 @@
  3. Install ROS packages
      - `sudo apt install ros-melodic-joy`
      - `sudo apt install ros-melodic-laser-geometry`
+     - `sudo apt install ros-melodic-rplidar`
  
 ## Setup
  1. Setup catkin workspace
