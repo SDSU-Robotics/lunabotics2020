@@ -11,9 +11,14 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(catkin REQUIRED)
 find_package (Threads REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
+	roscpp
+	rospy
+	std_msgs
+	sensor_msgs
+	laser_geometry
+	tf2
+	tf2_ros
+	geometry_msgs
 )
 
 catkin_package()
