@@ -5,7 +5,7 @@
 #include <std_msgs/Float32.h>
 #include <math.h>
 
-const float leverLength = 0.0572; // meters
+const float leverLength = 0.0; // meters
 
 void angle_cb(const std_msgs::Float32 msg){
 	static tf2_ros::TransformBroadcaster br;
@@ -18,10 +18,10 @@ void angle_cb(const std_msgs::Float32 msg){
 	transformStamped.child_frame_id = "front_lidar_frame";
 	transformStamped.transform.translation.x = 0.0;
 	transformStamped.transform.translation.y = leverLength * cos(pitch);
-	transformStamped.transform.translation.z = .1575 + leverLength * sin(pitch);
+	transformStamped.transform.translation.z = .58 + leverLength * sin(pitch);
 
 	tf2::Quaternion q;
-	q.setRPY(0.0, pitch, 0.0);
+	q.setRPY(0.0, -1*pitch, 0.0);
 
 	transformStamped.transform.rotation.x = q.x();
 	transformStamped.transform.rotation.y = q.y();

@@ -5,3 +5,15 @@ scan_filter_chain:
   params:
     lower_angle: -2.5
     upper_angle: 2.5
+
+- name: floor
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: map
+    min_x:  -10
+    max_x:  10
+    min_y:  -10
+    max_y:  10
+    min_z:  -0.03
+    max_z:  0.03
+    invert: false
