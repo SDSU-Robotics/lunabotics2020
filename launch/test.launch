@@ -14,15 +14,15 @@
 
 	<node pkg="lunabotics2020" type="DriveController" name="DriveController" />
 
-		<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
-		<param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
-		<param name="serial_baudrate"     type="int"    value="115200"/>
+	<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+		<param name="serial_port"         type="string" value="/dev/ttyUSB1"/>  
+		<param name="serial_baudrate"     type="int"    value="256000"/>
 		<param name="frame_id"            type="string" value="beacon_frame"/>
 		<param name="inverted"            type="bool"   value="false"/>
 		<param name="angle_compensate"    type="bool"   value="true"/>
-		
+		<param name="scan_mode"			  type="string" value="DenseBoost"/>
 		<!--Parameter for using setting motor speed, change value between 200 and 1000-->
-		<param name="motor_pwm"           type="int"    value="400"/> 
+		<!--param name="motor_pwm"           type="int"    value="400"/--> 
 
 		<!--Change topic name to beacon_scan-->
 		<remap from="scan" to="beacon_scan"/>
@@ -34,9 +34,12 @@
 		<remap from="scan" to="beacon_scan" />  <!--Topic to subscribe to-->
 		<remap from="scan_filtered" to="beacon_scan_filtered"/>  <!--Topic to publish to-->
 
-	<!--Load config file-->
-	<rosparam command="load" file="$(find lunabotics2020)/launch/beacon_filter.yaml" />
+		<!--Load config file-->
+		<rosparam command="load" file="$(find lunabotics2020)/launch/beacon_filter.yaml" />
 	</node>
+
+	<node pkg="lunabotics2020" type="FlagLocalization" name="FlagLocalization"></node>
+
 	<!--Camera-->
 	<node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
 		<param name="video_device" value="/dev/video2" />
@@ -61,8 +64,11 @@
 
   <!--Transforms-->
 
-	<node pkg="tf2_ros" type="static_transform_publisher" name="beacon_broadcaster" args="3.255 0.04 0 0 0 0 map beacon" />
-    <node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="0 0 0 0 0 0 1 transportation head_camera" />
-	<node pkg="tf2_ros" type="static_transform_publisher" name="flag_broadcaster" args="0 0 0 0 0 0 1 flag transportation" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="beacon_broadcaster" args="3.255 0.04 0 0 0 0 map beacon_frame" /> <!-- Map to Lidar Transform-->
+	<node pkg="tf2_ros" type="static_transform_publisher" name="flag_broadcaster" args="-.15 .3 0 0 0 0 flag transportation" /> <!-- Flag to Center of Robot Transform-->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="0 0.3 0 3.14 0 1.57 transportation head_camera" /> <!-- Center of Robot to Camera Transform-->
+
+
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find lunabotics2020)/.rviz/default.rviz" />
 
 </launch>

@@ -43,6 +43,9 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	float xsum1 = 0;
 	float ysum1 = 0;
 
+	float rad1 = .1;
+	float rad2 = .04;
+
 	float xsum2 = 0;
 	float ysum2 = 0;
 
@@ -56,7 +59,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 	for (int i = 1; i<n; i++)
 	{
-		if(sqrt((cloud.points[i].x - cloud.points[i-1].x)*(cloud.points[i].x - cloud.points[i-1].x) + (cloud.points[i].y - cloud.points[i-1].y)*(cloud.points[i].y - cloud.points[i-1].y)) < .3048)
+		if(sqrt((cloud.points[i].x - cloud.points[i-1].x)*(cloud.points[i].x - cloud.points[i-1].x) + (cloud.points[i].y - cloud.points[i-1].y)*(cloud.points[i].y - cloud.points[i-1].y)) < (rad1+.05))
 		{
 			if(obj == 1)
 			{
@@ -104,8 +107,8 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 	theta1 = acos( avgPt_1.point.x / sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y));
 
-	avgPt_1.point.x = ((sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y) + (4*.18)/(3*3.14159))*cos(theta1));
-	avgPt_1.point.y = ((sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y) + (4*.18)/(3*3.14159))*sin(theta1));
+	avgPt_1.point.x = ((sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y) + (4*rad1)/(3*3.14159))*cos(theta1)); //4r/3pi is distance of centroid of semicircle from center
+	avgPt_1.point.y = ((sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y) + (4*rad1)/(3*3.14159))*sin(theta1));
 
 	avgPt_1.header.frame_id = "beacon_frame";	//Specifying what frame in header 
 
@@ -115,8 +118,8 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 	theta2 = acos( avgPt_2.point.x / sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y));
 
-	avgPt_2.point.x = ((sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y) + (4*.0508)/(3*3.14159))*cos(theta2));
-	avgPt_2.point.y = ((sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y) + (4*.0508)/(3*3.14159))*sin(theta2));
+	avgPt_2.point.x = ((sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y) + (4*rad2)/(3*3.14159))*cos(theta2));
+	avgPt_2.point.y = ((sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y) + (4*rad2)/(3*3.14159))*sin(theta2));
 
 	pnt1x = avgPt_1.point.x;
 	pnt2x = avgPt_2.point.x;
@@ -135,13 +138,13 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 	transformStamped.header.stamp = ros::Time::now();
 	transformStamped.header.frame_id = "beacon_frame";
-	transformStamped.child_frame_id = "robot_frame";
+	transformStamped.child_frame_id = "flag";
 	transformStamped.transform.translation.x = pnt1x;
 	transformStamped.transform.translation.y = pnt1y;
 	transformStamped.transform.translation.z = 0.0;
 
 	tf2::Quaternion q;
-	q.setRPY(0.0, 0.0, yaw + 3.14159/2.0);
+	q.setRPY(0.0, 0, yaw);
 
 	transformStamped.transform.rotation.x = q.x();
 	transformStamped.transform.rotation.y = q.y();
@@ -154,7 +157,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "Localization");
+    ros::init(argc, argv, "FlagLocalization");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
