@@ -31,4 +31,4 @@ add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 target_link_libraries(Localization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
 
-add_library(global_planner_lib ${PROJECT_SOURCE_DIR}/GlobalPlanner.cpp)
+add_library(global_planner_lib ${PROJECT_SOURCE_DIR}/src/GlobalPlanner.cpp)
