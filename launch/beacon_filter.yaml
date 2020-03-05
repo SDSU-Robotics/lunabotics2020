@@ -12,6 +12,3 @@ scan_filter_chain:
     min_z: -10.0
     max_z: 10.0
     invert: true
-
-#- name: interpolation
-# type: laser_filters/InterpolationFilter

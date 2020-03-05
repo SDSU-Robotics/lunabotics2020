@@ -40,6 +40,8 @@
 
 	<node pkg="lunabotics2020" type="FlagLocalization" name="FlagLocalization"></node>
 
+	<node pkg="lunabotics2020" type="Odometry" name="Odometry"></node>
+
 	<!--Camera-->
 	<node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
 		<param name="video_device" value="/dev/video2" />

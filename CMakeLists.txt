@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
 	tf2
 	tf2_ros
 	geometry_msgs
+	tf
+	nav_msgs
 )
 
 catkin_package()
@@ -27,6 +29,8 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 
 add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
+add_executable(Odometry ${PROJECT_SOURCE_DIR}/src/Odometry.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
+target_link_libraries(Odometry ${catkin_LIBRARIES})
