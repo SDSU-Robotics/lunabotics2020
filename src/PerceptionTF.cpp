@@ -1,17 +1,24 @@
+#include <iostream>
 #include <ros/ros.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/Vector3Stamped.h>
+
 #include <std_msgs/Float32.h>
 #include <math.h>
 
-const float leverLength = 0.0; // meters
+#define PI 3.141592653589
+using namespace std;
 
-void angle_cb(const std_msgs::Float32 msg){
+const float leverLength = 0.005; // meters
+
+void rpy_cb(const geometry_msgs::Vector3Stamped rpy_in){
 	static tf2_ros::TransformBroadcaster br;
 	geometry_msgs::TransformStamped transformStamped;
 
-	float pitch =  msg.data * -0.0174533; // radians
+	float pitch =  rpy_in.vector.y+PI/2.0; // radians
+	//cout<<pitch<<endl;
 
 	transformStamped.header.stamp = ros::Time::now();
 	transformStamped.header.frame_id = "map";
@@ -35,8 +42,7 @@ int main(int argc, char** argv){
 	ros::init(argc, argv, "PerceptionTF");
 	
 	ros::NodeHandle nh;
-	ros::Subscriber lidar_angle_sub = nh.subscribe("lidar_angle", 10, &angle_cb);
-
+	ros::Subscriber rpy_sub = nh.subscribe("/imu/rpy",10,&rpy_cb);
 	ros::spin();
 	return 0;
 };

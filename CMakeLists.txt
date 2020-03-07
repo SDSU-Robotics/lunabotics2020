@@ -11,14 +11,14 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(catkin REQUIRED)
 find_package (Threads REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
-  sensor_msgs
-  laser_geometry
-  geometry_msgs
-  tf2
-  tf2_ros
+	roscpp
+	rospy
+	std_msgs
+	sensor_msgs
+	laser_geometry
+	tf2
+	tf2_ros
+	geometry_msgs
 )
 
 catkin_package()
@@ -27,10 +27,11 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 
 add_executable(Localization ${PROJECT_SOURCE_DIR}/src/Localization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
-add_executable(Perception ${PROJECT_SOURCE_DIR}/src/Perception.cpp)
+add_executable(Read_IMU ${PROJECT_SOURCE_DIR}/src/Read_IMU.cpp)
 add_executable(PerceptionTF ${PROJECT_SOURCE_DIR}/src/PerceptionTF.cpp)
+
 
 target_link_libraries(Localization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
-target_link_libraries(Perception ${catkin_LIBRARIES})
+target_link_libraries(Read_IMU ${catkin_LIBRARIES})
 target_link_libraries(PerceptionTF ${catkin_LIBRARIES})
