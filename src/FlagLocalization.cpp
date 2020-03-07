@@ -197,7 +197,7 @@ int main (int argc, char **argv)
 
 	while (ros::ok())
 	{
-        point_pub1.publish(listener.getPoint1());
+		point_pub1.publish(listener.getPoint1());
 		point_pub2.publish(listener.getPoint2());
 
 		ros::spinOnce();
