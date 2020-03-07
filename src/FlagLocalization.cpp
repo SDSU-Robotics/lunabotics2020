@@ -23,14 +23,14 @@ class Listener
 {
 public:
 	void scanCB(const sensor_msgs::LaserScan::ConstPtr& scan_in);
-	geometry_msgs::PointStamped getPoint1() { return avgPt_1; }			//Average points found by adding all x and y values for each flag then dividing
-	geometry_msgs::PointStamped getPoint2() { return avgPt_2; }			//by the # of points.  These happen to be geometric centroids of semicircles seen
+	geometry_msgs::PointStamped getPoint1() { return _avgPt_1; }			//Average points found by adding all x and y values for each flag then dividing
+	geometry_msgs::PointStamped getPoint2() { return _avgPt_2; }			//by the # of points.  These happen to be geometric centroids of semicircles seen
 																		//by the lidar.
 
 private:
 	laser_geometry::LaserProjection projector_;
-	geometry_msgs::PointStamped avgPt_1;
-	geometry_msgs::PointStamped avgPt_2;
+	geometry_msgs::PointStamped _avgPt_1;
+	geometry_msgs::PointStamped _avgPt_2;
 
 };
 
@@ -50,7 +50,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	float gap = .05;
 
 	//Variables used by code
-		int n = cloud.points.size();  // Number of points total
+		int n = cloud.points.size();// Number of points total
 		
 		float xsum1 = 0;			//Used to find an average point for the first cluster of points(flag 1)
 		float ysum1 = 0;
@@ -119,37 +119,37 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	}
 	
 	//Averaging the points
-	avgPt_1.point.x = xsum1 / pts1;  
-	avgPt_1.point.y = ysum1 / pts1;
-	avgPt_1.point.z = 0;
+	_avgPt_1.point.x = xsum1 / pts1;  
+	_avgPt_1.point.y = ysum1 / pts1;
+	_avgPt_1.point.z = 0;
 
 	//Calulating theta1 using trig.
-	theta1 = acos(avgPt_1.point.x / sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y));
+	theta1 = acos(_avgPt_1.point.x / sqrt(_avgPt_1.point.x*_avgPt_1.point.x + _avgPt_1.point.y*_avgPt_1.point.y));
 
-	//This overwrites avgPt_1 with the true center of the flag by extending along the line formed by theta1 and the line from beacon to avg point
-	avgPt_1.point.x = ((sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y) + (4*rad1)/(3*3.14159))*cos(theta1)); //4r/3pi is distance of centroid of semicircle from the center
-	avgPt_1.point.y = ((sqrt(avgPt_1.point.x*avgPt_1.point.x + avgPt_1.point.y*avgPt_1.point.y) + (4*rad1)/(3*3.14159))*sin(theta1));
+	//This overwrites _avgPt_1 with the true center of the flag by extending along the line formed by theta1 and the line from beacon to avg point
+	_avgPt_1.point.x = ((sqrt(_avgPt_1.point.x*_avgPt_1.point.x + _avgPt_1.point.y*_avgPt_1.point.y) + (4*rad1)/(3*3.14159))*cos(theta1)); //4r/3pi is distance of centroid of semicircle from the center
+	_avgPt_1.point.y = ((sqrt(_avgPt_1.point.x*_avgPt_1.point.x + _avgPt_1.point.y*_avgPt_1.point.y) + (4*rad1)/(3*3.14159))*sin(theta1));
 
-	avgPt_1.header.frame_id = "beacon_frame";	//Specifying what frame in header 
+	_avgPt_1.header.frame_id = "beacon_frame";	//Specifying what frame in header 
 
 	//The process is repeated for flag 2
-	avgPt_2.point.x = xsum2 / pts2;  
-	avgPt_2.point.y = ysum2 / pts2;
-	avgPt_2.point.z = 0;
+	_avgPt_2.point.x = xsum2 / pts2;  
+	_avgPt_2.point.y = ysum2 / pts2;
+	_avgPt_2.point.z = 0;
 
-	theta2 = acos(avgPt_2.point.x / sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y));
+	theta2 = acos(_avgPt_2.point.x / sqrt(_avgPt_2.point.x*_avgPt_2.point.x + _avgPt_2.point.y*_avgPt_2.point.y));
 
-	avgPt_2.point.x = ((sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y) + (4*rad2)/(3*3.14159))*cos(theta2));
-	avgPt_2.point.y = ((sqrt(avgPt_2.point.x*avgPt_2.point.x + avgPt_2.point.y*avgPt_2.point.y) + (4*rad2)/(3*3.14159))*sin(theta2));
+	_avgPt_2.point.x = ((sqrt(_avgPt_2.point.x*_avgPt_2.point.x + _avgPt_2.point.y*_avgPt_2.point.y) + (4*rad2)/(3*3.14159))*cos(theta2));
+	_avgPt_2.point.y = ((sqrt(_avgPt_2.point.x*_avgPt_2.point.x + _avgPt_2.point.y*_avgPt_2.point.y) + (4*rad2)/(3*3.14159))*sin(theta2));
 
-	avgPt_2.header.frame_id = "beacon_frame";
+	_avgPt_2.header.frame_id = "beacon_frame";
 
 	//Assigns the new center points to new variables used in the transform
-	pnt1x = avgPt_1.point.x;
-	pnt2x = avgPt_2.point.x;
+	pnt1x = _avgPt_1.point.x;
+	pnt2x = _avgPt_2.point.x;
 
-	pnt1y = avgPt_1.point.y;
-	pnt2y = avgPt_2.point.y;
+	pnt1y = _avgPt_1.point.y;
+	pnt2y = _avgPt_2.point.y;
 
 	//Calculates yaw of the robot
 	yaw =  atan((pnt1y-pnt2y)/(pnt1x-pnt2x)); // radians
@@ -172,10 +172,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	q.setRPY(0, 0, yaw);
 
 	//Setting the quaternion orientation of frame "flag"
-	transformStamped.transform.rotation.x = q.x();
-	transformStamped.transform.rotation.y = q.y();
-	transformStamped.transform.rotation.z = q.z();
-	transformStamped.transform.rotation.w = q.w();
+	transformStamped.transform.rotation = q;
 
 	br.sendTransform(transformStamped);
 }

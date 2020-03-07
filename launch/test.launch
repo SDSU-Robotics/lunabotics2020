@@ -21,8 +21,6 @@
 		<param name="inverted"            type="bool"   value="false"/>
 		<param name="angle_compensate"    type="bool"   value="true"/>
 		<param name="scan_mode"			  type="string" value="DenseBoost"/>
-		<!--Parameter for using setting motor speed, change value between 200 and 1000-->
-		<!--param name="motor_pwm"           type="int"    value="400"/--> 
 
 		<!--Change topic name to beacon_scan-->
 		<remap from="scan" to="beacon_scan"/>
@@ -52,7 +50,6 @@
 		<param name="io_method" value="mmap"/>
 	</node>
 
-  <!--node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame_broadcaster" args="0 0 0 0 0 0 1 /map /head_camera" /-->
 	<!--AR Tracker-->
 	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
 		<param name="marker_size"           type="double" value="5.0" />

@@ -35,8 +35,6 @@ int main (int argc, char **argv)
 
 	while (ros::ok())
 	{
-
-
         //since all odometry is 6DOF we'll need a quaternion created from yaw
         geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(vth);
 
