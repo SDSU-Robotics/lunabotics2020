@@ -65,7 +65,7 @@ int main (int argc, char **argv)
 		float turn = 1 * axes[3]; // right X
 
 		l_speed_msg.data = 0.75 * speed + 0.4 * turn;
-        r_speed_msg.data = 0.75 * speed - 0.4 * turn;
+		r_speed_msg.data = 0.75 * speed - 0.4 * turn;
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
