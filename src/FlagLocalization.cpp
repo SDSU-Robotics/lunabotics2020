@@ -50,7 +50,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	float gap = .05;
 
 	//Variables used by code
-		int n = cloud.points.size();// Number of points total
+		int n = cloud.points.size();		// Number of points total
 		
 		float xsum1 = 0;			//Used to find an average point for the first cluster of points(flag 1)
 		float ysum1 = 0;
@@ -66,7 +66,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 		int obj = 1;				//The variable obj is used to distinguish whether a point belongs to the first flag or second
 
-		float yaw;					//This is the yaw of the output frame "flag" and used creating the transform between "beacon_frame" and "flag"
+		float yaw;				//This is the yaw of the output frame "flag" and used creating the transform between "beacon_frame" and "flag"
 
 
 	//Loop through every point
