@@ -179,7 +179,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "FlagLocalization");
+	ros::init(argc, argv, "FlagLocalization");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
