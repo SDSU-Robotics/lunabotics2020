@@ -34,8 +34,6 @@ private:
 
 };
 
-float pnt1x, pnt2x, pnt1y, pnt2y;
-
 void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 {
 	sensor_msgs::PointCloud cloud;
@@ -52,6 +50,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	//Variables used by code
 		int n = cloud.points.size();		// Number of points total
 		
+
 		float xsum1 = 0;			//Used to find an average point for the first cluster of points(flag 1)
 		float ysum1 = 0;
 
@@ -60,7 +59,7 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 		int pts1 = 0;				//pts1 and 2 are keeping track of the number of points collected for each flag
 		int pts2 = 0;				//These are used in calculating the avg points
-
+	
 		float theta1;				//Angles from beacon to average points.  By extending along this line,
 		float theta2;				//a center of each flag can be calculated.
 
@@ -144,7 +143,10 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 
 	_avgPt_2.header.frame_id = "beacon_frame";
 
+	
 	//Assigns the new center points to new variables used in the transform
+	float pnt1x, pnt2x, pnt1y, pnt2y;
+	
 	pnt1x = _avgPt_1.point.x;
 	pnt2x = _avgPt_2.point.x;
 
