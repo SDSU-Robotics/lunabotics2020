@@ -62,10 +62,10 @@ int main (int argc, char **argv)
 
 		// get controller values
 		float speed = axes[1]; // left Y
-		float turn = -1 * axes[3]; // right X
+		float turn = 1 * axes[3]; // right X
 
-		l_speed_msg.data = 0.5 * speed + 0.25 * turn;
-        r_speed_msg.data = 0.5 * speed - 0.25 * turn;
+		l_speed_msg.data = 0.75 * speed + 0.4 * turn;
+		r_speed_msg.data = 0.75 * speed - 0.4 * turn;
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
