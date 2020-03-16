@@ -174,7 +174,10 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	q.setRPY(0, 0, yaw);
 
 	//Setting the quaternion orientation of frame "flag"
-	transformStamped.transform.rotation = q;
+	transformStamped.transform.rotation.x = q.x();
+	transformStamped.transform.rotation.y = q.y();
+	transformStamped.transform.rotation.z = q.z();
+	transformStamped.transform.rotation.w = q.w();
 
 	br.sendTransform(transformStamped);
 }
