@@ -27,6 +27,8 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 
 add_executable(Localization ${PROJECT_SOURCE_DIR}/src/Localization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
+add_executable(BaseController ${PROJECT_SOURCE_DIR}/src/BaseController.cpp)
 
 target_link_libraries(Localization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
+target_link_libraries(BaseController ${catkin_LIBRARIES})
