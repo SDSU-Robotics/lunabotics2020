@@ -1,9 +1,27 @@
-<node name="controller" pkg="diff_drive" type="diff_drive_controller"
-    output="screen">
-    <rosparam subst_value="true">
-      ticks_per_meter: $(arg ticks_per_meter)
-      wheel_separation: $(arg wheel_separation)
-      max_motor_speed: 3000
-      timeout: 1.0
-    </rosparam>
-</node>
+<launch> 
+
+  <rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml"
+            command="load"/>
+
+  <param name="robot_description" 
+  command="$(find xacro)/xacro --inorder '$(find lunabotics2020)/description/test.xacro'" />
+
+  <node name="controller_spawner"
+        pkg="controller_manager"
+        type="spawner" 
+        respawn="false"
+        output="screen"
+        ns="/" 
+        args="diff_drive_controller"
+  />
+
+  <!--node name="robot_state_publisher" 
+      pkg="robot_state_publisher" 
+      type="robot_state_publisher" 
+      respawn="false" 
+      output="screen">
+  </node-->
+
+  <node pkg="lunabotics2020" type="BaseController" name="BaseController" />
+
+</launch>

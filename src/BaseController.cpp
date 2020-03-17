@@ -1,15 +1,16 @@
 #include "ros/ros.h"
 #include <unistd.h>
-#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/TwistStamped.h>
+
 using namespace std;
 
 class Listener
 {
     public:
-        void goalListener(const geometry_msgs::Twist::ConstPtr& cmd_vel);
+        void twistListener(const geometry_msgs::TwistStamped::ConstPtr& publish_cmd);
 };
 
-void Listener::goalListener(const geometry_msgs::Twist::ConstPtr& cmd_vel)
+void Listener::twistListener(const geometry_msgs::TwistStamped::ConstPtr& publish_cmd)
 {
 
 }
@@ -22,7 +23,7 @@ int main (int argc, char **argv)
 
     Listener listener;
 
-    ros::Subscriber goalSub = n.subscribe("cmd_vel", 100, &Listener::goalListener, &listener);
+    ros::Subscriber goalSub = n.subscribe("publish_cmd", 100, &Listener::twistListener, &listener);
 
     while(ros::ok())
     {
