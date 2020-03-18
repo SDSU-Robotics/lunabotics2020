@@ -18,7 +18,9 @@
 	</include>
 	
 	<!-- Load controller configuration file -->
-	<rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml" command="load" ns="/dug"/>
+	<rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml" command="load" />
+    <remap from="cmd_vel" to="dug/cmd_vel"/>
+
 
 	<!-- Spawn diff_drive_controller (from loaded config file above) -->
 	<node name="controller_spawner"
