@@ -9,7 +9,7 @@
 	<arg name="debug" default="false"/>
 	
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
-		<arg name="world_name" value="$(find lunabotics2020)/worlds/field.world"/>
+		<!--arg name="world_name" value="$(find lunabotics2020)/worlds/field.world"/-->
 		<arg name="paused" value="$(arg paused)"/>
 		<arg name="use_sim_time" value="$(arg use_sim_time)"/>
 		<arg name="gui" value="$(arg gui)"/>
@@ -18,7 +18,7 @@
 	</include>
 	
 	<!-- Load controller configuration file -->
-	<rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml" command="load"/>
+	<rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml" command="load" ns="/dug"/>
 
 	<!-- Spawn diff_drive_controller (from loaded config file above) -->
 	<node name="controller_spawner"
@@ -26,7 +26,7 @@
 		type="spawner" 
 		respawn="false"
 		output="screen"
-		ns="/" 
+		ns="/dug" 
 		args="diff_drive_controller"
 	/>
 

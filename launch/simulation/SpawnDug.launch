@@ -8,9 +8,9 @@
 	<arg name="transp_yaw" default="0"/>
 
 	<!--Spawn Transportation Bot-->
-	<param name="robot_description" command="$(find xacro)/xacro '$(find lunabotics2020)/description/dug.xacro'"/>
-	<node name="transportation_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-		args="-urdf -param robot_description -model transportation 
+	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find lunabotics2020)/description/dug.xacro'"/>
+	<node name="dug_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+		args="-urdf -param robot_description -model dug 
 		-x $(arg transp_x) -y $(arg transp_y) -z $(arg transp_z)
 		-R $(arg transp_roll) -P $(arg transp_pitch) -Y $(arg transp_yaw)"/>
 </launch>

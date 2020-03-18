@@ -10,7 +10,7 @@
   <!--End Macros-->
 
   <link name='chassis'>
-    <pose>0 0 0.1 0 0 0</pose>
+    <!--pose>0 0 0.1 0 0 0</pose-->
 
     <inertial>
       <mass value="20.0"/>
@@ -133,7 +133,7 @@
 
   <joint type="continuous" name="left_front_wheel_hinge">
     <origin  xyz="0.11 0.15 ${wheel_height}" rpy="0 0 0"/>
-    <child link="left_wheel"/>
+    <child link="left_front_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
@@ -151,7 +151,7 @@
 
   <joint type="continuous" name="right_front_wheel_hinge">
     <origin xyz="0.11 -0.15 ${wheel_height}" rpy="0 0 0"/>
-    <child link="right_wheel"/>
+    <child link="right_front_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
