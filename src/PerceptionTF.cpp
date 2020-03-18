@@ -32,7 +32,10 @@ void rpy_cb(const geometry_msgs::Vector3Stamped rpy_in){
 	tf2::Quaternion q;
 	q.setRPY(0.0, -1 * pitch, 0.0);
 
-	transformStamped.transform.rotation = q;
+	transformStamped.transform.rotation.x = q.x();
+	transformStamped.transform.rotation.y = q.y();
+	transformStamped.transform.rotation.z = q.z();
+	transformStamped.transform.rotation.w = q.w();
 
 	br.sendTransform(transformStamped);
 }
