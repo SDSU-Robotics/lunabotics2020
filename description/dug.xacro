@@ -131,7 +131,7 @@
   </link>
 
 
-  <joint type="continuous" name="left_front_wheel_hinge">
+  <joint type="continuous" name="left_front_wheel_joint">
     <origin  xyz="0.11 0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="left_front_wheel"/>
     <parent link="chassis"/>
@@ -139,8 +139,17 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
+  <transmission name="left_front_wheel_transm">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_front_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_front_wheel_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+   </actuator>
+  </transmission>
 
-  <joint type="continuous" name="left_rear_wheel_hinge">
+  <joint type="continuous" name="left_rear_wheel_joint">
     <origin xyz="-0.11 0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="left_rear_wheel"/>
     <parent link="chassis"/>
@@ -148,8 +157,17 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
+  <transmission name="left_rear_wheel_transm">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_rear_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_rear_wheel_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+   </actuator>
+  </transmission>
 
-  <joint type="continuous" name="right_front_wheel_hinge">
+  <joint type="continuous" name="right_front_wheel_joint">
     <origin xyz="0.11 -0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="right_front_wheel"/>
     <parent link="chassis"/>
@@ -157,8 +175,17 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
+  <transmission name="right_front_wheel_transm">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_front_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_front_wheel_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+   </actuator>
+  </transmission>
 
-  <joint type="continuous" name="right_rear_wheel_hinge">
+  <joint type="continuous" name="right_rear_wheel_joint">
     <origin xyz="-0.11 -0.15 ${wheel_height}" rpy="0 0 0"/>
     <child link="right_rear_wheel"/>
     <parent link="chassis"/>
@@ -166,6 +193,15 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
+  <transmission name="right_rear_wheel_transm">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_rear_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_rear_wheel_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+   </actuator>
+  </transmission>
 
 </robot>
 

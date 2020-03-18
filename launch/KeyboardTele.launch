@@ -1,4 +1,4 @@
 <launch>
-    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard_node" />
-    <remap from="cmd_vel" to="dug/cmd_vel"/>
+    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard_node" output="screen"/>
+    <!--remap from="cmd_vel" to="dug/cmd_vel"/-->
 </launch>
