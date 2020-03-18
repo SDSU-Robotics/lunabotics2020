@@ -1,27 +1,25 @@
 <launch> 
 
-  <rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml"
-            command="load"/>
+	<rosparam file="$(find lunabotics2020)/controllers/diff_drive.yaml" command="load"/>
 
-  <param name="robot_description" 
-  command="$(find xacro)/xacro --inorder '$(find lunabotics2020)/description/test.xacro'" />
+	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find lunabotics2020)/description/test.xacro'" />
 
-  <node name="controller_spawner"
-        pkg="controller_manager"
-        type="spawner" 
-        respawn="false"
-        output="screen"
-        ns="/" 
-        args="diff_drive_controller"
-  />
+	<node name="controller_spawner"
+		pkg="controller_manager"
+		type="spawner" 
+		respawn="false"
+		output="screen"
+		ns="/" 
+		args="diff_drive_controller"
+	/>
 
-  <!--node name="robot_state_publisher" 
-      pkg="robot_state_publisher" 
-      type="robot_state_publisher" 
-      respawn="false" 
-      output="screen">
-  </node-->
+	<!--node name="robot_state_publisher" 
+		pkg="robot_state_publisher" 
+		type="robot_state_publisher" 
+		respawn="false" 
+		output="screen">
+		</node-->
 
-  <node pkg="lunabotics2020" type="BaseController" name="BaseController" />
+	<node pkg="lunabotics2020" type="BaseController" name="BaseController" />
 
 </launch>
