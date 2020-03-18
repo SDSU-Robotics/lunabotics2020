@@ -41,11 +41,14 @@ void rpy_cb(const geometry_msgs::Vector3Stamped rpy_in){
 }
 
 int main(int argc, char** argv){
-	ros::init(argc, argv, "PerceptionTF");
+	ros::init(argc, argv, "SLS");
 	
 	ros::NodeHandle n;
 
-	ros::Subscriber rpy_sub = n.subscribe("/imu/rpy", 10, &rpy_cb);
+	string topic;
+	n.param<std::string>("rpy_topic", topic, "/imu/rpy");
+
+	ros::Subscriber rpy_sub = n.subscribe(topic, 10, &rpy_cb);
 
 	ros::spin();
 
