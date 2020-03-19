@@ -5,7 +5,7 @@ scale_linear: 0.7
 scale_linear_turbo: 1.5
 
 axis_angular: 3  # Right thumb stick horizontal
-scale_angular: 0.4
+scale_angular: 1.0
 
 enable_button: 4  # LB
 enable_turbo_button: -1  # Disabled
