@@ -1,5 +1,4 @@
 <launch>
-	<arg name="imu_topic" default="/imu" />
 	<arg name="lidar_port" default="/dev/ttyUSB0" />
 	<arg name="lidar_frame" default="SLS_lidar" />
 	<arg name="sls_frame" default="SLS" />

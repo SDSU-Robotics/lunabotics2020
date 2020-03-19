@@ -1,4 +1,3 @@
-#include <iostream>
 #include <ros/ros.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
@@ -42,6 +41,7 @@ private:
 	CANifier _canifer = {1};
 	string _childFrame;
 	string _parentFrame;
+	void broadcastTF(double);
 };
 
 int main(int argc, char** argv){
@@ -96,6 +96,11 @@ void Listener::setPosition(double pos)
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 
+	broadcastTF(pos);
+}
+
+void Listener::broadcastTF(double pos)
+{
 	static tf2_ros::TransformBroadcaster br;
 	geometry_msgs::TransformStamped transformStamped;
 
