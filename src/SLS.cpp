@@ -5,7 +5,6 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
 
-#include <std_msgs/Float32.h>
 #include <math.h>
 
 #include "ctre/Phoenix.h"
@@ -23,15 +22,19 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
-#define MIN_PULSE 500.0	// us
+#define MIN_PULSE 500.0		// us
 #define MAX_PULSE 2250.0	// us
-#define MIN_INPUT 0
-#define MAX_INPUT PI / 2
+#define MIN_ANGLE 0
+#define MAX_ANGLE PI / 2.0
 
+#define INCREMENT 0.002
+
+#define MIN_SCAN PI / 8.0
+#define MAX_SCAN PI / 3.0
 class Listener
 {
 public:
-	void setPosition(const std_msgs::Float32);
+	void setPosition(double);
 	void setChildFrame(string frame) { _childFrame = frame; }
 	void setParentFrame(string frame) { _parentFrame = frame; }
 
@@ -43,37 +46,49 @@ private:
 
 int main(int argc, char** argv){
 	ros::init(argc, argv, "SLS");
-	
 	ros::NodeHandle n;
+	ros::Rate loop_rate(100);
 
 	ctre::phoenix::platform::can::SetCANInterface("can0");
 
 	Listener listener;
 
 	string frame;
-	n.param<std::string>("child_frame", frame, "/SLS_lidar_frame");
+	n.param<std::string>("child_frame", frame, "/SLS_lidar");
 	listener.setChildFrame(frame);
 
-	n.param<std::string>("parent_frame", frame, "/map");
+	n.param<std::string>("parent_frame", frame, "/SLS");
 	listener.setParentFrame(frame);
 
-	ros::Subscriber pos_sub = n.subscribe("sls_pos", 1000, &Listener::setPosition, &listener);
+	double pos = 0.0;
+	bool up = true;
 
-	ros::spin();
+	while (ros::ok())
+	{
+		listener.setPosition(pos);
+		
+		pos += up ? INCREMENT : -INCREMENT;
+		if (pos >= MAX_SCAN)
+			up = false;
+		if (pos <= MIN_SCAN)
+			up = true;
+
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
 
 	return 0;
 };
 
-void Listener::setPosition(const std_msgs::Float32 msg)
+void Listener::setPosition(double pos)
 {
 	// limit values
-	float pos = msg.data;
-	if (pos < MIN_INPUT)	pos = MIN_INPUT;
-	if (pos > MAX_INPUT)	pos = MAX_INPUT;
+	if (pos < MIN_ANGLE)	pos = MIN_ANGLE;
+	if (pos > MAX_ANGLE)	pos = MAX_ANGLE;
 
 	_canifer.SetGeneralOutput(CANifier::GeneralPin::SPI_CLK_PWM0P, false, true);
 
-	float pulse = LinearInterpolation::Calculate(pos, MIN_INPUT, MIN_PULSE, MAX_INPUT, MAX_PULSE); // pulse length in us
+	float pulse = LinearInterpolation::Calculate(pos, MIN_ANGLE, MIN_PULSE, MAX_ANGLE, MAX_PULSE); // pulse length in us
 
 	_canifer.SetPWMOutput(0, pulse / 4200.0); // 4.2 ms period
 	
