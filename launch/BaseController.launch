@@ -29,11 +29,7 @@
 		output="screen"
 		ns="/dug" 
 		args="diff_drive_controller
-			  joint_state_controller
-			  leftWheel_velocity_controller
-			  rightWheel_velocity_controller
-  			  leftRearWheel_velocity_controller
-			  rightRearWheel_velocity_controller"
+			  joint_state_controller"
 		/>
 
 	<!-- Spawn Dug robot model -->
