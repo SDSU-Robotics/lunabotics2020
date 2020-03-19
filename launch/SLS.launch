@@ -1,21 +1,10 @@
 <launch>
-	<arg name="imu_port" default="/dev/ttyUSB1" />
 	<arg name="imu_topic" default="/imu" />
 	<arg name="lidar_port" default="/dev/ttyUSB0" />
 	<arg name="lidar_frame" default="SLS_lidar_frame" />
 	<arg name="sls_frame" default="map" />
 	<arg name="raw_lidar_topic" default="scan" />
 	<arg name="filtered_lidar_topic" default="scan_filtered" />
-
-	<!-- joy node -->
-	<node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
-		<param name="dev" type="string" value="/dev/input/js0" />
-		<param name="deadzone" value="0.05" />
-	</node>
-
-	<node pkg="lunabotics2020" type="DriveController" name="DriveController" >
-		<remap from="l_speed" to="sls_pos"/>
-	</node>
 
 	<node name="rplidarNode"  pkg="rplidar_ros"  type="rplidarNode"  output="screen">
 		<param name="serial_port"         type="string" value="$(arg lidar_port)"/>  
@@ -29,12 +18,7 @@
 		<remap from="scan" to="$(arg raw_lidar_topic)"/>
 	</node>
 
-	<node pkg="um7"  type="um7_driver"  name="um7_driver">
-		<param name="port" value="$(arg imu_port)"/>
-	</node>
-
 	<node name="SLS"  pkg="lunabotics2020"  type="SLS"  output="screen">
-		<param name="rpy_topic"  value="$(arg imu_topic)/rpy"/>
 		<param name="child_frame" type="string" value="$(arg lidar_frame)"/>
 		<param name="parent_frame" type="string" value="$(arg sls_frame)"/>
 	</node>

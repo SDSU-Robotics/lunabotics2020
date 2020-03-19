@@ -23,16 +23,15 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
-#define MIN_PULSE 1200.0	// us
+#define MIN_PULSE 500.0	// us
 #define MAX_PULSE 2250.0	// us
 #define MIN_INPUT 0
-#define MAX_INPUT 1.0
+#define MAX_INPUT PI / 2
 
 class Listener
 {
 public:
 	void setPosition(const std_msgs::Float32);
-	void rpy_cb(const geometry_msgs::Vector3Stamped);
 	void setChildFrame(string frame) { _childFrame = frame; }
 	void setParentFrame(string frame) { _parentFrame = frame; }
 
@@ -51,49 +50,19 @@ int main(int argc, char** argv){
 
 	Listener listener;
 
-	string topic;
-	n.param<std::string>("rpy_topic", topic, "/imu/rpy");
-
 	string frame;
-
 	n.param<std::string>("child_frame", frame, "/SLS_lidar_frame");
 	listener.setChildFrame(frame);
 
 	n.param<std::string>("parent_frame", frame, "/map");
 	listener.setParentFrame(frame);
 
-	ros::Subscriber rpy_sub = n.subscribe(topic, 10, &Listener::rpy_cb, &listener);
-	ros::Subscriber speed_sub = n.subscribe("sls_pos", 1000, &Listener::setPosition, &listener);
+	ros::Subscriber pos_sub = n.subscribe("sls_pos", 1000, &Listener::setPosition, &listener);
 
 	ros::spin();
 
 	return 0;
 };
-
-void Listener::rpy_cb(const geometry_msgs::Vector3Stamped rpy_in)
-{
-	static tf2_ros::TransformBroadcaster br;
-	geometry_msgs::TransformStamped transformStamped;
-
-	float pitch =  rpy_in.vector.y + PI / 2.0; // radians
-
-	transformStamped.header.stamp = ros::Time::now();
-	transformStamped.header.frame_id = _parentFrame;
-	transformStamped.child_frame_id = _childFrame;
-	transformStamped.transform.translation.x = 0.0;
-	transformStamped.transform.translation.y = LEVER_LENGTH * cos(pitch);
-	transformStamped.transform.translation.z = SLS_HEIGHT + LEVER_LENGTH * sin(pitch);
-
-	tf2::Quaternion q;
-	q.setRPY(0.0, -1 * pitch, 0.0);
-
-	transformStamped.transform.rotation.x = q.x();
-	transformStamped.transform.rotation.y = q.y();
-	transformStamped.transform.rotation.z = q.z();
-	transformStamped.transform.rotation.w = q.w();
-
-	br.sendTransform(transformStamped);
-}
 
 void Listener::setPosition(const std_msgs::Float32 msg)
 {
@@ -111,4 +80,26 @@ void Listener::setPosition(const std_msgs::Float32 msg)
 	_canifer.EnablePWMOutput(0, true);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+
+	static tf2_ros::TransformBroadcaster br;
+	geometry_msgs::TransformStamped transformStamped;
+
+	float pitch =  pos; // radians
+
+	transformStamped.header.stamp = ros::Time::now();
+	transformStamped.header.frame_id = _parentFrame;
+	transformStamped.child_frame_id = _childFrame;
+	transformStamped.transform.translation.x = 0.0;
+	transformStamped.transform.translation.y = LEVER_LENGTH * cos(pitch);
+	transformStamped.transform.translation.z = SLS_HEIGHT + LEVER_LENGTH * sin(pitch);
+
+	tf2::Quaternion q;
+	q.setRPY(0.0, -1 * pitch, 0.0);
+
+	transformStamped.transform.rotation.x = q.x();
+	transformStamped.transform.rotation.y = q.y();
+	transformStamped.transform.rotation.z = q.z();
+	transformStamped.transform.rotation.w = q.w();
+
+	br.sendTransform(transformStamped);
 }
