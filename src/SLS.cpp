@@ -8,23 +8,78 @@
 #include <std_msgs/Float32.h>
 #include <math.h>
 
+#include "ctre/Phoenix.h"
+#include "ctre/phoenix/platform/Platform.h"
+#include "ctre/phoenix/unmanaged/Unmanaged.h"
+
 #define PI 3.141592653589
 
 #define SLS_HEIGHT 0.098 // meters
 #define LEVER_LENGTH 0.005 // meters
 
 using namespace std;
+using namespace ctre::phoenix;
+using namespace ctre::phoenix::platform;
+using namespace ctre::phoenix::motorcontrol;
+using namespace ctre::phoenix::motorcontrol::can;
 
-void rpy_cb(const geometry_msgs::Vector3Stamped rpy_in){
+#define MIN_PULSE 1200.0	// us
+#define MAX_PULSE 2250.0	// us
+#define MIN_INPUT 0
+#define MAX_INPUT 1.0
+
+class Listener
+{
+public:
+	void setPosition(const std_msgs::Float32);
+	void rpy_cb(const geometry_msgs::Vector3Stamped);
+	void setChildFrame(string frame) { _childFrame = frame; }
+	void setParentFrame(string frame) { _parentFrame = frame; }
+
+private:
+	CANifier _canifer = {1};
+	string _childFrame;
+	string _parentFrame;
+};
+
+int main(int argc, char** argv){
+	ros::init(argc, argv, "SLS");
 	
+	ros::NodeHandle n;
+
+	ctre::phoenix::platform::can::SetCANInterface("can0");
+
+	Listener listener;
+
+	string topic;
+	n.param<std::string>("rpy_topic", topic, "/imu/rpy");
+
+	string frame;
+
+	n.param<std::string>("child_frame", frame, "/SLS_lidar_frame");
+	listener.setChildFrame(frame);
+
+	n.param<std::string>("parent_frame", frame, "/map");
+	listener.setParentFrame(frame);
+
+	ros::Subscriber rpy_sub = n.subscribe(topic, 10, &Listener::rpy_cb, &listener);
+	ros::Subscriber speed_sub = n.subscribe("sls_pos", 1000, &Listener::setPosition, &listener);
+
+	ros::spin();
+
+	return 0;
+};
+
+void Listener::rpy_cb(const geometry_msgs::Vector3Stamped rpy_in)
+{
 	static tf2_ros::TransformBroadcaster br;
 	geometry_msgs::TransformStamped transformStamped;
 
 	float pitch =  rpy_in.vector.y + PI / 2.0; // radians
 
 	transformStamped.header.stamp = ros::Time::now();
-	transformStamped.header.frame_id = "map";
-	transformStamped.child_frame_id = "front_lidar_frame";
+	transformStamped.header.frame_id = _parentFrame;
+	transformStamped.child_frame_id = _childFrame;
 	transformStamped.transform.translation.x = 0.0;
 	transformStamped.transform.translation.y = LEVER_LENGTH * cos(pitch);
 	transformStamped.transform.translation.z = SLS_HEIGHT + LEVER_LENGTH * sin(pitch);
@@ -40,17 +95,20 @@ void rpy_cb(const geometry_msgs::Vector3Stamped rpy_in){
 	br.sendTransform(transformStamped);
 }
 
-int main(int argc, char** argv){
-	ros::init(argc, argv, "SLS");
+void Listener::setPosition(const std_msgs::Float32 msg)
+{
+	// limit values
+	float pos = msg.data;
+	if (pos < MIN_INPUT)	pos = MIN_INPUT;
+	if (pos > MAX_INPUT)	pos = MAX_INPUT;
+
+	_canifer.SetGeneralOutput(CANifier::GeneralPin::SPI_CLK_PWM0P, false, true);
+
+	float pulse = LinearInterpolation::Calculate(pos, MIN_INPUT, MIN_PULSE, MAX_INPUT, MAX_PULSE); // pulse length in us
+
+	_canifer.SetPWMOutput(0, pulse / 4200.0); // 4.2 ms period
 	
-	ros::NodeHandle n;
+	_canifer.EnablePWMOutput(0, true);
 
-	string topic;
-	n.param<std::string>("rpy_topic", topic, "/imu/rpy");
-
-	ros::Subscriber rpy_sub = n.subscribe(topic, 10, &rpy_cb);
-
-	ros::spin();
-
-	return 0;
-};
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+}
