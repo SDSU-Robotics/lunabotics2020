@@ -36,12 +36,12 @@
 	<include file="$(find lunabotics2020)/launch/simulation/SpawnDug.launch"/>
 
 	<!-- Publishes transforms based on robot description -->
-	<!--node name="robot_state_publisher" 
+	<node name="robot_state_publisher" 
 		pkg="robot_state_publisher" 
 		type="robot_state_publisher" 
 		respawn="false" 
 		output="screen">
-		</node-->
+		</node>
 
 	<!--node pkg="lunabotics2020" type="BaseController" name="BaseController" /-->
 

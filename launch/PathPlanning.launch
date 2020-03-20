@@ -1,5 +1,8 @@
 <launch>
 
-    <node name="map_server" pkg="map_server" type="map_server">
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find lunabotics2020)/config/Map.yaml"/>
 
+	<include file="$(find lunabotics2020)/launch/BaseController.launch">
+		
+	</include>
 </launch>
