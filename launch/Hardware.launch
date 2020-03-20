@@ -1,0 +1,4 @@
+<launch>
+	<!-- Dug hardware interface -->
+	<node pkg="lunabotics2020" type="DugHW" name="DugHW" output="screen" ns="/dug"/>
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+	<!-- Start Gazebo simulation -->
+	<include file="$(find lunabotics2020)/launch/simulation/StartGazebo.launch"/>
+
+	<!-- Spawn SLRS -->
+	<include file="$(find lunabotics2020)/launch/simulation/SpawnSLRS.launch"/>
+
+	<!-- Spawn Dug robot model -->
+	<include file="$(find lunabotics2020)/launch/simulation/SpawnDug.launch"/>
+</launch>

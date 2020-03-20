@@ -1,0 +1,7 @@
+<launch>
+	<param name="lidar_model" textfile="$(find lunabotics2020)/description/lidar.xacro"/> 
+	<node name="lidar_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+		args="-urdf -param lidar_model -model lidar
+		-x 0.1 -y -1.5 -z 0.4
+		-R 0 -P 0 -Y 0"/>
+</launch>
