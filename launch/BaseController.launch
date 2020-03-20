@@ -18,7 +18,7 @@
 	</include>
 	
 	<!-- Load controller configuration file -->
-	<rosparam file="$(find lunabotics2020)/controllers/controllers.yaml" command="load"/>
+	<rosparam file="$(find lunabotics2020)/hw_config/controllers.yaml" command="load"/>
 
 
 	<!-- Spawn diff_drive_controller (from loaded config file above) -->
@@ -31,6 +31,8 @@
 		args="diff_drive_controller
 			  joint_state_controller"
 		/>
+
+	<node pkg="lunabotics2020" type="DugHW" name="DugHW" output="screen" ns="/dug"/>
 
 	<!-- Spawn Dug robot model -->
 	<include file="$(find lunabotics2020)/launch/simulation/SpawnDug.launch"/>

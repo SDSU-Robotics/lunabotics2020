@@ -9,8 +9,9 @@
   <xacro:property name="wheel_inertia_izz" value="0.025"/>
   <!--End Macros-->
 
+  <!--VISUAL AND INERTIAL-->
+
   <link name='chassis'>
-    <!--pose>0 0 0.1 0 0 0</pose-->
 
     <inertial>
       <mass value="20.0"/>
@@ -58,7 +59,7 @@
     </inertial>
   </link>
 
-    <link name="left_rear_wheel">
+  <link name="left_rear_wheel">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -106,7 +107,7 @@
     </inertial>
   </link>
 
-    <link name="right_rear_wheel">
+  <link name="right_rear_wheel">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -130,6 +131,7 @@
     </inertial>
   </link>
 
+  <!--JOINTS, TRANSMISSIONS AND GAZEBO PLUGINS-->
 
   <joint type="continuous" name="left_front_wheel_joint">
     <origin  xyz="0.11 0.15 ${wheel_height}" rpy="0 0 0"/>
@@ -202,6 +204,22 @@
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
    </actuator>
   </transmission>
+
+  <gazebo reference="chassis">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="left_front_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="right_front_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="left_rear_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="right_rear_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
