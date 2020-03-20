@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard_node" output="screen" ns="dug">
+    <remap from="/dug/cmd_vel" to="/dug/diff_drive_controller/cmd_vel"/>
+    </node>
+</launch>

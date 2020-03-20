@@ -1,0 +1,48 @@
+<launch> 
+	<!-- Launch Gazebo -->
+
+	<arg name="world" default="empty"/> 
+	<arg name="paused" default="false"/>
+	<arg name="use_sim_time" default="true"/>
+	<arg name="gui" default="true"/>
+	<arg name="headless" default="false"/>
+	<arg name="debug" default="false"/>
+	
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<!--arg name="world_name" value="$(find lunabotics2020)/worlds/field.world"/-->
+		<arg name="paused" value="$(arg paused)"/>
+		<arg name="use_sim_time" value="$(arg use_sim_time)"/>
+		<arg name="gui" value="$(arg gui)"/>
+		<arg name="headless" value="$(arg headless)"/>
+		<arg name="debug" value="$(arg debug)"/>
+	</include>
+	
+	<!-- Load controller configuration file -->
+	<rosparam file="$(find lunabotics2020)/controllers/controllers.yaml" command="load"/>
+
+
+	<!-- Spawn diff_drive_controller (from loaded config file above) -->
+	<node name="controller_spawner"
+		pkg="controller_manager"
+		type="spawner" 
+		respawn="false"
+		output="screen"
+		ns="/dug" 
+		args="diff_drive_controller
+			  joint_state_controller"
+		/>
+
+	<!-- Spawn Dug robot model -->
+	<include file="$(find lunabotics2020)/launch/simulation/SpawnDug.launch"/>
+
+	<!-- Publishes transforms based on robot description -->
+	<!--node name="robot_state_publisher" 
+		pkg="robot_state_publisher" 
+		type="robot_state_publisher" 
+		respawn="false" 
+		output="screen">
+		</node-->
+
+	<!--node pkg="lunabotics2020" type="BaseController" name="BaseController" /-->
+
+</launch>

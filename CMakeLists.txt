@@ -27,16 +27,16 @@ catkin_package()
 
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
-add_library(global_planner_lib ${PROJECT_SOURCE_DIR}/src/GlobalPlanner.cpp)
+#add_library(global_planner_lib ${PROJECT_SOURCE_DIR}/src/GlobalPlanner.cpp)
 
 add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
-add_executable(Read_IMU ${PROJECT_SOURCE_DIR}/src/Read_IMU.cpp)
 add_executable(PerceptionTF ${PROJECT_SOURCE_DIR}/src/PerceptionTF.cpp)
 add_executable(Odometry ${PROJECT_SOURCE_DIR}/src/Odometry.cpp)
+add_executable(BaseController ${PROJECT_SOURCE_DIR}/src/BaseController.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
-target_link_libraries(Read_IMU ${catkin_LIBRARIES})
 target_link_libraries(PerceptionTF ${catkin_LIBRARIES})
 target_link_libraries(Odometry ${catkin_LIBRARIES})
+target_link_libraries(BaseController ${catkin_LIBRARIES})
