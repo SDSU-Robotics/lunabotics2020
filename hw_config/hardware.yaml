@@ -1,0 +1,8 @@
+Dug:
+  hardware_interface:
+    loop_hz: 10
+    joints:
+      - left_front_wheel_joint
+      - left_rear_wheel_joint
+      - right_front_wheel_joint
+      - right_rear_wheel_joint
