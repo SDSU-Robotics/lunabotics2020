@@ -1,11 +1,11 @@
 <launch>
 	<!--Inital Robot pose, RPY in radians-->
-	<arg name="transp_x" default="0.75"/>
-	<arg name="transp_y" default="0"/>
+	<arg name="transp_x" default="1.8"/>
+	<arg name="transp_y" default="0.5"/>
 	<arg name="transp_z" default="0.5"/>
 	<arg name="transp_roll" default="0"/>
 	<arg name="transp_pitch" default="0"/>
-	<arg name="transp_yaw" default="0"/>
+	<arg name="transp_yaw" default="1.57"/>
 
 	<!--Spawn Transportation Bot-->
 	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find lunabotics2020)/description/dug.xacro'"/>

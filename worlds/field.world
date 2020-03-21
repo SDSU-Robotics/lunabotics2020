@@ -27,7 +27,7 @@
     <!--Field Model-->
   <model name="field">
     <static>true</static>
-    <pose>4.4 0 0 0 0 0</pose>
+    <pose>1.8 1 0 0 0 -1.57</pose>
     <link name="floor">
      <visual name="floor">
         <pose>-1.7 0 0.01 0 0 0</pose>

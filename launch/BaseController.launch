@@ -2,7 +2,7 @@
 	<!-- Launch Gazebo -->
 
 	<arg name="world" default="empty"/> 
-	<arg name="paused" default="false"/>
+	<arg name="paused" default="true"/>
 	<arg name="use_sim_time" default="true"/>
 	<arg name="gui" default="true"/>
 	<arg name="headless" default="false"/>
@@ -20,11 +20,12 @@
 	<param name="lidar_model" textfile="$(find lunabotics2020)/description/lidar.xacro"/> 
 	<node name="lidar_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
 		args="-urdf -param lidar_model -model lidar
-		-x 0.1 -y -1.5 -z 0.4
-		-R 0 -P 0 -Y 0"/>
+		-x 3.53 -y 0.07 -z 0.4
+		-R 0 -P 0 -Y -1.57"/>
 	
 	<!-- Load controller configuration file -->
 	<rosparam file="$(find lunabotics2020)/hw_config/controllers.yaml" command="load"/>
+	<rosparam file="$(find lunabotics2020)/hw_config/hardware.yaml" command="load"/>
 
 
 	<!-- Spawn diff_drive_controller (from loaded config file above) -->
