@@ -4,8 +4,8 @@
 
 namespace DeviceIDs
 {
-	static const int lTalon = 1;
-	static const int rTalon = 2;
+	static const int lTalon = 2;
+	static const int rTalon = 3;
 
 };
 
