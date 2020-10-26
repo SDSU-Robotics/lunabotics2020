@@ -28,9 +28,9 @@ int main (int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
-	Listener listener;
-
 	phoenix::platform::can::SetCANInterface("can0");
+
+	Listener listener;
 
 	ros::Subscriber lSpeedSub = n.subscribe("l_speed", 100, &Listener::setLSpeed, &listener);
 	ros::Subscriber rSpeedSub = n.subscribe("r_speed", 100, &Listener::setRSpeed, &listener);

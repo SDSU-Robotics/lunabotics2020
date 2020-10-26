@@ -11,9 +11,9 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(catkin REQUIRED)
 find_package (Threads REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-	roscpp
-	rospy
-	std_msgs
+  roscpp
+  rospy
+  std_msgs
 )
 
 catkin_package()
@@ -32,16 +32,14 @@ target_link_libraries(DriveController ${catkin_LIBRARIES} Threads::Threads)
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
 
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_Phoenix.a)
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCanutils.a)
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCCI.a)
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCAN.a)
-
-
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
 else()
 
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_Phoenix.a)
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCanutils.a)
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCCI.a)
-	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCAN.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(HardwareInterface ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
 endif()
