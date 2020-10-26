@@ -3,27 +3,24 @@
 #include "std_msgs/Float32.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
+#include "DeviceIDs.h"
+
+using namespace std;
+using namespace ctre::phoenix;
+using namespace ctre::phoenix::platform;
+using namespace ctre::phoenix::motorcontrol;
+using namespace ctre::phoenix::motorcontrol::can;
 
 class Listener
 {
     public:
-        void lSpeedListener(const std_msgs::Float32 lspeed) const;
-        void rSpeedListener(const std_msgs::Float32 rspeed) const;
+        void setLSpeed(const std_msgs::Float32 lspeed);
+        void setRSpeed(const std_msgs::Float32 rspeed);
 
     private:
-        talonSRX lTalon = 2;
-        talonSRX rTalon = 1;
-}
-
-void lSpeedListener(const std_msgs::Float32 lspeed) const
-{
-    lTalon.set(ControlMode::PercentOutput, lspeed);
-}
-
-void rSpeedListener(const std_msgs::Float32 rspeed) const
-{
-    rTalon.set(ControlMode::PercentOutput, rspeed);
-}
+        TalonSRX lTalon = {DeviceIDs::lTalon};
+        TalonSRX rTalon = {DeviceIDs::rTalon};
+};
 
 int main (int argc, char **argv)
 {
@@ -33,8 +30,10 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber speedSub = n.subscribe("l_speed", 100, &Listener::joyListener, &listener);
-	ros::Subscriber speedSub = n.subscribe("r_speed", 100, &Listener::joyListener, &listener);
+	phoenix::platform::can::SetCANInterface("can0");
+
+	ros::Subscriber lSpeedSub = n.subscribe("l_speed", 100, &Listener::setLSpeed, &listener);
+	ros::Subscriber rSpeedSub = n.subscribe("r_speed", 100, &Listener::setRSpeed, &listener);
 
 	while (ros::ok())
 	{
@@ -43,4 +42,18 @@ int main (int argc, char **argv)
 	}
 
 	return 0;
+}
+
+void Listener::setLSpeed(const std_msgs::Float32 lspeed)
+{
+    lTalon.Set(ControlMode::PercentOutput, lspeed.data);
+
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+}
+
+void Listener::setRSpeed(const std_msgs::Float32 rspeed)
+{
+    rTalon.Set(ControlMode::PercentOutput, rspeed.data);
+
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }

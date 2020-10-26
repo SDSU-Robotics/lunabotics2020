@@ -14,42 +14,34 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	rospy
 	std_msgs
-	sensor_msgs
-	laser_geometry
-	tf2
-	tf2_ros
-	geometry_msgs
-	tf
-	nav_msgs
 )
 
 catkin_package()
 
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
-add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
+add_executable(HardwareInterface ${PROJECT_SOURCE_DIR}/src/HardwareInterface.cpp)
+add_executable(DiffDriveController ${PROJECT_SOURCE_DIR}/src/DiffDriveController.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
-add_executable(SLS ${PROJECT_SOURCE_DIR}/src/SLS.cpp)
-add_executable(Odometry ${PROJECT_SOURCE_DIR}/src/Odometry.cpp)
 
-target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
-target_link_libraries(DriveController ${catkin_LIBRARIES})
-target_link_libraries(SLS ${catkin_LIBRARIES} Threads::Threads)
-target_link_libraries(Odometry ${catkin_LIBRARIES})
+
+target_link_libraries(HardwareInterface ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(DiffDriveController ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(DriveController ${catkin_LIBRARIES} Threads::Threads)
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
 
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_Phoenix.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCCI.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCan.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_Phoenix.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCCI.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCAN.a)
+
 
 else()
 
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_Phoenix.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCCI.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCanutils.a)
-
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_Phoenix.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCCI.a)
+	target_link_libraries(HardwareInterface /home/$ENV{USERNAME}/dev/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCAN.a)
 endif()
