@@ -14,6 +14,9 @@ using namespace ctre::phoenix::motorcontrol::can;
 class Listener
 {
     public:
+
+		Listener();
+
         void setLSpeed(const std_msgs::Float32 lspeed);
         void setRSpeed(const std_msgs::Float32 rspeed);
 
@@ -42,6 +45,11 @@ int main (int argc, char **argv)
 	}
 
 	return 0;
+}
+
+Listener::Listener()
+{
+	rTalon.SetInverted(true);
 }
 
 void Listener::setLSpeed(const std_msgs::Float32 lspeed)
