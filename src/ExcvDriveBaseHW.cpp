@@ -14,12 +14,15 @@ using namespace ctre::phoenix::motorcontrol::can;
 class Listener
 {
     public:
+
+		Listener();
+
         void setLSpeed(const std_msgs::Float32 lspeed);
         void setRSpeed(const std_msgs::Float32 rspeed);
 
     private:
-        TalonSRX lTalon = {DeviceIDs::lTalon};
-        TalonSRX rTalon = {DeviceIDs::rTalon};
+        TalonSRX leftDrive = {DeviceIDs::lTalon};
+        TalonSRX rightDrive = {DeviceIDs::rTalon};
 };
 
 int main (int argc, char **argv)
@@ -44,16 +47,21 @@ int main (int argc, char **argv)
 	return 0;
 }
 
+Listener::Listener()
+{
+	rightDrive.SetInverted(true);
+}
+
 void Listener::setLSpeed(const std_msgs::Float32 lspeed)
 {
-    lTalon.Set(ControlMode::PercentOutput, lspeed.data);
+    leftDrive.Set(ControlMode::PercentOutput, lspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
 void Listener::setRSpeed(const std_msgs::Float32 rspeed)
 {
-    rTalon.Set(ControlMode::PercentOutput, rspeed.data);
+    rightDrive.Set(ControlMode::PercentOutput, rspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }

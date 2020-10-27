@@ -60,8 +60,8 @@ int main (int argc, char **argv)
 	{
         listener.getJoyVals(buttons, axes);
 
-		l_speed_msg.data = axes[3]; // left Y
-		r_speed_msg.data = axes[4]; // right Y
+		l_speed_msg.data = axes[1]; // left Y
+		r_speed_msg.data = axes[3]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
