@@ -14,14 +14,14 @@ using namespace ctre::phoenix::motorcontrol::can;
 class Listener
 {
     public:
-        void setLSpeed(const std_msgs::Float32 lspeed);
-        void setRSpeed(const std_msgs::Float32 rspeed);
-	void setUpSpeed(const std_msgs::Float32 upspeed);
+        void setExtendSpeed(const std_msgs::Float32 extendspeed);
+        void setPitchSpeed(const std_msgs::Float32 pitchspeed);
+	void setDriveSpeed(const std_msgs::Float32 drivespeed);
 
     private:
-        TalonSRX lTalon = {DeviceIDs::lTalon};
-        TalonSRX rTalon = {DeviceIDs::rTalon};
-	TalonSRX upTalon = {DeviceIDs::upTalon};
+        VictorSPX extendVictor = {DeviceIDs::extendVictor};
+        VictorSPX pitchVictor = {DeviceIDs::pitchVictor};
+	VictorSPX driveVictor = {DeviceIDs::driveVictor};
 };
 
 int main (int argc, char **argv)
@@ -34,9 +34,9 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("l_speed", 100, &Listener::setLSpeed, &listener);
-	ros::Subscriber rSpeedSub = n.subscribe("r_speed", 100, &Listener::setRSpeed, &listener);
-	ros::Subscriber upSpeedSub = n.subscribe("up_speed", 100, &Listener::setUpSpeed, &listener);
+	ros::Subscriber extendSpeedSub = n.subscribe("extend_speed", 100, &Listener::setExtendSpeed, &listener);
+	ros::Subscriber pitchSpeedSub = n.subscribe("pitch_speed", 100, &Listener::setPitchSpeed, &listener);
+	ros::Subscriber driveSpeedSub = n.subscribe("drive_speed", 100, &Listener::setDriveSpeed, &listener);
 
 	while (ros::ok())
 	{
@@ -47,22 +47,23 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void Listener::setLSpeed(const std_msgs::Float32 lspeed)
+void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
 {
-    lTalon.Set(ControlMode::PercentOutput, lspeed.data);
+    extendVictor.Set(ControlMode::PercentOutput, extendspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
-void Listener::setRSpeed(const std_msgs::Float32 rspeed)
+void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {
-    rTalon.Set(ControlMode::PercentOutput, rspeed.data);
+    pitchVictor.Set(ControlMode::PercentOutput, pitchspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
-void Listener::setUpSpeed(const std_msgs::Float32 upspeed)
+void Listener::setDriveSpeed(const std_msgs::Float32 drivespeed)
 {
-    upTalon.Set(ControlMode::PercentOutput, upspeed.data);
+    driveVictor.Set(ControlMode::PercentOutput, drivespeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
+

@@ -6,6 +6,11 @@ namespace DeviceIDs
 {
 	static const int lTalon = 5;
 	static const int rTalon = 2;
+	
+	static const int extendVictor = 1;
+	static const int pitchVictor = 3;
+	static const int driveVictor = 7;
+	
 
 };
 

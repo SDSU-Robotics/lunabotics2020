@@ -23,11 +23,13 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 add_executable(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/src/ExcvDriveBaseHW.cpp)
 add_executable(DiffDriveController ${PROJECT_SOURCE_DIR}/src/DiffDriveController.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
+add_executable(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/src/ExcvTrencherHW.cpp)
 
 
 target_link_libraries(ExcvDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(DiffDriveController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(DriveController ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(ExcvTrencherHW ${catkin_LIBRARIES} Threads::Threads)
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
