@@ -16,17 +16,17 @@ class Listener
     public:
         void setExtendSpeed(const std_msgs::Float32 extendspeed);
         void setPitchSpeed(const std_msgs::Float32 pitchspeed);
-	void setDriveSpeed(const std_msgs::Float32 drivespeed);
+		void setDriveSpeed(const std_msgs::Float32 drivespeed);
 
     private:
         VictorSPX extendVictor = {DeviceIDs::extendVictor};
         VictorSPX pitchVictor = {DeviceIDs::pitchVictor};
-	VictorSPX driveVictor = {DeviceIDs::driveVictor};
+		VictorSPX driveVictor = {DeviceIDs::driveVictor};
 };
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "HardwareInterface");
+    ros::init(argc, argv, "ExcvTrenchorHW");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 

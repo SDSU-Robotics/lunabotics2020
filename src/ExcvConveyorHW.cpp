@@ -14,19 +14,16 @@ using namespace ctre::phoenix::motorcontrol::can;
 class Listener
 {
     public:
-
-		Listener();
-
         void setSpeed(const std_msgs::Float32 hm_speed);
        
     private:
-        TalonSRX HMDrive = {DeviceIDs::HMTalon};
+        VictorSPX HMDrive = {DeviceIDs::HMTalon};
         
 };
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "HardwareInterface");
+    ros::init(argc, argv, "ExcvConveyorHw");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
