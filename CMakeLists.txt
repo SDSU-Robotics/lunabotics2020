@@ -25,12 +25,14 @@ add_executable(DiffDriveController ${PROJECT_SOURCE_DIR}/src/DiffDriveController
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/src/ExcvTrencherHW.cpp)
 add_executable(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/src/ExcvConveyorHW.cpp)
+add_executable(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 
 target_link_libraries(ExcvDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(DiffDriveController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(DriveController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvTrencherHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvConveyorHW ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(TPortConveyorPWR ${catkin_LIBRARIES} Threads::Threads)
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
@@ -49,6 +51,11 @@ if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 /
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCan.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
+
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
 else()
 
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
@@ -65,4 +72,9 @@ else()
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
+
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(TPortConveyorPWR ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
 endif()
