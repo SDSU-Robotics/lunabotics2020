@@ -55,6 +55,7 @@ int main (int argc, char **argv)
 	
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
+	std_msgs::Float32 conveyor_pwr;
 	
 	while (ros::ok())
 	{

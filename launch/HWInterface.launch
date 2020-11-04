@@ -5,5 +5,7 @@
 	</node>
 
     <node pkg="lunabotics2020" type="DiffDriveController" name="DiffDriveController" />
-    <node pkg="lunabotics2020" type="HardwareInterface" name="HardwareInterface" />
+    <node pkg="lunabotics2020" type="ExcvConveyorHW" name="ExcvConveyorHW" />
+    <node pkg="lunabotics2020" type="ExcvDriveBaseHW" name="ExcvDriveBaseHW" />
+    <node pkg="lunabotics2020" type="ExcvTrencherHW" name="ExcvTrencherHW" />
 </launch>
