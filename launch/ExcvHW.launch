@@ -1,0 +1,17 @@
+<launch>
+    <node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
+		<param name="dev" type="string" value="/dev/input/js0" />
+		<param name="deadzone" value="0.05" />
+	</node>
+
+    <node pkg="lunabotics2020" type="DiffDriveController" name="DiffDriveController" />
+<<<<<<< HEAD:launch/HWInterface.launch
+    <node pkg="lunabotics2020" type="ExcvConveyorHW" name="ExcvConveyorHW" />
+    <node pkg="lunabotics2020" type="ExcvDriveBaseHW" name="ExcvDriveBaseHW" />
+    <node pkg="lunabotics2020" type="ExcvTrencherHW" name="ExcvTrencherHW" />
+=======
+    <node pkg="lunabotics2020" type="ExcvDriveBaseHW" name="ExcvDriveBaseHW" />
+    <node pkg="lunabotics2020" type="ExcvConveyorHW" name="ExcvTrencherHW" />
+
+>>>>>>> 73b75b72102d4cdee3f8878c90488e81e913cf4b:launch/ExcvHW.launch
+</launch>

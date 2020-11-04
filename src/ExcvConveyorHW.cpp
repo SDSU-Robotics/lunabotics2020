@@ -17,7 +17,7 @@ class Listener
         void setSpeed(const std_msgs::Float32 hm_speed);
        
     private:
-        VictorSPX HMDrive = {DeviceIDs::HMTalon};
+        VictorSPX HMDrive = {DeviceIDs::ExcvConveyorDrvVic};
         
 };
 

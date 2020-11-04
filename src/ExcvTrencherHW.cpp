@@ -19,9 +19,9 @@ class Listener
 		void setDriveSpeed(const std_msgs::Float32 drivespeed);
 
     private:
-        VictorSPX extendVictor = {DeviceIDs::extendVictor};
-        VictorSPX pitchVictor = {DeviceIDs::pitchVictor};
-		VictorSPX driveVictor = {DeviceIDs::driveVictor};
+        VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
+        VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
+		VictorSPX driveVictor = {DeviceIDs::ExcvConveyorDrvVic};
 };
 
 int main (int argc, char **argv)
