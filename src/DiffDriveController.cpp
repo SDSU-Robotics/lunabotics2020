@@ -50,11 +50,12 @@ int main (int argc, char **argv)
 	bool buttons[12];
 	double axes[6];
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("l_speed", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("r_speed", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
+	std_msgs::Float32 conveyor_pwr;
 	
 	while (ros::ok())
 	{

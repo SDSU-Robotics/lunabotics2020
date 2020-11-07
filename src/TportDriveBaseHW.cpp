@@ -21,8 +21,8 @@ class Listener
         void setRSpeed(const std_msgs::Float32 rspeed);
 
     private:
-        TalonSRX leftDrive = {DeviceIDs::ExcvDrvLTal};
-        TalonSRX rightDrive = {DeviceIDs::ExcvDrvRTal};
+        TalonSRX leftDrive = {DeviceIDs::TportDrvLTal};
+        TalonSRX rightDrive = {DeviceIDs::TportDrvRTal};
 };
 
 int main (int argc, char **argv)
@@ -35,8 +35,8 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener);
-	ros::Subscriber rSpeedSub = n.subscribe("ExcvRDrvPwr", 100, &Listener::setRSpeed, &listener);
+	ros::Subscriber lSpeedSub = n.subscribe("TportLDrvPwr", 100, &Listener::setLSpeed, &listener);
+	ros::Subscriber rSpeedSub = n.subscribe("TportRDrvPwr", 100, &Listener::setRSpeed, &listener);
 
 	while (ros::ok())
 	{
