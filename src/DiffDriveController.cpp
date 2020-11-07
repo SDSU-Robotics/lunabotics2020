@@ -1,5 +1,6 @@
 #include <string>
 #include <unistd.h>
+#include <iostream>
 
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
@@ -12,7 +13,7 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void getButtonState(bool buttons[]);
+	void toggle(const bool keys[], bool &t, std_msgs::Float32 &message);
 
 
 private:
@@ -39,6 +40,27 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
         axes[i] = _axes[i];
 }
 
+void Listener::toggle(const bool keys[], bool &t, std_msgs::Float32 &message)
+{
+	// get button state
+	if (keys[0] && !t)
+	{
+		message.data = 1;
+		// publish button state
+		ROS_INFO("A Button on");
+		//toggle button off
+		t = !t;
+	}
+	else if (!keys[0] && t)
+	{
+		message.data = 0;
+		//publish button state
+		ROS_INFO("A Button Off");
+		//toggle button on
+		t = !t;
+	}
+}
+
 int main (int argc, char **argv)
 {
     ros::init(argc, argv, "DriveController");
@@ -51,24 +73,28 @@ int main (int argc, char **argv)
 	
 	bool buttons[12];
 	double axes[6];
+	bool t = false;
+
 
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
-	
+	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
+
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
-	std_msgs::Float32 conveyor_pwr;
+	std_msgs::Float32 conveyor_pwr_msg;
 	
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
-		listener.getButtonState(buttons);
+		listener.toggle(buttons, t, conveyor_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
+		conveyor_pwr_pub.publish(conveyor_pwr_msg);
 		
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -77,17 +103,4 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void Listener::getButtonState(bool buttons[])
-{
-	// get button state
-	if (buttons[0])
-	{
-		// publish button state
-		ROS_INFO("A Button on");
-	}
 
-	
-
-	// toggle button on off
-
-}
