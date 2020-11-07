@@ -12,6 +12,8 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
+	void getButtonState(bool buttons[]);
+
 
 private:
     bool _buttons[12] = { 0 };
@@ -60,6 +62,7 @@ int main (int argc, char **argv)
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
+		listener.getButtonState(buttons);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
@@ -72,4 +75,19 @@ int main (int argc, char **argv)
 	}
 
 	return 0;
+}
+
+void Listener::getButtonState(bool buttons[])
+{
+	// get button state
+	if (buttons[0])
+	{
+		// publish button state
+		ROS_INFO("A Button on");
+	}
+
+	
+
+	// toggle button on off
+
 }
