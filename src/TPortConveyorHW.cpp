@@ -19,6 +19,7 @@ class Listener
 
     private:
         VictorSPX ExcvConveyorDrvVic = {DeviceIDs::ExcvConveyorDrvVic};
+        VictorSPX ExcvConveyorExtVic = {DeviceIDs::ExcvConveyorExtVic};
 };
 
 int main(int argc, char **argv)
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
 
     Listener listener;
 
-    ros::Subscriber extendSpeedSub = n.subscribe("TPortConveyorPWR", 100, &Listener::setExtendSpeed, &listener);
+    ros::Subscriber extendSpeedSub = n.subscribe("TPortConveyorEXT", 100, &Listener::setExtendSpeed, &listener);
     ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorPWR", 100, &Listener::setDriveSpeed, &listener);
     
     while (ros::ok())
@@ -45,7 +46,7 @@ int main(int argc, char **argv)
 
 void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
 {
-    ExcvConveyorDrvVic.Set(ControlMode::PercentOutput, extendspeed.data);
+    ExcvConveyorExtVic.Set(ControlMode::PercentOutput, extendspeed.data);
 
     ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }

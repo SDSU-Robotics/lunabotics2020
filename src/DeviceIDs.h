@@ -11,6 +11,7 @@ namespace DeviceIDs
 	static const int ExcvPitchVic = 2;
 	static const int ExcvDriveVic = 3;
 	static const int ExcvConveyorDrvVic = 4;
+	static const int ExcvConveyorExtVic = 5;
 
 };
 
