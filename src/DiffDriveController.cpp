@@ -13,7 +13,7 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void toggle(const bool keys[], bool &t, std_msgs::Float32 &message);
+	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 
 
 private:
@@ -40,24 +40,28 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
         axes[i] = _axes[i];
 }
 
-void Listener::toggle(const bool keys[], bool &t, std_msgs::Float32 &message)
+void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
 {
-	// get button state
-	if (keys[0] && !t)
+
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
 	{
-		message.data = 1;
-		// publish button state
-		ROS_INFO("A Button on");
-		//toggle button off
-		t = !t;
+		on = !on;
+		ROS_INFO("A button released");
 	}
-	else if (!keys[0] && t)
+	
+	if (on)
 	{
+		ROS_INFO("A button on");
+		message.data = 1;
+	}
+	else
+	{
+		ROS_INFO("A button off");
 		message.data = 0;
-		//publish button state
-		ROS_INFO("A Button Off");
-		//toggle button on
-		t = !t;
 	}
 }
 
@@ -74,6 +78,8 @@ int main (int argc, char **argv)
 	bool buttons[12];
 	double axes[6];
 	bool t = false;
+	bool currentButton = 0;
+	bool on = false;
 
 
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
@@ -87,7 +93,7 @@ int main (int argc, char **argv)
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggle(buttons, t, conveyor_pwr_msg);
+		listener.toggle(buttons[0], currentButton, on, conveyor_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
