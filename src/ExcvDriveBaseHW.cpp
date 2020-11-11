@@ -31,12 +31,15 @@ int main (int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
-	phoenix::platform::can::SetCANInterface("can0");
+	phoenix::platform::can::SetCANInterface("can0"); // set Canable
 
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener);
+	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener); 
+	// Left speed of excavator drive power
 	ros::Subscriber rSpeedSub = n.subscribe("ExcvRDrvPwr", 100, &Listener::setRSpeed, &listener);
+	// right speed of excavator drive power
+	
 
 	while (ros::ok())
 	{

@@ -27,14 +27,15 @@ int main (int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
-	phoenix::platform::can::SetCANInterface("can0");
+	phoenix::platform::can::SetCANInterface("can0"); // set Canable
 
 	Listener listener;
 
 	ros::Subscriber SpeedSub = n.subscribe("ExcvConveyorDrvPwr", 100, &Listener::setSpeed, &listener);
+	// get the speed from the publisher
 	
 
-	while (ros::ok())
+	while (ros::ok()) //while ros is running
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -45,7 +46,7 @@ int main (int argc, char **argv)
 
 void Listener::setSpeed(const std_msgs::Float32 hm_speed)
 {
-    HMDrive.Set(ControlMode::PercentOutput, hm_speed.data);
+    HMDrive.Set(ControlMode::PercentOutput, hm_speed.data); // set drive speed
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
