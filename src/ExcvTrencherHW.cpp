@@ -1,3 +1,4 @@
+//This program interfaces with the trencher hardware on the Excavation bot 
 #include "ctre/Phoenix.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
@@ -14,11 +15,12 @@ using namespace ctre::phoenix::motorcontrol::can;
 class Listener
 {
     public:
-        void setExtendSpeed(const std_msgs::Float32 extendspeed);
-        void setPitchSpeed(const std_msgs::Float32 pitchspeed);
-		void setDriveSpeed(const std_msgs::Float32 drivespeed);
+        void setExtendSpeed(const std_msgs::Float32 extendspeed); //Extender arm speed
+        void setPitchSpeed(const std_msgs::Float32 pitchspeed); // Pitch speed
+		void setDriveSpeed(const std_msgs::Float32 drivespeed); //Drive speed 
 
     private:
+		// motor controls using Victors
         VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
         VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
 		VictorSPX driveVictor = {DeviceIDs::ExcvConveyorDrvVic};
@@ -34,11 +36,12 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
+	// get speeds from listeners
 	ros::Subscriber extendSpeedSub = n.subscribe("extend_speed", 100, &Listener::setExtendSpeed, &listener);
 	ros::Subscriber pitchSpeedSub = n.subscribe("pitch_speed", 100, &Listener::setPitchSpeed, &listener);
 	ros::Subscriber driveSpeedSub = n.subscribe("drive_speed", 100, &Listener::setDriveSpeed, &listener);
 
-	while (ros::ok())
+	while (ros::ok()) // while ros is running
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -47,6 +50,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 
+// Sets speeds and sends information to victors
 void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
 {
     extendVictor.Set(ControlMode::PercentOutput, extendspeed.data);

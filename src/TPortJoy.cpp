@@ -12,16 +12,16 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
+	void getButtonState(bool buttons[]);
+	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 
 private:
-// initializes array values to off
     bool _buttons[12] = { 0 };
 	double _axes[6] = { 0 };
 };
 
 
 void Listener::joyListener(const sensor_msgs::Joy::ConstPtr& Joy)
-// gets on or off values for each button and axes from the joystick
 {
 	for (int i = 0 ; i < 12; i++)
 		_buttons[i] = Joy->buttons[i];
@@ -31,7 +31,6 @@ void Listener::joyListener(const sensor_msgs::Joy::ConstPtr& Joy)
 }
 
 void Listener::getJoyVals(bool buttons[], double axes[]) const
-// sets each array value to on or off depending on button state
 {
     for (int i = 0; i < 12; i++)
         buttons[i] = _buttons[i];
@@ -53,27 +52,26 @@ int main (int argc, char **argv)
 	bool buttons[12];
 	double axes[6];
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100); 
-	// left speed of excavator drive power
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
-	// right speed of excavator drive power
+	bool currentButton = 0;
+	bool on = false;
+
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("LTPortDrvPWR", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("RTPortDrvPWR", 100);
 	
-    std_msgs::Float32 l_speed_msg; 
+    std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
+	std_msgs::Float32 conveyor_pwr;
 	
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
+		listener.getButtonState(buttons);
+		listener.toggle(buttons[0], currentButton, on, l_speed_msg)
+		listener.toggle(buttons[1], currentButton, on, r_speed_msg)
 
-		// get controller values
-		float speed = axes[1]; // left Y
-		float turn = 1 * axes[3]; // right X
-
-		// sets speed and turn values
-		l_speed_msg.data = 0.75 * speed + 0.4 * turn;
-		r_speed_msg.data = 0.75 * speed - 0.4 * turn;
+		l_speed_msg.data = axes[1]; // left Y
+		r_speed_msg.data = axes[3]; // right Y
 		
-		// publishes speed
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		
@@ -82,4 +80,39 @@ int main (int argc, char **argv)
 	}
 
 	return 0;
+
+	/*void Listener::getButtonState(bool buttons[])
+	{
+		//get button state
+		if (buttons[0] = true)
+		{
+			//publish button state
+			ROS_INFO("A Button on")
+		}
+	}*/
+
+	void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
+	{
+
+		bool lastButton;
+		lastButton = currentButton;
+		currentButton = keys;
+
+		if (lastButton && !currentButton)
+		{
+			on = !on;
+			ROS_INFO("A button released");
+		}
+		
+		if (on)
+		{
+			ROS_INFO("A button on");
+			message.data = 1;
+		}
+		else
+		{
+			ROS_INFO("A button off");
+			message.data = 0;
+		}
+	}
 }

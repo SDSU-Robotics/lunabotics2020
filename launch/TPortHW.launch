@@ -1,0 +1,10 @@
+<launch>
+    <node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
+		<param name="dev" type="string" value="/dev/input/js0" />
+		<param name="deadzone" value="0.05" />
+	</node>
+
+    <node pkg="lunabotics2020" type="TPortConveyorHW" name="TPortConveyorHW" />
+    <node pkg="lunabotics2020" type= "TportDriveBaseHW" name= "TportDriveBaseHW" />
+    
+</launch>

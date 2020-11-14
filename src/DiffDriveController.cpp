@@ -48,24 +48,27 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
 void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
 {
 
-	bool lastButton;
+	bool lastButton; 
+	//gets the last state of the button
 	lastButton = currentButton;
+	//sets the last state of the button to the current state of the button
 	currentButton = keys;
+	// sets the boolean value of current value to the value in keys
 
 	if (lastButton && !currentButton)
 	{
 		on = !on;
-		ROS_INFO("A button released");
+		//Toggle On button release
 	}
 	
 	if (on)
 	{
-		ROS_INFO("A button on");
+		//sets Button On
 		message.data = 1;
 	}
 	else
 	{
-		ROS_INFO("A button off");
+		//sets button off
 		message.data = 0;
 	}
 }
@@ -82,34 +85,39 @@ int main (int argc, char **argv)
 	
 	bool buttons[12];
 	double axes[6];
-	bool t = false;
-	bool currentButton = 0;
-	bool on = false;
+	// currentButton and on will need to be seperate booleans for each array value. 
+	bool currentButton1 = 0;
+	bool on1 = false;
+	bool currentButton0 = 0;
+	bool on0 = false;
 
 
+
+	// Publishes the message to the hardware interface
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
-	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
+	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("driveSpeedSub", 100);
 
+	// sets the message to the message variable
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr_msg;
 	std_msgs::Float32 excavator_pwr_msg;
 	
-	while (ros::ok())
+	while (ros::ok()) // runs while ros is running
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggle(buttons[0], currentButton, on, conveyor_pwr_msg);
-		listener.toggle(buttons[1], currentButton, on, excavator_pwr_msg);
+		listener.toggle(buttons[0], currentButton0, on0, conveyor_pwr_msg);
+		listener.toggle(buttons[1], currentButton1, on1, excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
 		
-		l_speed_pub.publish(l_speed_msg);
-		r_speed_pub.publish(r_speed_msg);
-		conveyor_pwr_pub.publish(conveyor_pwr_msg);
-		excavator_pwr_pub.publish(excavator_pwr_msg);
+		l_speed_pub.publish(l_speed_msg); // left speed
+		r_speed_pub.publish(r_speed_msg); // right speed
+		conveyor_pwr_pub.publish(conveyor_pwr_msg); // conveyor power
+		excavator_pwr_pub.publish(excavator_pwr_msg); // excavator power
 		
 		ros::spinOnce();
 		loop_rate.sleep();

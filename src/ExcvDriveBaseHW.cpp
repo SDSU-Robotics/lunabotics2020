@@ -42,8 +42,11 @@ int main (int argc, char **argv)
 	
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener);
+	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener); 
+	// Left speed of excavator drive power
 	ros::Subscriber rSpeedSub = n.subscribe("ExcvRDrvPwr", 100, &Listener::setRSpeed, &listener);
+	// right speed of excavator drive power
+	
 
 	int x;
 	string mssg;
