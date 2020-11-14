@@ -95,7 +95,7 @@ int main (int argc, char **argv)
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr_msg;
-	std_msgs::Float32 excavator_pwr_pub;
+	std_msgs::Float32 excavator_pwr_msg;
 	
 	while (ros::ok())
 	{
