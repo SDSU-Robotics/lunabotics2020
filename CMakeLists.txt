@@ -41,21 +41,30 @@ if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 /
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformSocketCan.a)
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCore.a)
+	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixDiagnostics.a)
 	
 	target_link_libraries(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
 	target_link_libraries(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
 	target_link_libraries(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformSocketCan.a)
 	target_link_libraries(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCore.a)
+	target_link_libraries(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixDiagnostics.a)
 
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformSocketCan.a)
 	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCore.a)
+	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixDiagnostics.a)
 
 	target_link_libraries(TPortConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
 	target_link_libraries(TPortConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
 	target_link_libraries(TPortConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatformSocketCan.a)
 	target_link_libraries(TPortConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
+	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCore.a)
+	target_link_libraries(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixDiagnostics.a)
+
 else()
 
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
