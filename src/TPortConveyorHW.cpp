@@ -19,7 +19,6 @@ class Listener
 
     private:
         VictorSPX ExcvConveyorDrvVic = {DeviceIDs::ExcvConveyorDrvVic};
-        VictorSPX ExcvConveyorExtVic = {DeviceIDs::ExcvConveyorExtVic};
 };
 
 int main(int argc, char **argv)
@@ -46,9 +45,7 @@ int main(int argc, char **argv)
 
 void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
 {
-    ExcvConveyorExtVic.Set(ControlMode::PercentOutput, extendspeed.data);
 
-    ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
 void Listener::setDriveSpeed(const std_msgs::Float32 extendspeed)
