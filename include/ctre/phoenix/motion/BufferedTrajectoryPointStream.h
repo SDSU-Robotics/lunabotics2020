@@ -6,9 +6,6 @@
 namespace ctre {
 	namespace phoenix {
 		namespace motion {
-			/**
-			 * Stream of trajectory points for Talon/Victor motion profiling.
-			 */
 			class BufferedTrajectoryPointStream {
 			public:
 				BufferedTrajectoryPointStream();
