@@ -15,8 +15,8 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
-	void toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
+	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double &maxSpeed, double &speed, double &stepSize, std_msgs::Float32 &message);
+	void toggleDrvSpeedDown(const bool keys, bool &currentButton, double &maxSpeed, double &speed, double &stepSize, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -84,7 +84,7 @@ int main (int argc, char **argv)
 	while (ros::ok()) // runs while ros is running
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, speed, stepSize, &excavator_pwr_msg, );
+		listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, speed, stepSize, &excavator_pwr_msg);
 		listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, speed, stepSize, &excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
@@ -102,7 +102,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message)
+void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double &maxSpeed, double &speed, double &stepSize, std_msgs::Float32 &message)
 {
 
 	bool lastButton; 
@@ -145,7 +145,7 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 	}*/
 }
 
-void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message)
+void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double &maxSpeed, double &speed, double &stepSize, std_msgs::Float32 &message)
 {
 
 	bool lastButton; 
