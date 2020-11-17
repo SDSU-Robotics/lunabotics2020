@@ -263,6 +263,78 @@ JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_SetStatusFrameP
 JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_GetStatusFramePeriod
   (JNIEnv *, jclass, jlong, jint, jint);
 
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetVelocityMeasurementPeriod
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetVelocityMeasurementPeriod
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetVelocityMeasurementWindow
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetVelocityMeasurementWindow
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetAbsoluteSensorRange
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetAbsoluteSensorRange
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetMagnetOffset
+ * Signature: (JI)D
+ */
+JNIEXPORT jdouble JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetMagnetOffset
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetSensorDirection
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetSensorDirection
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetSensorInitializationStrategy
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetSensorInitializationStrategy
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetFeedbackCoefficient
+ * Signature: (JI)D
+ */
+JNIEXPORT jdouble JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetFeedbackCoefficient
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetFeedbackUnitString
+ * Signature: (JI)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetFeedbackUnitString
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_ctre_phoenix_sensors_CANCoderJNI
+ * Method:    ConfigGetFeedbackTimeBase
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_ctre_phoenix_sensors_CANCoderJNI_ConfigGetFeedbackTimeBase
+  (JNIEnv *, jclass, jlong, jint);
+
 #ifdef __cplusplus
 }
 #endif

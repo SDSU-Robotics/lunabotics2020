@@ -76,6 +76,11 @@ enum StatusFrameEnhanced {
 	 * Gadgeteer status
 	 */
 	Status_11_UartGadgeteer = 0x1680,
+	/**
+	 * Brushless Current Status.
+	 * Includes Stator and Supply Current for Talon FX.
+	 */
+	Status_Brushless_Current = 0x1240,
 };
 
 /**
