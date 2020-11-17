@@ -1,10 +1,14 @@
 <launch>
-    <node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
-		<param name="dev" type="string" value="/dev/input/js0" />
+    <node respawn="true" pkg="joy" type="joy_node" name="joy1_node" >
+		<param name="dev" type="string" value="/dev/input/js1" />
 		<param name="deadzone" value="0.05" />
+
+        <remap from="/joy" to="/TPort/joy" />
 	</node>
 
     <node pkg="lunabotics2020" type="TPortConveyorHW" name="TPortConveyorHW" />
     <node pkg="lunabotics2020" type= "TportDriveBaseHW" name= "TportDriveBaseHW" />
+    
+    <node pkg="lunabotics2020" type= "TPortJoy" name= "TPortJoy" />
     
 </launch>

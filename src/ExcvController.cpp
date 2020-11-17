@@ -135,7 +135,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber joySub = n.subscribe("joy", 100, &Listener::joyListener, &listener);
+	ros::Subscriber joySub = n.subscribe("Excv/joy", 100, &Listener::joyListener, &listener);
 	
 	bool buttons[12];
 	double axes[6];
@@ -154,7 +154,7 @@ int main (int argc, char **argv)
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
-	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("driveSpeedSub", 100);
+	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
 
 	// sets the message to the message variable
     std_msgs::Float32 l_speed_msg;

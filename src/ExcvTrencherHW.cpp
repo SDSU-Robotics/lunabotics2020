@@ -32,7 +32,7 @@ class Listener
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "ExcvTrenchorHW");
+    ros::init(argc, argv, "ExcvTrencherHW");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
@@ -43,9 +43,8 @@ int main (int argc, char **argv)
 	Listener listener;
 
 	// get speeds from listeners
-	ros::Subscriber extendSpeedSub = n.subscribe("extend_speed", 100, &Listener::setExtendSpeed, &listener);
-	ros::Subscriber pitchSpeedSub = n.subscribe("pitch_speed", 100, &Listener::setPitchSpeed, &listener);
-	ros::Subscriber driveSpeedSub = n.subscribe("drive_speed", 100, &Listener::setDriveSpeed, &listener);
+	ros::Subscriber pitchSpeedSub = n.subscribe("ExcvConveyorDrvPwr", 100, &Listener::setPitchSpeed, &listener);
+	ros::Subscriber driveSpeedSub = n.subscribe("ExcvTrencherDrvPwr", 100, &Listener::setDriveSpeed, &listener);
 
 	while (ros::ok()) // while ros is running
 	{

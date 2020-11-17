@@ -12,7 +12,7 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void getButtonState(bool buttons[]);
+	//void getButtonState(bool buttons[]);
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 
 private:
@@ -47,7 +47,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber joySub = n.subscribe("joy", 100, &Listener::joyListener, &listener);
+	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
 	
 	bool buttons[12];
 	double axes[6];
@@ -65,9 +65,9 @@ int main (int argc, char **argv)
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
-		listener.getButtonState(buttons);
-		listener.toggle(buttons[0], currentButton, on, l_speed_msg)
-		listener.toggle(buttons[1], currentButton, on, r_speed_msg)
+		//listener.getButtonState(buttons);
+		listener.toggle(buttons[0], currentButton, on, l_speed_msg);
+		listener.toggle(buttons[1], currentButton, on, r_speed_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
@@ -90,7 +90,7 @@ int main (int argc, char **argv)
 			ROS_INFO("A Button on")
 		}
 	}*/
-
+}
 	void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
 	{
 
@@ -115,4 +115,4 @@ int main (int argc, char **argv)
 			message.data = 0;
 		}
 	}
-}
+//}
