@@ -1,11 +1,4 @@
 <launch>
-    <node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
-		<param name="dev" type="string" value="/dev/input/js0" />
-		<param name="deadzone" value="0.05" />
-	</node>
-
-    <node pkg="lunabotics2020" type="DiffDriveController" name="DiffDriveController" />
-    <node pkg="lunabotics2020" type="ExcvConveyorHW" name="ExcvConveyorHW" />
-    <node pkg="lunabotics2020" type="ExcvDriveBaseHW" name="ExcvDriveBaseHW" />
-    <node pkg="lunabotics2020" type="ExcvTrencherHW" name="ExcvTrencherHW" />
+    <include file="$(find lunabotics2020)/launch/TPortHW.launch" />
+    <include file="$(find lunabotics2020)/launch/ExcvHW.launch" />
 </launch>
