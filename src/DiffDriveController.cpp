@@ -162,7 +162,7 @@ int main (int argc, char **argv)
 	{
         listener.getJoyVals(buttons, axes);
 		//listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, speed, stepSize, &excavator_pwr_msg, );
-		//listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, speed, stepSize, &excavator_pwr_msg);
+		//	listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, speed, stepSize, &excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
