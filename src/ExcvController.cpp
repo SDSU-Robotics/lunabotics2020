@@ -17,10 +17,10 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 
-	//void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed,
-	// double speed, double stepSize, std_msgs::Float32 &message);
-	//void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton,
-	// double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
+	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed,
+	 double speed, double stepSize, std_msgs::Float32 &message);
+	void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton,
+	 double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -48,7 +48,7 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 6; i++)
         axes[i] = _axes[i];
 }
-/*
+
 void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize,  , std_msgs::Float32 &message)
 {
 
@@ -93,7 +93,7 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 	
 }
 */
-/*
+
 void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message)
 {
 
@@ -125,7 +125,7 @@ void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double m
 		//Toggle On button release
 	}
 }
-*/
+
 
 int main (int argc, char **argv)
 {
