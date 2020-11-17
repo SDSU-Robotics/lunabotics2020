@@ -15,10 +15,8 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed,
-	 double speed, double stepSize,  , std_msgs::Float32 &message)
-	void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton,
-	 double maxSpeed, double speed, double stepSize,  , std_msgs::Float32 &message)
+	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
+	void toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -47,7 +45,7 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
         axes[i] = _axes[i];
 }
 
-void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize,  , std_msgs::Float32 &message)
+void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message)
 {
 
 	bool lastButton; 
@@ -63,7 +61,7 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 		{
 			if (currentButton)
 			{
-				speed = speed + stepsize;
+				speed = speed + stepSize;
 				message.data = 1;
 				ROS_INFO("speed +1");
 			}
@@ -106,7 +104,7 @@ void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double m
 		{
 			if (currentButton)
 			{
-				speed = speed - stepsize;
+				speed = speed - stepSize;
 				ROS_INFO("speed decreased");
 				message.data = 1;
 			}

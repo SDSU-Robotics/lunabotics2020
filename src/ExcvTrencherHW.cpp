@@ -5,8 +5,8 @@
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
-#include "wiringPi.h"
-#include "pcf8591.h"
+//#include "wiringPi.h"
+//#include "pcf8591.h"
 #include <iostream>
 
 using namespace std;
