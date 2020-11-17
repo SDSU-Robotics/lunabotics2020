@@ -72,20 +72,6 @@ enum class RemoteSensorSource {
 	 * connected to a talon over ribbon cable
 	 */
 	RemoteSensorSource_GadgeteerPigeon_Roll,
-	/**
-	 * Use CANCoder
-	 */
-	RemoteSensorSource_CANCoder,
-	/**
-	 * Remote Sensor Source 14 is reserved
-	 */
-
-	/**
-	 * Use a sensor connected to
-	 * a TalonFX and configured on
-	 * the TalonFX
-	 */
-	RemoteSensorSource_TalonFX_SelectedSensor = RemoteSensorSource_TalonSRX_SelectedSensor,
 };
 /**
  * Class used to get string representation of a remote sensor source
@@ -112,7 +98,6 @@ public:
             case RemoteSensorSource::RemoteSensorSource_GadgeteerPigeon_Yaw     : return "RemoteSensorSource::RemoteSensorSource_GadgeteerPigeon_Yaw";
             case RemoteSensorSource::RemoteSensorSource_GadgeteerPigeon_Pitch   : return "RemoteSensorSource::RemoteSensorSource_GadgeteerPigeon_Pitch";
             case RemoteSensorSource::RemoteSensorSource_GadgeteerPigeon_Roll    : return "RemoteSensorSource::RemoteSensorSource_GadgeteerPigeon_Roll";
-			case RemoteSensorSource::RemoteSensorSource_CANCoder				: return "RemoteSensorSource::RemoteSensorSource_CANCoder";
             default : return "InvalidValue"; 
         }
     }

@@ -57,14 +57,6 @@ struct StickyFaults {
 	 * Device detects an API error
 	 */
 	bool APIError;
-	/**
-	 * Supply is well above the rated voltage of the hardware. This fault is specific to Brushless.
-	 */
-	bool SupplyOverV;
-	/**
-	 * Supply is rapidly fluctuating and unstable. This fault is specific to Brushless.
-	 */
-	bool SupplyUnstable;
 
 	/**
 	 * @return true if any faults are tripped
@@ -80,9 +72,7 @@ struct StickyFaults {
 				SensorOutOfPhase |
 				HardwareESDReset |
 				RemoteLossOfSignal |
-				APIError |
-				SupplyOverV |
-				SupplyUnstable;
+				APIError;
 	}
 	/**
 	 * @return Current fault list as a bit field
@@ -101,8 +91,6 @@ struct StickyFaults {
 		retval |= HardwareESDReset ? mask : 0; mask <<= 1;
 		retval |= RemoteLossOfSignal ? mask : 0; mask <<= 1;
 		retval |= APIError ? mask : 0; mask <<= 1;
-		retval |= SupplyOverV ? mask : 0; mask <<= 1;
-		retval |= SupplyUnstable ? mask : 0; mask <<= 1;
 		return retval;
 	}
 	/**
@@ -123,8 +111,6 @@ struct StickyFaults {
 		HardwareESDReset = (bits & mask) ? true : false; mask <<= 1;
 		RemoteLossOfSignal = (bits & mask) ? true : false; mask <<= 1;
 		APIError = (bits & mask) ? true : false; mask <<= 1;
-		SupplyOverV = (bits & mask) ? true : false; mask <<= 1;
-		SupplyUnstable = (bits & mask) ? true : false; mask <<= 1;
 	}
 	StickyFaults() {
 		UnderVoltage = false;
@@ -138,8 +124,6 @@ struct StickyFaults {
 		HardwareESDReset = false;
 		RemoteLossOfSignal = false;
 		APIError = false;
-		SupplyOverV = false;
-		SupplyUnstable = false;
 	}
 	/**
 	 * @return string representation of current faults tripped
@@ -157,8 +141,6 @@ struct StickyFaults {
 		work << " HardwareESDReset:" << (HardwareESDReset ? "1" : "0");
 		work << " RemoteLossOfSignal:" << (RemoteLossOfSignal ? "1" : "0");
 		work << " APIError:" << (APIError ? "1" : "0");
-		work << " SupplyOverV:" << (SupplyOverV ? "1" : "0");
-		work << " SupplyUnstable:" << (SupplyUnstable ? "1" : "0");
 		return work.str();
 	}
 };

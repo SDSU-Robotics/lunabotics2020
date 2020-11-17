@@ -63,7 +63,7 @@ namespace ctre {
 						 */
 						double effectiveThresholdCurr = std::max<double>(currentLimit, triggerThresholdCurrent);
 
-						work << "Current Limiting will activate if SUPPLY current exceeds " << effectiveThresholdCurr << " amps for " << triggerThresholdTime << " seconds." << "  Then current will hold at " << currentLimit << " amps";
+						work << "Current Limiting will activate if SUPPLY current exceeds " << effectiveThresholdCurr << " for " << triggerThresholdTime << " seconds." << "  Then current will hold at " << currentLimit;
 					}
 					return work.str();
 				}

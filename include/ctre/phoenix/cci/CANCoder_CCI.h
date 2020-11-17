@@ -51,13 +51,4 @@ extern "C" {
 	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_HasResetOccurred(void* handle, bool* hasReset);
 	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_SetStatusFramePeriod(void* handle, int frame, uint8_t periodMs, int timeoutMs);
 	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_GetStatusFramePeriod(void* handle, int frame, int* periodMs, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetVelocityMeasurementPeriod(void* handle, ctre::phoenix::sensors::SensorVelocityMeasPeriod* period, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetVelocityMeasurementWindow(void* handle, int* window, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetAbsoluteSensorRange(void* handle, ctre::phoenix::sensors::AbsoluteSensorRange* absoluteSensorRange, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetMagnetOffset(void* handle, double* offsetDegrees, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetSensorDirection(void* handle, int* bDirection, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetSensorInitializationStrategy(void* handle, ctre::phoenix::sensors::SensorInitializationStrategy* initializationStrategy, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetFeedbackCoefficient(void* handle, double* sensorCoefficient, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetFeedbackUnitString(void* handle, char* unitStringToFill, int toFillByteSz, int* numBytesFilled, int timeoutMs);
-	CCIEXPORT ctre::phoenix::ErrorCode c_CANCoder_ConfigGetFeedbackTimeBase(void* handle, ctre::phoenix::sensors::SensorTimeBase* sensortimeBase, int timeoutMs);
 }
