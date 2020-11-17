@@ -21,13 +21,13 @@ class Listener
         void setRSpeed(const std_msgs::Float32 rspeed);
 
     private:
-        TalonSRX leftDrive = {DeviceIDs::TportDrvLTal};
-        TalonSRX rightDrive = {DeviceIDs::TportDrvRTal};
+        TalonSRX leftDrive = {DeviceIDs::TPortDrvLTal};
+        TalonSRX rightDrive = {DeviceIDs::TPortDrvRTal};
 };
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "ExcvDriveBase");
+    ros::init(argc, argv, "TPortDriveBase");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
@@ -35,8 +35,8 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("TportLDrvPwr", 100, &Listener::setLSpeed, &listener);
-	ros::Subscriber rSpeedSub = n.subscribe("TportRDrvPwr", 100, &Listener::setRSpeed, &listener);
+	ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &Listener::setLSpeed, &listener);
+	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &Listener::setRSpeed, &listener);
 
 	while (ros::ok())
 	{
