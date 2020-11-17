@@ -4,7 +4,7 @@
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
-#include "ctre/phoenix/MotorControl/SensorCollection.h"
+#include "ctre/phoenix/motorcontrol/SensorCollection.h"
 #include <iostream>
 #include <string>
 
