@@ -1,3 +1,4 @@
+
 //This program gets values from a joystick controller publishes them &
 // toggles each button on and off after button press
 #include <string>
@@ -15,8 +16,11 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 
+	//void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed,
+	// double speed, double stepSize, std_msgs::Float32 &message);
+	//void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton,
+	// double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -44,8 +48,8 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 6; i++)
         axes[i] = _axes[i];
 }
-
-void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
+/*
+void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize,  , std_msgs::Float32 &message)
 {
 
 	bool lastButton; 
@@ -57,11 +61,26 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 
 	if (lastButton && !currentButton)
 	{
-		on = !on;
+		if (speed < maxSpeed)
+		{
+			if (currentButton)
+			{
+				speed = speed + stepSize;
+				message.data = 1;
+				ROS_INFO("speed +1");
+			}
+			
+
+		}
+		else if( speed >= maxSpeed)
+		{
+			speed = maxSpeed;
+			ROS_INFO("max speed reached");
+		}
 		//Toggle On button release
 	}
 	
-	if (on)
+	/*if (on)
 	{
 		//sets Button On
 		message.data = 1;
@@ -71,7 +90,42 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 		//sets button off
 		message.data = 0;
 	}
+	
 }
+*/
+/*
+void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message)
+{
+
+	bool lastButton; 
+	//gets the last state of the button
+	lastButton = currentButton;
+	//sets the last state of the button to the current state of the button
+	currentButton = keys;
+	// sets the boolean value of current value to the value in keys
+
+	if (lastButton && !currentButton)
+	{
+		if (speed <= maxSpeed)
+		{
+			if (currentButton)
+			{
+				speed = speed - stepSize;
+				ROS_INFO("speed decreased");
+				message.data = 1;
+			}
+			
+
+		}
+		else if (speed > maxSpeed)
+			{
+				speed = maxSpeed;
+				ROS_INFO("Max Speed");
+			}
+		//Toggle On button release
+	}
+}
+*/
 
 int main (int argc, char **argv)
 {
@@ -86,10 +140,13 @@ int main (int argc, char **argv)
 	bool buttons[12];
 	double axes[6];
 	// currentButton and on will need to be seperate booleans for each array value. 
-	bool currentButton1 = 0;
+	bool currentButton4 = 0;
 	bool on1 = false;
-	bool currentButton0 = 0;
+	bool currentButton5 = 0;
 	bool on0 = false;
+	double stepSize = 1;
+	double speed = 0;
+	double maxSpeed = 10;
 
 
 
@@ -108,8 +165,8 @@ int main (int argc, char **argv)
 	while (ros::ok()) // runs while ros is running
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggle(buttons[0], currentButton0, on0, conveyor_pwr_msg);
-		listener.toggle(buttons[1], currentButton1, on1, excavator_pwr_msg);
+		//listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, speed, stepSize, &excavator_pwr_msg, );
+		//listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, speed, stepSize, &excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
