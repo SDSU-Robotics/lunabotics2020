@@ -5,8 +5,8 @@
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
-#include "wiringPi.h"
-#include "pcf8591.h"
+//#include "wiringPi.h"
+//#include "pcf8591.h"
 #include <iostream>
 
 using namespace std;
@@ -36,7 +36,7 @@ int main (int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
-	pcf8591Setup (int pinBase, int 12cAddress);
+//	pcf8591Setup (int pinBase, int 12cAddress);
 
 	phoenix::platform::can::SetCANInterface("can0");
 
@@ -51,7 +51,7 @@ int main (int argc, char **argv)
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
-		linearActuator();
+		//linearActuator();
 	}
 
 	return 0;
@@ -77,8 +77,10 @@ void Listener::setDriveSpeed(const std_msgs::Float32 drivespeed)
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
+
 int Listener::linearActuator()
 {
+/*
 	wiringPiSetup(): 	//Setup the library
 	pinMode(0, OUTPUT);	//Configure GPIO0 as an output
 	pinMode(1,OUTPUT); 	//Configure GPIO1 as an output
@@ -88,6 +90,7 @@ int Listener::linearActuator()
 	digitalWrite(0, HIGH);
 	digitalWrite(1, HIGH);
 	digitalWrite(2, HIGH);
+	*/
 	return 0;
 
 

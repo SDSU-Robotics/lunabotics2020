@@ -1,3 +1,4 @@
+
 //This program gets values from a joystick controller publishes them &
 // toggles each button on and off after button press
 #include <string>
@@ -15,10 +16,11 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed,
-	 double speed, double stepSize,  , std_msgs::Float32 &message)
-	void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton,
-	 double maxSpeed, double speed, double stepSize,  , std_msgs::Float32 &message)
+
+	//void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed,
+	// double speed, double stepSize, std_msgs::Float32 &message);
+	//void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton,
+	// double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -46,7 +48,7 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 6; i++)
         axes[i] = _axes[i];
 }
-
+/*
 void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize,  , std_msgs::Float32 &message)
 {
 
@@ -87,9 +89,11 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 	{
 		//sets button off
 		message.data = 0;
-	}*/
+	}
+	
 }
-
+*/
+/*
 void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double speed, double stepSize, std_msgs::Float32 &message)
 {
 
@@ -120,6 +124,8 @@ void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double m
 			}
 		//Toggle On button release
 	}
+}
+*/
 
 int main (int argc, char **argv)
 {
@@ -159,8 +165,8 @@ int main (int argc, char **argv)
 	while (ros::ok()) // runs while ros is running
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, speed, stepSize, &excavator_pwr_msg, );
-		listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, speed, stepSize, &excavator_pwr_msg);
+		//listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, speed, stepSize, &excavator_pwr_msg, );
+		//listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, speed, stepSize, &excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
