@@ -65,7 +65,7 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 		{
 			if (currentButton)
 			{
-				speed = speed + stepsize;
+				speed = speed + stepSize;
 				message.data = 1;
 				ROS_INFO("speed +1");
 			}
@@ -110,7 +110,7 @@ void Listener::toggleDrvSpeedDown(const bool keys, bool &currentButton, double m
 		{
 			if (currentButton)
 			{
-				speed = speed - stepsize;
+				speed = speed - stepSize;
 				ROS_INFO("speed decreased");
 				message.data = 1;
 			}
