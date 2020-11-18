@@ -17,8 +17,7 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 
-	void toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double stepSize, std_msgs::Float32 &message);
-	void toggleDrvSpeedDown(const bool keys, bool &currentButton, double maxSpeed, double stepSize, std_msgs::Float32 &message);
+	void toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -47,28 +46,36 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
         axes[i] = _axes[i];
 }
 
-void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double maxSpeed, double stepSize, std_msgs::Float32 &message)
+void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message)
 {
 
-	bool lastButton; 
-	//gets the last state of the button
-	lastButton = currentButton;
+	double stepSize = 0.1;
+	double maxSpeed = 1;
+	double minSpeed = -1;
+	bool lastButton4;
+	bool lastButton5; 
+	//gets the last state of the buttons
+	lastButton4 = currentButton4;
+	lastButton5 = currentButton5;
 	//sets the last state of the button to the current state of the button
-	currentButton = keys;
+	currentButton5 = up;
+	currentButton4 = down;
 	// sets the boolean value of current value to the value in keys
 
-	if (lastButton && !currentButton)
+	if (lastButton5 && !currentButton5)
 	{
 		if (message.data < maxSpeed)
 		{
-			//if (currentButton)
+			//if (currentButton5)
 			//{
 				message.data = message.data + stepSize;
-				ROS_INFO("speed +1");
+				ROS_INFO("speed increased");
 			//}
+
 			
 
 		}
+		
 		else if(message.data >= maxSpeed)
 		{
 			message.data = maxSpeed;
@@ -76,6 +83,19 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 		}
 		//Toggle On button release
 	}
+	else if (lastButton4 && !currentButton4)
+		{
+				if(message.data > minSpeed)
+				{
+					message.data = message.data - stepSize;
+					ROS_INFO("speed decreased");
+				}
+				else if (message.data <= minSpeed)
+				{
+					message.data = minSpeed;
+					ROS_INFO("Min Speed reached");
+				}
+		}
 }
 	
 	/*if (on)
@@ -92,7 +112,7 @@ void Listener::toggleDrvSpeedUp(const bool keys, bool &currentButton, double max
 }
 */
 
-void Listener::toggleDrvSpeedDown (const bool keys, bool &currentButton, double maxSpeed, double stepSize, std_msgs::Float32 &message)
+/*void Listener::toggleDrvSpeedDown (const bool keys, bool &currentButton, double maxSpeed, double stepSize, std_msgs::Float32 &message)
 {
 
 	bool lastButton; 
@@ -121,7 +141,7 @@ void Listener::toggleDrvSpeedDown (const bool keys, bool &currentButton, double 
 			}
 		//Toggle On button release
 	}
-}
+}*/
 
 
 int main (int argc, char **argv)
@@ -141,9 +161,7 @@ int main (int argc, char **argv)
 	//bool on1 = false;
 	bool currentButton5 = 0;
 	//bool on0 = false;
-	double stepSize = 1;
-	//double speed = 0;
-	double maxSpeed = 10;
+
 
 
 
@@ -162,8 +180,7 @@ int main (int argc, char **argv)
 	while (ros::ok()) // runs while ros is running
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggleDrvSpeedUp(buttons[5], currentButton5, maxSpeed, stepSize, excavator_pwr_msg);
-		listener.toggleDrvSpeedDown(buttons[4], currentButton4, maxSpeed, stepSize, excavator_pwr_msg);
+		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
