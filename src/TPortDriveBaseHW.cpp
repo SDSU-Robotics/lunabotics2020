@@ -20,6 +20,7 @@ class Listener
         void setLSpeed(const std_msgs::Float32 lspeed);
         void setRSpeed(const std_msgs::Float32 rspeed);
 
+
     private:
         TalonSRX leftDrive = {DeviceIDs::TPortDrvLTal};
         TalonSRX rightDrive = {DeviceIDs::TPortDrvRTal};

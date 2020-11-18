@@ -55,9 +55,11 @@ int main (int argc, char **argv)
 	bool currentButton = 0;
 	bool on = false;
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("LTPortDrvPWR", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("RTPortDrvPWR", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
+    ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("TPortConveyorPwr", 100);
 	
+
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr;
@@ -66,15 +68,16 @@ int main (int argc, char **argv)
 	{
         listener.getJoyVals(buttons, axes);
 		//listener.getButtonState(buttons);
-		listener.toggle(buttons[0], currentButton, on, l_speed_msg);
-		listener.toggle(buttons[1], currentButton, on, r_speed_msg);
+		listener.toggle(buttons[0], currentButton, on, conveyor_pwr);
+
 
 		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[3]; // right Y
+		r_speed_msg.data = axes[4]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
-		
+		conveyor_pwr_pub.publish(conveyor_pwr);
+
 		ros::spinOnce();
 		loop_rate.sleep();
 	}
