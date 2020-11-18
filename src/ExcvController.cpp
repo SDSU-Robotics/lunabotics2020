@@ -58,6 +58,7 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 	lastButton5 = currentButton5;
 	//sets the last state of the button to the current state of the button
 	currentButton5 = up;
+	currentButton4 = down;
 	// sets the boolean value of current value to the value in keys
 
 	if ((lastButton5 && !currentButton5) && (lastButton4 && !currentButton4))
