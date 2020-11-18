@@ -51,14 +51,16 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 
 	double stepSize = 1;
 	double maxSpeed = 10;
-	bool lastButton; 
+	bool lastButton4;
+	bool lastButton5; 
 	//gets the last state of the buttons
-	lastButton = currentButton5;
+	lastButton4 = currentButton4;
+	lastButton5 = currentButton5;
 	//sets the last state of the button to the current state of the button
 	currentButton5 = up;
 	// sets the boolean value of current value to the value in keys
 
-	if (lastButton && !currentButton5)
+	if ((lastButton5 && !currentButton5) && (lastButton4 && !currentButton4))
 	{
 		if (message.data < maxSpeed)
 		{
@@ -79,11 +81,6 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 		{
 			message.data = maxSpeed;
 			ROS_INFO("max speed reached");
-		}
-		else if (message.data > maxSpeed)
-		{
-				message.data = maxSpeed;
-				ROS_INFO("Max Speed");
 		}
 		//Toggle On button release
 	}
