@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     Listener listener;
 
     ros::Subscriber extendSpeedSub = n.subscribe("TPortConveyorEXT", 100, &Listener::setExtendSpeed, &listener);
-    ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorPWR", 100, &Listener::setDriveSpeed, &listener);
+    ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorPwr", 100, &Listener::setDriveSpeed, &listener);
     
     while (ros::ok())
     {
