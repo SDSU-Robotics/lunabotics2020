@@ -47,19 +47,18 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
+	ros::Subscriber joySub = n.subscribe("joy", 100, &Listener::joyListener, &listener);
 	
 	bool buttons[12];
 	double axes[6];
 
-	bool currentButton = 0;
+	bool currentButton = false;
 	bool on = false;
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
-    ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("TPortConveyorPwr", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("LTPortDrvPWR", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("RTPortDrvPWR", 100);
+	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ConveyorDrvPWR", 100);
 	
-
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr;
@@ -67,55 +66,45 @@ int main (int argc, char **argv)
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
-		listener.getButtonState(buttons);
-		listener.toggle(buttons[0], currentButton, on, l_speed_msg);
-		listener.toggle(buttons[1], currentButton, on, r_speed_msg);
+		// listener.getButtonState(buttons);
+		listener.toggle(buttons[0], currentButton, on, conveyor_pwr);
+
 
 		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[4]; // right Y
+		r_speed_msg.data = axes[3]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
-		conveyor_pwr_pub.publish(conveyor_pwr);
-
+		
 		ros::spinOnce();
 		loop_rate.sleep();
 	}
 
 	return 0;
 }
-	void Listener::getButtonState(bool buttons[])
+
+//bool pressButton(bool button, Float32)
+
+void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
 	{
-		//get button state
-		if (buttons[0] = true)
-		{
-			//publish button state
-			ROS_INFO("A Button on");	
-		}
+		on = !on;
+		ROS_INFO("A button released");
 	}
-
-	void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
-	{
-
-		bool lastButton;
-		lastButton = currentButton;
-		currentButton = keys;
-
-		if (lastButton && !currentButton)
-		{
-			on = !on;
-			ROS_INFO("A button released");
-		}
 		
-		if (on)
-		{
-			ROS_INFO("A button on");
-			message.data = 1;
-		}
-		else
-		{
-			ROS_INFO("A button off");
-			message.data = 0;
-		}
+	if (on)
+	{
+		ROS_INFO("A button on");
+		message.data = 1;
 	}
-
+	else
+	{
+		ROS_INFO("A button off");
+		message.data = 0;
+	}
+}
