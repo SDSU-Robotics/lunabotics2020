@@ -27,7 +27,7 @@ class Listener
 		// motor controls using Victors
         VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
         VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
-		VictorSPX driveVictor = {DeviceIDs::ExcvConveyorDrvVic};
+		VictorSPX driveVictor = {DeviceIDs::ExcvDriveVic};
 };
 
 int main (int argc, char **argv)
