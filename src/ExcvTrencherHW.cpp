@@ -70,6 +70,7 @@ void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
+
 void Listener::setDriveSpeed(const std_msgs::Float32 drivespeed)
 {
     driveVictor.Set(ControlMode::PercentOutput, drivespeed.data);
