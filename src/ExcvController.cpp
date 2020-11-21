@@ -97,51 +97,6 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 				}
 		}
 }
-	
-	/*if (on)
-	{
-		//sets Button On
-		message.data = 1;
-	}
-	else
-	{
-		//sets button off
-		message.data = 0;
-	}
-	
-}
-*/
-
-/*void Listener::toggleDrvSpeedDown (const bool keys, bool &currentButton, double maxSpeed, double stepSize, std_msgs::Float32 &message)
-{
-
-	bool lastButton; 
-	//gets the last state of the button
-	lastButton = currentButton;
-	//sets the last state of the button to the current state of the button
-	currentButton = keys;
-	// sets the boolean value of current value to the value in keys
-
-	if (lastButton && !currentButton)
-	{
-		if (message.data <= maxSpeed)
-		{
-			//if (currentButton)
-			//{
-				message.data = message.data - stepSize;
-				ROS_INFO("speed decreased");
-			//}
-			
-
-		}
-		else if (message.data > maxSpeed)
-			{
-				message.data = maxSpeed;
-				ROS_INFO("Max Speed");
-			}
-		//Toggle On button release
-	}
-}*/
 
 void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
 {
