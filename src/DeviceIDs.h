@@ -10,6 +10,7 @@ namespace DeviceIDs
 	static const int ExcvExtendTal = 13;
 	static const int ExcvPitchVic = 14;
 	static const int ExcvDriveVic = 15;
+	static const int canifier = 16;
 
 	static const int TPortDrvLTal = 20;
 	static const int TPortDrvRTal = 21;

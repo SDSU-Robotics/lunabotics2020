@@ -5,8 +5,6 @@
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
-//#include "wiringPi.h"
-//#include "pcf8591.h"
 #include <iostream>
 
 using namespace std;
@@ -78,23 +76,8 @@ void Listener::setDriveSpeed(const std_msgs::Float32 drivespeed)
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
-int Listener::linearActuator()
-{
-/*
-	wiringPiSetup(): 	//Setup the library
-	pinMode(0, OUTPUT);	//Configure GPIO0 as an output
-	pinMode(1,OUTPUT); 	//Configure GPIO1 as an output
-	pinMode(2, OUTPUT); //Configure GPIO2 as an output
-
-	if(button)
-	digitalWrite(0, HIGH);
-	digitalWrite(1, HIGH);
-	digitalWrite(2, HIGH);
-	*/
-	return 0;
-
 
 	
 
-}
+
 
