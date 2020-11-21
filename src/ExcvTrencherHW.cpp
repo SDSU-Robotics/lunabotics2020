@@ -25,7 +25,7 @@ class Listener
 
     private:
 		// motor controls using Victors
-        VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
+       // VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
         VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
 		VictorSPX driveVictor = {DeviceIDs::ExcvDriveVic};
 };
@@ -57,12 +57,12 @@ int main (int argc, char **argv)
 }
 
 // Sets speeds and sends information to victors
-void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
+/*void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
 {
     extendVictor.Set(ControlMode::PercentOutput, extendspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
-}
+}*/
 
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {

@@ -17,6 +17,7 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message);
+	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -36,7 +37,7 @@ void Listener::joyListener(const sensor_msgs::Joy::ConstPtr& Joy)
 }
 
 void Listener::getJoyVals(bool buttons[], double axes[]) const
-// gets the values from the buttons and axes arrays and sets them to either true or falso
+// gets the values from the buttons and axes arrays and sets them to either true or false
 {
     for (int i = 0; i < 12; i++)
         buttons[i] = _buttons[i];
@@ -142,6 +143,30 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 	}
 }*/
 
+void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		ROS_INFO("A button released");
+	}
+		
+	if (on)
+	{
+		ROS_INFO("A button on");
+		message.data = 1;
+	}
+	else
+	{
+		ROS_INFO("A button off");
+		message.data = 0;
+	}
+}
+
 
 int main (int argc, char **argv)
 {
@@ -161,14 +186,12 @@ int main (int argc, char **argv)
 	bool currentButton5 = 0;
 	//bool on0 = false;
 
-
-
-
 	// Publishes the message to the hardware interface
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
 	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
+	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 
 	// sets the message to the message variable
     std_msgs::Float32 l_speed_msg;
