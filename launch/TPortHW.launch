@@ -6,9 +6,8 @@
         <remap from="/joy" to="/TPort/joy" />
 	</node>
 
-    <node pkg="lunabotics2020" type="TPortConveyorHW" name="TPortConveyorHW" />
+    <node pkg="lunabotics2020" type="TPortConveyorHW" name= "TPortConveyorHW" />
     <node pkg="lunabotics2020" type= "TPortDriveBaseHW" name= "TPortDriveBaseHW" />
-    
     <node pkg="lunabotics2020" type= "TPortJoy" name= "TPortJoy" />
     
 </launch>

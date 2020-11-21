@@ -47,7 +47,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber joySub = n.subscribe("joy", 100, &Listener::joyListener, &listener);
+	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
 	
 	bool buttons[12];
 	double axes[6];
@@ -55,9 +55,9 @@ int main (int argc, char **argv)
 	bool currentButton = false;
 	bool on = false;
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("LTPortDrvPWR", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("RTPortDrvPWR", 100);
-	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ConveyorDrvPWR", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
+	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ConveyorDrvPwr", 100);
 	
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
@@ -75,6 +75,7 @@ int main (int argc, char **argv)
 		
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
+		conveyor_pub.publish(conveyor_pwr); // conveyor power
 		
 		ros::spinOnce();
 		loop_rate.sleep();
