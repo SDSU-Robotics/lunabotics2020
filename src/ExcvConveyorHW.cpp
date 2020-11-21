@@ -39,7 +39,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
+	//ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 	ros::Subscriber SpeedSub = n.subscribe("ExcvConveyorDrvPwr", 100, &Listener::setSpeed, &listener);
 	// get the speed from the publisher
 	

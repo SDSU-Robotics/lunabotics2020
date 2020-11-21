@@ -113,7 +113,7 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	if (on)
 	{
 		ROS_INFO("A button on");
-		message.data = 1;
+		message.data = 0.08;
 	}
 	else
 	{
@@ -148,7 +148,7 @@ int main (int argc, char **argv)
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
 	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
-	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
+	//ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 
 	// sets the message to the message variable
     	std_msgs::Float32 l_speed_msg;
@@ -160,10 +160,10 @@ int main (int argc, char **argv)
 	{
         	listener.getJoyVals(buttons, axes);
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
-		listener.toggle(buttons[1], currentButton1, on1, conveyor_pwr_msg);
+		listener.toggle(buttons[0], currentButton1, on1, conveyor_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[3]; // right Y
+		r_speed_msg.data = axes[4]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg); // left speed
 		r_speed_pub.publish(r_speed_msg); // right speed
