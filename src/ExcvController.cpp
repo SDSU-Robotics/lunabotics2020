@@ -170,7 +170,7 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "DriveController");
+    	ros::init(argc, argv, "DriveController");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
@@ -185,6 +185,8 @@ int main (int argc, char **argv)
 	//bool on1 = false;
 	bool currentButton5 = 0;
 	//bool on0 = false;
+	bool currentButton1 = 0;
+	bool on1 = false;
 
 	// Publishes the message to the hardware interface
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
@@ -194,18 +196,19 @@ int main (int argc, char **argv)
 	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 
 	// sets the message to the message variable
-    std_msgs::Float32 l_speed_msg;
-    std_msgs::Float32 r_speed_msg;
+    	std_msgs::Float32 l_speed_msg;
+    	std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr_msg;
 	std_msgs::Float32 excavator_pwr_msg;
 	
 	while (ros::ok()) // runs while ros is running
 	{
-        listener.getJoyVals(buttons, axes);
+        	listener.getJoyVals(buttons, axes);
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
+		listener.toggle(buttons[1], currentButton1, on1, conveyor_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[4]; // right Y
+		r_speed_msg.data = axes[3]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg); // left speed
 		r_speed_pub.publish(r_speed_msg); // right speed
