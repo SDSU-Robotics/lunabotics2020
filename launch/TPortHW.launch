@@ -8,6 +8,6 @@
 
     <node pkg="lunabotics2020" type="TPortConveyorHW" name= "TPortConveyorHW" />
     <node pkg="lunabotics2020" type= "TPortDriveBaseHW" name= "TPortDriveBaseHW" />
-    <node pkg="lunabotics2020" type= "TPortJoy" name= "TPortJoy" />
+    <node pkg="lunabotics2020" type= "TPortController" name= "TPortController" />
     
 </launch>

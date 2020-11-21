@@ -27,7 +27,7 @@ add_executable(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/src/ExcvTrencherHW.cpp)
 add_executable(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/src/ExcvConveyorHW.cpp)
 add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
-add_executable(TPortJoy ${PROJECT_SOURCE_DIR}/src/TPortJoy.cpp)
+add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
 
 target_link_libraries(ExcvDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvController ${catkin_LIBRARIES} Threads::Threads)
@@ -36,7 +36,7 @@ target_link_libraries(ExcvTrencherHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
-target_link_libraries(TPortJoy ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
