@@ -16,7 +16,6 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-
 	void toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message);
 
 private:
@@ -183,7 +182,7 @@ int main (int argc, char **argv)
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[3]; // right Y
+		r_speed_msg.data = axes[4]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg); // left speed
 		r_speed_pub.publish(r_speed_msg); // right speed
