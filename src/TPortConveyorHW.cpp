@@ -29,7 +29,7 @@ class Listener
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "HardwareInterface");
+    ros::init(argc, argv, "TPortConveyorHW");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
 
