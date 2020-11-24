@@ -14,8 +14,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 
 #define MIN_POT_READING 340
 #define MAX_POT_READING 700
-#define MIN_INPUT 0.0
-#define MAX_INPUT 1.0
+#define MIN_LINEAR_INPUT 0.0
+#define MAX_LINEAR_INPUT 1.0
 
 
 class Listener
@@ -33,7 +33,7 @@ private:
 
 int main (int argc, char **argv)
 {
-	ros::init(argc, argv, "TalonPotPosition");
+	ros::init(argc, argv, "ExcvLineaarActuatorHW");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 	
@@ -41,7 +41,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber position_sub = n.subscribe("position", 1000, &Listener::setPosition, &listener);
+	ros::Subscriber position_sub = n.subscribe("ExcvTrencherPos", 1000, &Listener::setPosition, &listener);
 
 	ros::Publisher actualPosition_pub = n.advertise<std_msgs::Float32>("actualPosition", 100);
 	ros::Publisher controlEffort_pub = n.advertise<std_msgs::Float32>("controlEffort", 100);
@@ -69,10 +69,10 @@ void Listener::setPosition(const std_msgs::Float32 msg)
 {
 	// limit values
 	float pos = msg.data;
-	if (pos < MIN_INPUT)	pos = MIN_INPUT;
-	if (pos > MAX_INPUT)	pos = MAX_INPUT;
+	if (pos < MIN_LINEAR_INPUT)	pos = MIN_LINEAR_INPUT;
+	if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
 
-	pos = LinearInterpolation::Calculate(pos, MIN_INPUT, MIN_POT_READING, MAX_INPUT, MAX_POT_READING);
+	pos = LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_POT_READING, MAX_LINEAR_INPUT, MAX_POT_READING);
 
 	_motor.Set(ControlMode::Position, pos);
 

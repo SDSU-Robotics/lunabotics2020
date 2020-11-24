@@ -18,6 +18,8 @@ public:
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message);
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
+	void toggleLinearActuator(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
+
 
 private:
     bool _buttons[12] = { 0 }; // declare array for button values
@@ -114,6 +116,7 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	{
 		ROS_INFO("A button on");
 		message.data = 0.08;
+
 	}
 	else
 	{
@@ -122,6 +125,30 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	}
 }
 
+void Listener::toggleLinearActuator(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		///ROS_INFO("A button released");
+	}
+		
+	if (on)
+	{
+		//ROS_INFO("A button on");
+		message.data = 0.8;
+
+	}
+	else
+	{
+		//ROS_INFO("A button off");
+		message.data = 0.2;
+	}
+}
 
 int main (int argc, char **argv)
 {
@@ -148,6 +175,8 @@ int main (int argc, char **argv)
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
 	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
+	ros::Publisher excavator_pos_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
+
 	//ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 
 	// sets the message to the message variable
@@ -155,12 +184,15 @@ int main (int argc, char **argv)
     	std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr_msg;
 	std_msgs::Float32 excavator_pwr_msg;
-	
+	std_msgs::Float32 excavator_pos_msg;
+
+
 	while (ros::ok()) // runs while ros is running
 	{
         	listener.getJoyVals(buttons, axes);
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
 		listener.toggle(buttons[0], currentButton1, on1, conveyor_pwr_msg);
+		listener.toggleLinearActuator(buttons[7], currentButton1, on1, excavator_pos_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[4]; // right Y
@@ -169,7 +201,8 @@ int main (int argc, char **argv)
 		r_speed_pub.publish(r_speed_msg); // right speed
 		conveyor_pwr_pub.publish(conveyor_pwr_msg); // conveyor power
 		excavator_pwr_pub.publish(excavator_pwr_msg); // excavator power
-		
+		excavator_pos_pub.publish(excavator_pos_msg);
+
 		ros::spinOnce();
 		loop_rate.sleep();
 	}

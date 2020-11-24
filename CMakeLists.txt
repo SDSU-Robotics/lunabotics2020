@@ -28,6 +28,7 @@ add_executable(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/src/ExcvConveyorHW.cpp)
 add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
 add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
+add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuatorHW.cpp)
 
 target_link_libraries(ExcvDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvController ${catkin_LIBRARIES} Threads::Threads)
@@ -37,6 +38,7 @@ target_link_libraries(ExcvConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
@@ -104,4 +106,8 @@ else()
 	target_link_libraries(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
 	target_link_libraries(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
 
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
 endif()
