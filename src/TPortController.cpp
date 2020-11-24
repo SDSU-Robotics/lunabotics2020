@@ -12,7 +12,6 @@ class Listener
 public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
-	void getButtonState(bool buttons[]);
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 	void whileHeld(bool button, std_msgs::Float32 msg, double value);
 
@@ -67,10 +66,10 @@ int main (int argc, char **argv)
 	bool currentButton = false;
 	bool on = false;
 
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("LTPortDrvPWR", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("RTPortDrvPWR", 100);
-	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ConveyorDrvPWR", 100);
-	ros::Publisher extend_pub = n.advertise<std_msgs::Float32>("ExtendPWR", 100);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
+	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
+	ros::Publisher extend_pub = n.advertise<std_msgs::Float32>("TPortExtendPwr", 100);
 	
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
@@ -80,7 +79,6 @@ int main (int argc, char **argv)
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
-		// listener.getButtonState(buttons);
 		listener.toggle(buttons[0], currentButton, on, conveyor_pwr);
 		listener.whileHeld(buttons[3],extend_pwr, 1); //extend
 		listener.whileHeld(buttons[0],extend_pwr, -1); //retract

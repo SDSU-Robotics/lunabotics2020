@@ -21,28 +21,25 @@ class Listener
     public:
         void setExtendSpeed(const std_msgs::Float32 msg);
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
-        
-
 
     private:
-        VictorSPX ExcvConveyorDrvVic = {DeviceIDs::ExcvConveyorDrvVic};
+        TalonSRX ExcvConveyorDrvTal = {DeviceIDs::ExcvConveyorDrvTal};
         CANifier _canifer = {DeviceIDs::canifier};
 };
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "HardwareInterface");
+    ros::init(argc, argv, "TPortConveyorHW");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
 
     phoenix::platform::can::SetCANInterface("can0");
-    ctre::phoenix::platform::can::SetCANInterface("can0");
 
 
     Listener listener;
 
-    ros::Subscriber extendSpeedSub = n.subscribe("TPortConveyorEXT", 100, &Listener::setExtendSpeed, &listener);
-    ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorPwr", 100, &Listener::setDriveSpeed, &listener);	
+    ros::Subscriber extendSpeedSub = n.subscribe("TPortExtendPwr", 100, &Listener::setExtendSpeed, &listener);
+    ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);	
 
     while (ros::ok())
     {
@@ -71,9 +68,9 @@ void Listener::setExtendSpeed(const std_msgs::Float32 msg)
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
-void Listener::setDriveSpeed(const std_msgs::Float32 extendspeed)
+void Listener::setDriveSpeed(const std_msgs::Float32 msg)
 {
-    ExcvConveyorDrvVic.Set(ControlMode::PercentOutput, extendspeed.data);
+    ExcvConveyorDrvTal.Set(ControlMode::PercentOutput, msg.data);
 
     ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
