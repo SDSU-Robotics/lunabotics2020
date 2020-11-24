@@ -158,7 +158,7 @@ int main (int argc, char **argv)
 	
 	while (ros::ok()) // runs while ros is running
 	{
-        	listener.getJoyVals(buttons, axes);
+        listener.getJoyVals(buttons, axes);
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
 		listener.toggle(buttons[0], currentButton1, on1, conveyor_pwr_msg);
 

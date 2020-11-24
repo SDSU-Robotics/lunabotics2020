@@ -15,7 +15,6 @@ class Listener
 {
     public:
         void setSpeed(const std_msgs::Float32 hm_speed);
-		void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
        
     private:
         VictorSPX HMDrive = {DeviceIDs::ExcvConveyorDrvVic};
@@ -32,11 +31,6 @@ int main (int argc, char **argv)
 
 	std_msgs::Float32 conveyor_pwr;
 
-	bool buttons[12] = {0};
-	double axes[6] = {0};
-	bool currentButton = false;
-	bool on = false;
-
 	Listener listener;
 
 	//ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
@@ -48,7 +42,6 @@ int main (int argc, char **argv)
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
-		listener.toggle(buttons[0], currentButton, on, conveyor_pwr);
 	}
 
 	return 0;
@@ -59,28 +52,4 @@ void Listener::setSpeed(const std_msgs::Float32 hm_speed)
     HMDrive.Set(ControlMode::PercentOutput, hm_speed.data); // set drive speed
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
-}
-
-void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
-{
-	bool lastButton;
-	lastButton = currentButton;
-	currentButton = keys;
-
-	if (lastButton && !currentButton)
-	{
-		on = !on;
-		ROS_INFO("A button released");
-	}
-		
-	if (on)
-	{
-		ROS_INFO("A button on");
-		message.data = 1;
-	}
-	else
-	{
-		ROS_INFO("A button off");
-		message.data = 0;
-	}
 }
