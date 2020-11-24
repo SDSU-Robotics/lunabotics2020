@@ -23,7 +23,7 @@ class Listener
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
 
     private:
-        VictorSPX ExcvConveyorDrvVic = {DeviceIDs::ExcvConveyorDrvVic};
+        TalonSRX ExcvConveyorDrvTal = {DeviceIDs::ExcvConveyorDrvTal};
         CANifier _canifer = {DeviceIDs::canifier};
 };
 
@@ -70,7 +70,7 @@ void Listener::setExtendSpeed(const std_msgs::Float32 msg)
 
 void Listener::setDriveSpeed(const std_msgs::Float32 msg)
 {
-    ExcvConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data);
+    ExcvConveyorDrvTal.Set(ControlMode::PercentOutput, msg.data);
 
     ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
