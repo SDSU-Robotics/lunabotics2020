@@ -134,18 +134,18 @@ void Listener::toggleLinearActuator(const bool keys, bool &currentButton, bool &
 	if (lastButton && !currentButton)
 	{
 		on = !on;
-		ROS_INFO("A button released");
+		ROS_INFO("Button released");
 	}
 		
 	if (on)
 	{
-		ROS_INFO("A button on");
+		ROS_INFO("Button on");
 		message.data = 0.8;
 
 	}
 	else
 	{
-		ROS_INFO("A button off");
+		ROS_INFO("Button off");
 		message.data = 0.2;
 	}
 }
@@ -170,6 +170,9 @@ int main (int argc, char **argv)
 	bool currentButton1 = 0;
 	bool on1 = false;
 
+	bool currentButton2 = 0;
+	bool on2 = false;
+
 	// Publishes the message to the hardware interface
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
@@ -189,10 +192,10 @@ int main (int argc, char **argv)
 
 	while (ros::ok()) // runs while ros is running
 	{
-        	listener.getJoyVals(buttons, axes);
+        listener.getJoyVals(buttons, axes);
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
 		listener.toggle(buttons[0], currentButton1, on1, conveyor_pwr_msg);
-		listener.toggleLinearActuator(buttons[7], currentButton1, on1, excavator_pos_msg);
+		listener.toggleLinearActuator(buttons[7], currentButton2, on2, excavator_pos_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[4]; // right Y
