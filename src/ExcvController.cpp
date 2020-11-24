@@ -134,18 +134,18 @@ void Listener::toggleLinearActuator(const bool keys, bool &currentButton, bool &
 	if (lastButton && !currentButton)
 	{
 		on = !on;
-		///ROS_INFO("A button released");
+		ROS_INFO("A button released");
 	}
 		
 	if (on)
 	{
-		//ROS_INFO("A button on");
+		ROS_INFO("A button on");
 		message.data = 0.8;
 
 	}
 	else
 	{
-		//ROS_INFO("A button off");
+		ROS_INFO("A button off");
 		message.data = 0.2;
 	}
 }
@@ -189,7 +189,7 @@ int main (int argc, char **argv)
 
 	while (ros::ok()) // runs while ros is running
 	{
-        listener.getJoyVals(buttons, axes);
+        	listener.getJoyVals(buttons, axes);
 		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
 		listener.toggle(buttons[0], currentButton1, on1, conveyor_pwr_msg);
 		listener.toggleLinearActuator(buttons[7], currentButton1, on1, excavator_pos_msg);
