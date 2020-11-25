@@ -198,7 +198,7 @@ int main (int argc, char **argv)
 		listener.toggleLinearActuator(buttons[7], currentButton2, on2, excavator_pos_msg);
 
 		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[4]; // right Y
+		r_speed_msg.data = axes[3]; // right Y
 		
 		l_speed_pub.publish(l_speed_msg); // left speed
 		r_speed_pub.publish(r_speed_msg); // right speed
