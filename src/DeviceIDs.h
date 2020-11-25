@@ -14,7 +14,7 @@ namespace DeviceIDs
 
 	static const int TPortDrvLTal = 20;
 	static const int TPortDrvRTal = 21;
-	static const int TPortConveyorDrvTal = 22;
+	static const int TPortConveyorDrvVic = 22;
 
 };
 
