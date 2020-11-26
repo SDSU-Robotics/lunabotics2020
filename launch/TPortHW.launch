@@ -1,15 +1,14 @@
 <launch>
-    <node respawn="true" pkg="joy" type="joy_node" name="joy1_node" >
+    <node respawn="true" pkg="joy" type="joy_node" name="TPortJoyNode" >
 		<param name="dev" type="string" value="/dev/input/js1" />
 		<param name="deadzone" value="0.05" />
-
         <remap from="/joy" to="/TPort/joy" />
 	</node>
 
-	<node respawn="true" pkg="phoenix-template" type="CanifierServo" name="CanifierServo" />
+	<!--node respawn="true" pkg="phoenix-template" type="CanifierServo" name="CanifierServo" />
 	<node respawn="true" pkg="phoenix-template" type="SimpleJoystick" name="SimpleJoystick">
 		<remap from="speed" to="position"/>
-	</node>
+	</node-->
 
     <node pkg="lunabotics2020" type="TPortConveyorHW" name= "TPortConveyorHW" />
     <node pkg="lunabotics2020" type= "TPortDriveBaseHW" name= "TPortDriveBaseHW" />
