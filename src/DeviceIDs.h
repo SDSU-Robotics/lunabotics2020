@@ -6,7 +6,7 @@ namespace DeviceIDs
 {
 	static const int ExcvDrvLTal = 10;
 	static const int ExcvDrvRTal = 11;
-	static const int ExcvConveyorDrvTal = 12;
+	static const int ExcvConveyorDrvVic = 12;
 	static const int ExcvExtendTal = 13;
 	static const int ExcvPitchVic = 14;
 	static const int ExcvDriveVic = 15;
@@ -14,7 +14,7 @@ namespace DeviceIDs
 
 	static const int TPortDrvLTal = 20;
 	static const int TPortDrvRTal = 21;
-	static const int TPortConveyorDrvTal = 22;
+	static const int TPortConveyorDrvVic = 22;
 
 };
 
