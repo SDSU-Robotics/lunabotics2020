@@ -11,9 +11,24 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
+/***************************************************************************
+****     This node sets the motor position of a linear actuator using   ****
+****         the TalonSRX PID capabilities                              ****
+****     Subscribers:                                                   ****
+****          std_msgs/Float32 ExcvTrencherPos - trencher set position  ****
+****     Publishers:                                                    ****
+****          std_msgs/Float32 actualPosition - trencher actual position****
+****          std_msgs/Float32 controlEffort - control effort applied   ****
+***************************************************************************/
 
-#define MIN_POT_READING -1023
-#define MAX_POT_READING -495
+//Subscribe to the actualPosition topic and manually extend and retract the linear actuator
+//		set these values equal to the max and min potentiometer values recorded 
+//		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
+#define MIN_POT_READING -495
+#define MAX_POT_READING -1023
+
+//Minimum and maximum input values for the actuator position EX: value sent from controller.
+//		These will map to the above values respectively
 #define MIN_LINEAR_INPUT 0.0
 #define MAX_LINEAR_INPUT 1.0
 
@@ -70,12 +85,14 @@ void Listener::setPosition(const std_msgs::Float32 msg)
 	// limit values
 	float pos = msg.data;
 
+	//Safeguarding addressing values that are larger or smaller than the defined input min/max
 	if (pos < MIN_LINEAR_INPUT)	pos = MIN_LINEAR_INPUT;
 	if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
 
+	//Linearly maps pos between MIN_POT_READING and MAX_POT_READING
 	pos = LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_POT_READING, MAX_LINEAR_INPUT, MAX_POT_READING);
 
-	
+	//Set motor to newly mapped position
 	_motor.Set(ControlMode::Position, pos);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
@@ -98,9 +115,10 @@ Listener::Listener()
 	//Ramp Config
 	motorProfile.closedloopRamp = 1.5f;
 			
-	//PID Config
+	//PID Config - These will determine how the the PID breakout board is wired, lookup a pinout and these will match the pins
 	//motorProfile.primaryPID.selectedFeedbackSensor = FeedbackDevice::QuadEncoder;
 	motorProfile.primaryPID.selectedFeedbackSensor = FeedbackDevice::Analog;
+
 	motorProfile.primaryPID.selectedFeedbackCoefficient = 1.0f;//0.25f;// 0.328293f;
 
 	//PID Constants

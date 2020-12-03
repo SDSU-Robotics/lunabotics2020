@@ -11,6 +11,19 @@
 
 using namespace std;
 
+/****************************************************************************
+****     This node interprets joystick values and publishes values for   ****
+****         hardware on the Excavation robot                            ****
+****     Subscribers:                                                    ****
+****          sensor_msgs/Joy /Excv/joy - excv values from joy node      ****
+****     Publishers:                                                     ****
+****          std_msgs/Float32 ExcvLDrvPwr - excv left motor power       ****
+****          std_msgs/Float32 ExcvRDrvPwr - excv right motor power      ****
+****          std_msgs/Float32 ExcvConveyorDrvPwr - conveyor motor power ****
+****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor power ****
+****          std_msgs/Float32 ExcvTrencherPos - trencher set position   ****
+****************************************************************************/
+
 class Listener
 {
 public:
@@ -140,13 +153,13 @@ void Listener::toggleLinearActuator(const bool keys, bool &currentButton, bool &
 	if (on)
 	{
 		ROS_INFO("Button on");
-		message.data = 0.8;
+		message.data = 1;
 
 	}
 	else
 	{
 		ROS_INFO("Button off");
-		message.data = 0.2;
+		message.data = 0;
 	}
 }
 
@@ -183,8 +196,8 @@ int main (int argc, char **argv)
 	//ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 
 	// sets the message to the message variable
-    	std_msgs::Float32 l_speed_msg;
-    	std_msgs::Float32 r_speed_msg;
+	std_msgs::Float32 l_speed_msg;
+	std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr_msg;
 	std_msgs::Float32 excavator_pwr_msg;
 	std_msgs::Float32 excavator_pos_msg;

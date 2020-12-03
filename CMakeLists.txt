@@ -22,7 +22,6 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 
 add_executable(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/src/ExcvDriveBaseHW.cpp)
 add_executable(ExcvController ${PROJECT_SOURCE_DIR}/src/ExcvController.cpp)
-add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/src/ExcvTrencherHW.cpp)
 add_executable(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/src/ExcvConveyorHW.cpp)
 add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
@@ -32,7 +31,6 @@ add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuator
 
 target_link_libraries(ExcvDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvController ${catkin_LIBRARIES} Threads::Threads)
-target_link_libraries(DriveController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvTrencherHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)

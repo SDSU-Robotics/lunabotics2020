@@ -11,6 +11,13 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
+/****************************************************************************
+****     This node sets the excavation conveyor motor to the speed set   ****
+****         in ExcvConveyorDrvPwr                                       ****
+****     Subscribers:                                                    ****
+****          std_msgs/Float32 ExcvConveyorDrvPwr - conveyor power value ****
+****************************************************************************/
+
 class Listener
 {
     public:
@@ -33,9 +40,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	//ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPWR", 100);
 	ros::Subscriber SpeedSub = n.subscribe("ExcvConveyorDrvPwr", 100, &Listener::setSpeed, &listener);
-	// get the speed from the publisher
 	
 
 	while (ros::ok()) //while ros is running
