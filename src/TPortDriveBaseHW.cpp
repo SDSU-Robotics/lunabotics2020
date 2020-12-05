@@ -11,6 +11,14 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
+/****************************************************************************
+****     This node subscribes to the motor values set in TportRDrvPwr and****
+****          TPortLDrvPwr and sets the motor speeds respectively        ****
+****     Subscribers:                                                    ****
+****          std_msgs/Float32 TPortRDrvPwr - tport right motor power    ****
+****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     ****
+****************************************************************************/
+
 class Listener
 {
     public:

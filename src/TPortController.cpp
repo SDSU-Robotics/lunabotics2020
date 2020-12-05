@@ -7,6 +7,18 @@
 
 using namespace std;
 
+/****************************************************************************
+****     This node interprets joystick values and publishes values for   ****
+****         hardware on the Transportation robot                        ****
+****     Subscribers:                                                    ****
+****          sensor_msgs/Joy /TPort/joy - tport values from joy node    ****
+****     Publishers:                                                     ****
+****          std_msgs/Float32 TPortRDrvPwr - tport right motor power    ****
+****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     ****
+****          std_msgs/Float32 TPortConveyorDrvPwr - conveyor motor power****
+****          std_msgs/Float32 TPortExtendPwr - extension motor power    ****
+****************************************************************************/
+
 class Listener
 {
 public:

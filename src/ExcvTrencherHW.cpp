@@ -13,6 +13,15 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
+/****************************************************************************
+****     This node subscribes to the motor values set in                 ****
+****         ExcvConveyorPitchPwr and ExcvTrencherDrvPwr and sets        ****
+****         the motors speeds respectively                              ****
+****     Subscribers:                                                    ****
+****          std_msgs/Float32 ExcvConveyorPitchPwr - pitch motor value  ****
+****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor value ****
+****************************************************************************/
+
 class Listener
 {
     public:

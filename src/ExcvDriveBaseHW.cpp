@@ -15,6 +15,14 @@ using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 //using namespace ctre::phoenix::MotorControl::SensorCollection;
 
+/****************************************************************************
+****     This node subscribes to the motor values set in ExcvLDrvPwr and ****
+****         ExcvRDrvPwr and sets the motors speeds respectively         ****
+****     Subscribers:                                                    ****
+****          std_msgs/Float32 ExcvLDrvPwr - left motor value            ****
+****          std_msgs/Float32 ExcvRDrvPwr - right motor value           ****
+****************************************************************************/
+
 class Listener
 {
     public:
@@ -27,9 +35,9 @@ class Listener
    //private:
         TalonSRX leftDrive = {DeviceIDs::ExcvDrvLTal};
         TalonSRX rightDrive = {DeviceIDs::ExcvDrvRTal};
-//		SensorCollection lDrive(leftDrive);//(leftDrive.getSensorCollection());
+	//	SensorCollection lDrive(leftDrive);//(leftDrive.getSensorCollection());
 
-		///ctre::phoenix::motorcontrol::SensorCollection::SensorCollection lDrive(leftDrive);
+		//ctre::phoenix::motorcontrol::SensorCollection::SensorCollection lDrive(leftDrive);
 };
 
 int main (int argc, char **argv)
@@ -45,7 +53,7 @@ int main (int argc, char **argv)
 	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener); 
 	// Left speed of excavator drive power
 	ros::Subscriber rSpeedSub = n.subscribe("ExcvRDrvPwr", 100, &Listener::setRSpeed, &listener);
-	// right speed of excavator drive power
+	// Right speed of excavator drive power
 	
 
 	int x;
@@ -56,8 +64,7 @@ int main (int argc, char **argv)
 		//x = phoenix::motorcontrol::SensorCollection::GetQuadratureVelocity(listener.leftDrive); 
 		x = listener.leftDrive.GetSensorCollection().GetQuadratureVelocity();
 		mssg = to_string(x);
-		//cout << x << endl;
-		//ROS_INFO("%s",mssg);
+
 		ROS_INFO_STREAM("Msg: " << mssg);
 
 		ros::spinOnce();
@@ -71,8 +78,6 @@ Listener::Listener()
 {
 	rightDrive.SetInverted(true);
 	//lDrive = leftDrive.GetSensorCollection();
-
-
 }
 
 void Listener::setLSpeed(const std_msgs::Float32 lspeed)

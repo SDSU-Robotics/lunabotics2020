@@ -16,6 +16,15 @@ using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
+/*****************************************************************************
+****     This node sets the trasnportation conveyor motor to the speed    ****
+****         set in TPortConveyorDrvPwr and sets the linear actuator to   ****
+****         the value set in TPortExtendPwr                              ****
+****     Subscribers:                                                     ****
+****          std_msgs/Float32 TPortConveyorDrvPwr - conveyor power value ****
+****          std_msgs/Float32 TportExtendPwr - extender position value   ****
+*****************************************************************************/
+
 class Listener
 {
     public:
