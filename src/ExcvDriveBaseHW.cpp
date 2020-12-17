@@ -1,6 +1,7 @@
 #include "ctre/Phoenix.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "geometry_msgs/Twist.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
@@ -15,13 +16,17 @@ using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 //using namespace ctre::phoenix::MotorControl::SensorCollection;
 
-/****************************************************************************
-****     This node subscribes to the motor values set in ExcvLDrvPwr and ****
-****         ExcvRDrvPwr and sets the motors speeds respectively         ****
-****     Subscribers:                                                    ****
-****          std_msgs/Float32 ExcvLDrvPwr - left motor value            ****
-****          std_msgs/Float32 ExcvRDrvPwr - right motor value           ****
-****************************************************************************/
+#define LINEAR_ADJ 1
+#define ANGULAR_ADJ 1
+
+/*******************************************************************************
+****     This node subscribes to the motor values set in ExcvLDrvPwr and 	****
+****         ExcvRDrvPwr and sets the motors speeds respectively         	****
+****     Subscribers:                                                    	****
+****          std_msgs/Float32 ExcvLDrvPwr - left motor value            	****
+****          std_msgs/Float32 ExcvRDrvPwr - right motor value              ****
+****		  geometry_msgs/Twist cmd_vel   - tport left & right motor power****
+*******************************************************************************/
 
 class Listener
 {
@@ -29,8 +34,12 @@ class Listener
 
 		Listener();
 
-        void setLSpeed(const std_msgs::Float32 lspeed);
-        void setRSpeed(const std_msgs::Float32 rspeed);
+        void getLSpeed(const std_msgs::Float32 lspeed);
+        void getRSpeed(const std_msgs::Float32 rspeed);
+		void getTwistSpeed(const geometry_msgs::Twist twist);
+		void setMotorOutput(const float left, const float right);
+		float leftPower = 0;
+		float rightPower = 0;
 
    //private:
         TalonSRX leftDrive = {DeviceIDs::ExcvDrvLTal};
@@ -50,11 +59,14 @@ int main (int argc, char **argv)
 	
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::setLSpeed, &listener); 
+	ros::Subscriber lSpeedSub = n.subscribe("ExcvLDrvPwr", 100, &Listener::getLSpeed, &listener);
 	// Left speed of excavator drive power
-	ros::Subscriber rSpeedSub = n.subscribe("ExcvRDrvPwr", 100, &Listener::setRSpeed, &listener);
+
+	ros::Subscriber rSpeedSub = n.subscribe("ExcvRDrvPwr", 100, &Listener::getRSpeed, &listener);
 	// Right speed of excavator drive power
-	
+
+	ros::Subscriber twistSpeedSub = n.subscribe("cmd_vel", 100, &Listener::getTwistSpeed, &listener);
+	// Right and Left speed of excavator drive power
 
 	int x;
 	string mssg;
@@ -66,6 +78,8 @@ int main (int argc, char **argv)
 		mssg = to_string(x);
 
 		ROS_INFO_STREAM("Msg: " << mssg);
+
+		listener.setMotorOutput(listener.leftPower, listener.rightPower);
 
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -80,16 +94,26 @@ Listener::Listener()
 	//lDrive = leftDrive.GetSensorCollection();
 }
 
-void Listener::setLSpeed(const std_msgs::Float32 lspeed)
+void Listener::getLSpeed(const std_msgs::Float32 lspeed)
 {
-    leftDrive.Set(ControlMode::PercentOutput, lspeed.data);
-
-	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+	leftPower = lspeed.data;
 }
 
-void Listener::setRSpeed(const std_msgs::Float32 rspeed)
+void Listener::getRSpeed(const std_msgs::Float32 rspeed)
 {
-    rightDrive.Set(ControlMode::PercentOutput, rspeed.data);
+	rightPower = rspeed.data;
+}
 
-	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+void Listener::getTwistSpeed(const geometry_msgs::Twist twist)
+{
+	leftPower = LINEAR_ADJ * twist.linear.x + ANGULAR_ADJ * twist.angular.z;
+	rightPower = LINEAR_ADJ * twist.linear.x - ANGULAR_ADJ * twist.angular.z;
+}
+
+void Listener::setMotorOutput(const float left, const float right)
+{
+	leftDrive.Set(ControlMode::PercentOutput, left);
+	rightDrive.Set(ControlMode::PercentOutput, right);
+
+	ctre::phoenix::unmanaged::FeedEnable(100);	
 }

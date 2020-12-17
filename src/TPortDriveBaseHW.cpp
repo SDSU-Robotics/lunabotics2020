@@ -5,7 +5,6 @@
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
-#include <iostream>
 
 using namespace std;
 using namespace ctre::phoenix;
@@ -16,13 +15,14 @@ using namespace ctre::phoenix::motorcontrol::can;
 #define LINEAR_ADJ 1
 #define ANGULAR_ADJ 1
 
-/****************************************************************************
-****     This node subscribes to the motor values set in TportRDrvPwr and****
-****          TPortLDrvPwr and sets the motor speeds respectively        ****
-****     Subscribers:                                                    ****
-****          std_msgs/Float32 TPortRDrvPwr - tport right motor power    ****
-****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     ****
-****************************************************************************/
+/*******************************************************************************
+****     This node subscribes to the motor values set in TportRDrvPwr and	****
+****          TPortLDrvPwr and sets the motor speeds respectively        	****
+****     Subscribers:                                                    	****
+****          std_msgs/Float32 TPortRDrvPwr - tport right motor power    	****
+****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     	****
+****		  geometry_msgs/Twist cmd_vel   - tport left & right motor power****
+********************************************************************************/
 
 class Listener
 {
