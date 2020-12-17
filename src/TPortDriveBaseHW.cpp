@@ -30,12 +30,14 @@ class Listener
 
 		Listener();
 
-        void setLSpeed(const std_msgs::Float32 lspeed);
-        void setRSpeed(const std_msgs::Float32 rspeed);
-		void setTwistSpeed(const geometry_msgs::Twist twist);
+        void getLSpeed(const std_msgs::Float32 lspeed);
+        void getRSpeed(const std_msgs::Float32 rspeed);
+		void getTwistSpeed(const geometry_msgs::Twist twist);
+		void setMotorOutput(const float left, const float right);
+		float leftPower = 0;
+		float rightPower = 0;
 
-
-   //private:
+   private:
         TalonSRX leftDrive = {DeviceIDs::TPortDrvLTal};
         TalonSRX rightDrive = {DeviceIDs::TPortDrvRTal};
 };
@@ -50,14 +52,15 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &Listener::setLSpeed, &listener);
-	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &Listener::setRSpeed, &listener);
-	ros::Subscriber twistSpeedSub = n.subscribe("cmd_vel", 100, &Listener::setTwistSpeed, &listener);
+	ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &Listener::getLSpeed, &listener);
+	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &Listener::getRSpeed, &listener);
+	ros::Subscriber twistSpeedSub = n.subscribe("cmd_vel", 100, &Listener::getTwistSpeed, &listener);
 
 	while (ros::ok())
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
+		listener.setMotorOutput(listener.leftPower, listener.rightPower);
 	}
 
 	return 0;
@@ -68,24 +71,26 @@ Listener::Listener()
 	rightDrive.SetInverted(true);
 }
 
-void Listener::setLSpeed(const std_msgs::Float32 lspeed)
+void Listener::getLSpeed(const std_msgs::Float32 lspeed)
 {
-    leftDrive.Set(ControlMode::PercentOutput, lspeed.data);
-
-	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+	leftPower = lspeed.data;
 }
 
-void Listener::setRSpeed(const std_msgs::Float32 rspeed)
+void Listener::getRSpeed(const std_msgs::Float32 rspeed)
 {
-    rightDrive.Set(ControlMode::PercentOutput, rspeed.data);
-
-	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+	rightPower = rspeed.data;
 }
 
-void Listener::setTwistSpeed(const geometry_msgs::Twist twist)
+void Listener::getTwistSpeed(const geometry_msgs::Twist twist)
 {
-	leftDrive.Set(ControlMode::PercentOutput, LINEAR_ADJ * twist.linear.x + ANGULAR_ADJ * twist.angular.z)
-	rightDrive.Set(ControlMode::PercentOutput, LINEAR_ADJ * twist.linear.x - ANGULAR_ADJ * twist.angular.z)
+	leftPower = LINEAR_ADJ * twist.linear.x + ANGULAR_ADJ * twist.angular.z;
+	rightPower = LINEAR_ADJ * twist.linear.x - ANGULAR_ADJ * twist.angular.z;
+}
 
-	ctre::phoenix::unmanaged::FeedEnable(100);
+void Listener::setMotorOutput(const float left, const float right)
+{
+	leftDrive.Set(ControlMode::PercentOutput, left);
+	rightDrive.Set(ControlMode::PercentOutput, right);
+
+	ctre::phoenix::unmanaged::FeedEnable(100);	
 }
