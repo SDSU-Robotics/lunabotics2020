@@ -56,7 +56,7 @@ int main (int argc, char **argv)
 	ros::Rate loop_rate(100);
 
 	// Publishes the message to the hardware interface
-	ros::Publisher l_voltage_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
+	ros::Publisher l_voltage_pub = n.advertise<std_msgs::Float32>("ExcvLDrvVolt", 100);
 
     // sets the message to the message variable
 	std_msgs::Float32 l_voltage_msg;
