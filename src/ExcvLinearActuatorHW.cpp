@@ -25,7 +25,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
 #define MIN_POT_READING -495
-#define MAX_POT_READING -1023
+#define MAX_POT_READING -975
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
 //		These will map to the above values respectively

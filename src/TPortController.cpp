@@ -4,6 +4,7 @@
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include <sensor_msgs/Joy.h>
+#include "JoyMap.h"
 
 using namespace std;
 
@@ -74,6 +75,15 @@ int main (int argc, char **argv)
 	
 	bool buttons[12];
 	double axes[6];
+	
+	//axes
+	int ForwardAxis = {JoyMap::TPortForwardAxis};
+    int TurnAxis = {JoyMap::TPortTurnAxis};
+
+	//buttons
+	int ConveyorToggle = {JoyMap::TPortConveyorToggle};
+	int PositiveExtension = {JoyMap::TPortPositveExtension};
+	int NegativeExtension = {JoyMap::TPortNegativeExtension};
 
 	bool currentButton = false;
 	bool on = false;
@@ -91,15 +101,17 @@ int main (int argc, char **argv)
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
-		listener.toggle(buttons[0], currentButton, on, conveyor_pwr);
-		listener.whileHeld(buttons[3],extend_pwr, 1); //extend
-		listener.whileHeld(buttons[0],extend_pwr, -1); //retract
-
-
-
+		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
+		listener.whileHeld(buttons[PositiveExtension],extend_pwr, 1); //extend - button Start
+		listener.whileHeld(buttons[NegativeExtension],extend_pwr, -1); //retract - button Back
+		
+		/*
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
-		
+		*/
+		l_speed_msg.data = axes[ForwardAxis]; // left Y
+		r_speed_msg.data = axes[TurnAxis]; // right Y
+
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
