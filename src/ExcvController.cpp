@@ -121,6 +121,7 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 		{
 				if(message.data > minSpeed)
 				{
+				
 					message.data = message.data - stepSize;
 					ROS_INFO("speed decreased");
 				}
@@ -255,6 +256,8 @@ int main (int argc, char **argv)
 		excavator_pwr_pub.publish(excavator_pwr_msg); // excavator power
 		excavator_pos_pub.publish(excavator_pos_msg);
 		excavator_pitch_pub.publish(excavator_pitch_msg);
+
+		
 
 		ros::spinOnce();
 		loop_rate.sleep();
