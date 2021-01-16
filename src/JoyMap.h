@@ -5,11 +5,11 @@ namespace JoyMap
 {
     //TPort - axes
 	static const int TPortForwardAxis = 1;
-	static const int TPortTurnAxis = 3;
+	static const int TPortTurnAxis = 4;
 
     //Excv - axes
     static const int ExcvForwardAxis = 1;
-	static const int ExcvTurnAxis = 3;	
+	static const int ExcvTurnAxis = 4;	
     static const int ExcvTrencherUp = 2;
     static const int ExcvTrencherDown = 5;
 
