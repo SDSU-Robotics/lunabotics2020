@@ -51,7 +51,7 @@ int main (int argc, char **argv)
 
 	//ExcvConveyorPitchPwr
 	// get speeds from listeners
-	ros::Subscriber pitchSpeedSub = n.subscribe("ExcvTrencherPitch", 100, &Listener::setPitchSpeed, &listener);
+	ros::Subscriber pitchSpeedSub = n.subscribe("ExcvTrencherPitchPwr", 100, &Listener::setPitchSpeed, &listener);
 	ros::Subscriber driveSpeedSub = n.subscribe("ExcvTrencherDrvPwr", 100, &Listener::setDriveSpeed, &listener);
 
 	while (ros::ok()) // while ros is running
