@@ -56,10 +56,10 @@ int main (int argc, char **argv)
 	ros::Rate loop_rate(100);
 
 	// Publishes the message to the hardware interface
-	ros::Publisher l_voltage_pub = n.advertise<std_msgs::Float32>("ExcvLDrvVolt", 100);
+	ros::Publisher l_current_pub = n.advertise<std_msgs::Float32>("ExcvLDrvCurrent", 100);
 
     // sets the message to the message variable
-	std_msgs::Float32 l_voltage_msg;
+	std_msgs::Float32 l_current_msg;
 
 	phoenix::platform::can::SetCANInterface("can0");
 	
@@ -88,11 +88,11 @@ int main (int argc, char **argv)
 		ROS_INFO_STREAM("Msg: " << mssg);
 
 		listener.setMotorOutput(listener.leftPower, listener.rightPower);
-		l_voltage_msg.data = listener.leftDrive.GetMotorOutputVoltage();
-		l_voltage_pub.publish(l_voltage_msg);
-		//l_voltage_pub.publish(listener.leftDrive.GetMotorOutputVoltage());
-		//msg.data = leftDrive.getMotorOutputVoltage();
-		//l_voltage_pub.publish(mssg);
+		l_current_msg.data = listener.leftDrive.GetOutputCurrent();
+		l_current_pub.publish(l_current_msg);
+		//l_current_pub.publish(listener.leftDrive.GetMotorOutputcurrent());
+		//msg.data = leftDrive.getMotorOutputcurrent();
+		//l_current_pub.publish(mssg);
 		
 
 		ros::spinOnce();
