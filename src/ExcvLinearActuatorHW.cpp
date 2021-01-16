@@ -54,6 +54,10 @@ int main (int argc, char **argv)
 	
 	ctre::phoenix::platform::can::SetCANInterface("can0");
 
+	ros::Publisher extend_current_pub = n.advertise<std_msgs::Float32>("ExcvExtendCurrent", 100);
+
+	std_msgs::Float32 extend_current_msg;
+
 	Listener listener;
 
 	ros::Subscriber position_sub = n.subscribe("ExcvTrencherPos", 1000, &Listener::setPosition, &listener);
@@ -71,6 +75,9 @@ int main (int argc, char **argv)
 		
 		controlEffort_msg.data = listener.getPercentOutput();
 		controlEffort_pub.publish(controlEffort_msg);
+
+		extend_current_msg.data = listener._motor.GetOutputCurrent();
+		extend_current_pub.publish(extend_current_msg);
 
 		ros::spinOnce();
 		loop_rate.sleep();

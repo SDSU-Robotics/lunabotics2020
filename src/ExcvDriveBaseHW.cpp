@@ -57,9 +57,12 @@ int main (int argc, char **argv)
 
 	// Publishes the message to the hardware interface
 	ros::Publisher l_current_pub = n.advertise<std_msgs::Float32>("ExcvLDrvCurrent", 100);
+	ros::Publisher r_current_pub = n.advertise<std_msgs::Float32>("ExcvRDrvCurrent", 100);
+
 
     // sets the message to the message variable
 	std_msgs::Float32 l_current_msg;
+	std_msgs::Float32 r_current_msg;
 
 	phoenix::platform::can::SetCANInterface("can0");
 	
@@ -90,9 +93,9 @@ int main (int argc, char **argv)
 		listener.setMotorOutput(listener.leftPower, listener.rightPower);
 		l_current_msg.data = listener.leftDrive.GetOutputCurrent();
 		l_current_pub.publish(l_current_msg);
-		//l_current_pub.publish(listener.leftDrive.GetMotorOutputcurrent());
-		//msg.data = leftDrive.getMotorOutputcurrent();
-		//l_current_pub.publish(mssg);
+		r_current_msg.data = listener.rightDrive.GetOutputCurrent();
+		r_current_pub.publish(r_current_msg);
+		
 		
 
 		ros::spinOnce();

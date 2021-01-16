@@ -47,6 +47,14 @@ int main (int argc, char **argv)
 
 	phoenix::platform::can::SetCANInterface("can0");
 
+	// Publishes the message to the hardware interface
+	ros::Publisher pitch_current_pub = n.advertise<std_msgs::Float32>("ExcvPitchCurrent", 100);
+	ros::Publisher drive_current_pub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
+
+	// sets the message to the message variable
+	std_msgs::Float32 pitch_current_msg;
+	std_msgs::Float32 drive_current_msg;
+
 	Listener listener;
 
 	//ExcvConveyorPitchPwr
@@ -56,6 +64,11 @@ int main (int argc, char **argv)
 
 	while (ros::ok()) // while ros is running
 	{
+		pitch_current_msg.data = listener.pitchVictor.GetOutputCurrent();
+		pitch_current_pub.publish(pitch_current_msg);
+		drive_current_msg.data = listener.driveVictor.GetOutputCurrent();
+		drive_current_pub.publish(drive_current_msg);
+
 		ros::spinOnce();
 		loop_rate.sleep();
 		//linearActuator();
