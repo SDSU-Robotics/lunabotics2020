@@ -1,5 +1,7 @@
 //This program interfaces with the trencher hardware on the Excavation bot 
 #include "ctre/Phoenix.h"
+#include "ctre/phoenix/CANifier.h"
+#include "ctre/phoenix/CANifierControlFrame.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include "ctre/phoenix/platform/Platform.h"
@@ -35,6 +37,7 @@ class Listener
        // VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
         VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
 		VictorSPX driveVictor = {DeviceIDs::ExcvDriveVic};
+		
 };
 
 int main (int argc, char **argv)
@@ -46,7 +49,7 @@ int main (int argc, char **argv)
 //	pcf8591Setup (int pinBase, int 12cAddress);
 
 	phoenix::platform::can::SetCANInterface("can0");
-
+	
 	Listener listener;
 
 	// get speeds from listeners
@@ -57,7 +60,6 @@ int main (int argc, char **argv)
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
-		//linearActuator();
 	}
 
 	return 0;
