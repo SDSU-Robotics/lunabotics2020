@@ -1,14 +1,11 @@
 #include "ctre/Phoenix.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Int8.h"
+#include "std_msgs/UInt16.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
 #include "DeviceIDs.h"
-
-#define MIN_PULSE 450.0		// us
-#define MAX_PULSE 2250.0	// us
-#define MIN_INPUT 0
-#define MAX_INPUT 1.0
 
 using namespace std;
 using namespace ctre::phoenix;
@@ -22,19 +19,40 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****         the value set in TPortExtendPwr                              ****
 ****     Subscribers:                                                     ****
 ****          std_msgs/Float32 TPortConveyorDrvPwr - conveyor power value ****
-****          std_msgs/Float32 TportExtendPwr - extender position value   ****
+****          std_msgs/Int8 TportExtendPwr - extender true/false value    ****
+****     Publishers:                                                      ****
+****          std_msgs/UInt16 TportExtendPos - tport extender position    ****
 *****************************************************************************/
 
 class Listener
 {
     public:
-        void setExtendSpeed(const std_msgs::Float32 msg);
+        void setExtendSpeed(const std_msgs::Int8 msg);
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
+        void setExtendPos(std_msgs::UInt16 extend_pos);
+        
 
     private:
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};
         CANifier _canifer = {DeviceIDs::canifier};
+        int extendVal = 0;
+
 };
+
+void Listener::setExtendPos(std_msgs::UInt16 extend_pos)
+{
+    int maxPos = 140;
+    int minPos = 45;
+
+    if(extendVal == 1)
+    {
+        extend_pos.data = maxPos;
+    }
+    else if(extendVal == -1)
+    {
+        extend_pos.data = minPos;
+    }
+}
 
 int main(int argc, char **argv)
 {
@@ -48,10 +66,18 @@ int main(int argc, char **argv)
     Listener listener;
 
     ros::Subscriber extendSpeedSub = n.subscribe("TPortExtendPwr", 100, &Listener::setExtendSpeed, &listener);
-    ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);	
+    ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);
+
+    ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+
+    std_msgs::UInt16 extend_pos;	
 
     while (ros::ok())
     {
+        listener.setExtendPos(extend_pos);
+
+        extendPos_pub.publish(extend_pos);
+
         ros::spinOnce();
         loop_rate.sleep();
     }
@@ -59,23 +85,13 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void Listener::setExtendSpeed(const std_msgs::Float32 msg)
+void Listener::setExtendSpeed(const std_msgs::Int8 msg)
 {
 	// limit values
-	float pos = msg.data;
-	if (pos < MIN_INPUT)	pos = MIN_INPUT;
-	if (pos > MAX_INPUT)	pos = MAX_INPUT;
-
-	_canifer.SetGeneralOutput(CANifier::GeneralPin::SPI_CLK_PWM0P, false, true);
-
-	float pulse = LinearInterpolation::Calculate(pos, MIN_INPUT, MIN_PULSE, MAX_INPUT, MAX_PULSE); // pulse length in us
-
-	_canifer.SetPWMOutput(0, pulse / 4200.0); // 4.2 ms period
-	
-	_canifer.EnablePWMOutput(0, true);
-
-	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+	extendVal = msg.data;
 }
+
+
 
 void Listener::setDriveSpeed(const std_msgs::Float32 msg)
 {

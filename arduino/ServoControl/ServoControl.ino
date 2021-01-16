@@ -32,7 +32,7 @@ void servo_cb( const std_msgs::UInt16& cmd_msg){
 }
 
 
-ros::Subscriber<std_msgs::UInt16> sub("servo", servo_cb);
+ros::Subscriber<std_msgs::UInt16> sub("TPortExtendPos", servo_cb);
 
 void setup(){
   pinMode(13, OUTPUT);

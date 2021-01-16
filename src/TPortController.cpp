@@ -3,6 +3,7 @@
 
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Int8.h"
 #include <sensor_msgs/Joy.h>
 
 using namespace std;
@@ -16,7 +17,7 @@ using namespace std;
 ****          std_msgs/Float32 TPortRDrvPwr - tport right motor power    ****
 ****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     ****
 ****          std_msgs/Float32 TPortConveyorDrvPwr - conveyor motor power****
-****          std_msgs/Float32 TPortExtendPwr - extension motor power    ****
+****          std_msgs/Int8 TportExtendPwr - extender true/false value   ****
 ****************************************************************************/
 
 class Listener
@@ -25,7 +26,7 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
-	void whileHeld(bool button, std_msgs::Float32 msg, double value);
+	void whileHeld(bool button, std_msgs::Int8 msg, double value);
 
 private:
     bool _buttons[12] = { 0 };
@@ -50,7 +51,7 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 6; i++)
         axes[i] = _axes[i];
 }
-void Listener::whileHeld(bool button, std_msgs::Float32 msg, double value)
+void Listener::whileHeld(bool button, std_msgs::Int8 msg, double value)
 {
 	if (button)
 	{
@@ -81,12 +82,12 @@ int main (int argc, char **argv)
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
 	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
-	ros::Publisher extend_pub = n.advertise<std_msgs::Float32>("TPortExtendPwr", 100);
+	ros::Publisher extend_pub = n.advertise<std_msgs::Int8>("TPortExtendPwr", 100);
 	
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr;
-	std_msgs::Float32 extend_pwr;
+	std_msgs::Int8 extend_pwr;
 	
 	while (ros::ok())
 	{
@@ -103,6 +104,7 @@ int main (int argc, char **argv)
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
+		extend_pub.publish(extend_pwr);
 		
 		ros::spinOnce();
 		loop_rate.sleep();
