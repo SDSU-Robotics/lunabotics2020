@@ -262,7 +262,7 @@ int main (int argc, char **argv)
         listener.getJoyVals(buttons, axes, lTgrInit, rTgrInit);
 		listener.toggleDrvSpeed(buttons[TrencherDriveDecrease], buttons[TrencherDriveIncrease], currentButton4, currentButton5, excavator_pwr_msg);
 		listener.toggle(buttons[ConveyorToggle], currentButton1, on1, conveyor_pwr_msg);
-		listener.toggleLinearActuator(buttons[ConveyorToggle], currentButton2, on2, excavator_pos_msg);
+		listener.toggleLinearActuator(buttons[TrencherExtend], currentButton2, on2, excavator_pos_msg);
 		listener.trencherPitch(axes[TrencherDown], axes[TrencherUp], excavator_pitch_msg);
 
 		/*l_speed_msg.data = axes[1]; // left Y
