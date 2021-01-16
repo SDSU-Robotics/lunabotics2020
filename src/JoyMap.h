@@ -3,20 +3,26 @@
 
 namespace JoyMap
 {
-    //axes
+    //TPort - axes
 	static const int TPortForwardAxis = 1;
 	static const int TPortTurnAxis = 3;
 
+    //Excv - axes
     static const int ExcvForwardAxis = 1;
 	static const int ExcvTurnAxis = 3;	
+    static const int ExcvTrencherUp = 2;
+    static const int ExcvTrencherDown = 5;
 
-    //buttons
+    //TPort - buttons
     static const int TPortConveyorToggle = 0;
     static const int TPortNegativeExtension = 6;
     static const int TPortPositveExtension = 7;
 
-    static const int ExcvTrenchDriveDecrease = 2;
-    static const int ExcvTrenchDriveIncrease = 5;
+    //Excv - buttons
+    static const int ExcvConveyorToggle = 0;
+    static const int ExcvTrencherDriveDecrease = 4;
+    static const int ExcvTrencherDriveIncrease = 5;
+    static const int ExcvTrencherExtend = 7;
 
 };
 

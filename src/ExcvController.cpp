@@ -216,11 +216,15 @@ int main (int argc, char **argv)
 	//axes
 	int ForwardAxis = {JoyMap::ExcvForwardAxis};
     int TurnAxis = {JoyMap::ExcvTurnAxis};
+	int TrencherUp = {JoyMap::ExcvTrencherUp};
+	int TrencherDown = {JoyMap::ExcvTrencherDown};
 
 	//buttons
-	int ConveyorToggle = {JoyMap::TPortConveyorToggle};
-	int TrenchDriveIncrease = {JoyMap::ExcvTrenchDriveIncrease};
-	int TrenchDriveDecrease = {JoyMap::ExcvTrenchDriveDecrease};
+	int ConveyorToggle = {JoyMap::ExcvConveyorToggle};
+	int TrencherDriveIncrease = {JoyMap::ExcvTrencherDriveIncrease};
+	int TrencherDriveDecrease = {JoyMap::ExcvTrencherDriveDecrease};
+	int TrencherExtend = {JoyMap::ExcvTrencherExtend};
+
 
 	// currentButton and on will need to be seperate booleans for each array value. 
 	bool currentButton4 = 0;
@@ -256,13 +260,13 @@ int main (int argc, char **argv)
 	while (ros::ok()) // runs while ros is running
 	{
         listener.getJoyVals(buttons, axes, lTgrInit, rTgrInit);
-		listener.toggleDrvSpeed(buttons[4], buttons[5], currentButton4, currentButton5, excavator_pwr_msg);
-		listener.toggle(buttons[0], currentButton1, on1, conveyor_pwr_msg);
-		listener.toggleLinearActuator(buttons[7], currentButton2, on2, excavator_pos_msg);
-		listener.trencherPitch(axes[5], axes[2], excavator_pitch_msg);
+		listener.toggleDrvSpeed(buttons[TrencherDriveDecrease], buttons[TrencherDriveIncrease], currentButton4, currentButton5, excavator_pwr_msg);
+		listener.toggle(buttons[ConveyorToggle], currentButton1, on1, conveyor_pwr_msg);
+		listener.toggleLinearActuator(buttons[ConveyorToggle], currentButton2, on2, excavator_pos_msg);
+		listener.trencherPitch(axes[TrencherDown], axes[TrencherUp], excavator_pitch_msg);
 
 		/*l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[3]; // right Y (changed from 4 to 3 - check)*/
+		r_speed_msg.data = axes[3]; // right Y */
 		
 		l_speed_msg.data = axes[ForwardAxis]; // left Y
 		r_speed_msg.data = axes[TurnAxis]; // right Y
