@@ -50,6 +50,15 @@ int main (int argc, char **argv)
 
 	phoenix::platform::can::SetCANInterface("can0");
 
+	// Publishes the message to the hardware interface
+	ros::Publisher l_current_pub = n.advertise<std_msgs::Float32>("TPortLDrvCurrent", 100);
+	ros::Publisher r_current_pub = n.advertise<std_msgs::Float32>("TPortRDrvCurrent", 100);
+
+
+    // sets the message to the message variable
+	std_msgs::Float32 l_current_msg;
+	std_msgs::Float32 r_current_msg;
+
 	Listener listener;
 
 	ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &Listener::getLSpeed, &listener);
@@ -58,6 +67,11 @@ int main (int argc, char **argv)
 
 	while (ros::ok())
 	{
+		l_current_msg.data = listener.leftDrive.GetOutputCurrent();
+		l_current_pub.publish(l_current_msg);
+		r_current_msg.data = listener.rightDrive.GetOutputCurrent();
+		r_current_pub.publish(r_current_msg);
+		
 		ros::spinOnce();
 		loop_rate.sleep();
 		listener.setMotorOutput(listener.leftPower, listener.rightPower);

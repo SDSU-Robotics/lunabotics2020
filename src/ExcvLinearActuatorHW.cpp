@@ -25,7 +25,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
 #define MIN_POT_READING -495
-#define MAX_POT_READING -1023
+#define MAX_POT_READING -975
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
 //		These will map to the above values respectively
@@ -54,6 +54,10 @@ int main (int argc, char **argv)
 	
 	ctre::phoenix::platform::can::SetCANInterface("can0");
 
+	ros::Publisher extend_current_pub = n.advertise<std_msgs::Float32>("ExcvExtendCurrent", 100);
+
+	std_msgs::Float32 extend_current_msg;
+
 	Listener listener;
 
 	ros::Subscriber position_sub = n.subscribe("ExcvTrencherPos", 1000, &Listener::setPosition, &listener);
@@ -71,6 +75,9 @@ int main (int argc, char **argv)
 		
 		controlEffort_msg.data = listener.getPercentOutput();
 		controlEffort_pub.publish(controlEffort_msg);
+
+		extend_current_msg.data = listener._motor.GetOutputCurrent();
+		extend_current_pub.publish(extend_current_msg);
 
 		ros::spinOnce();
 		loop_rate.sleep();

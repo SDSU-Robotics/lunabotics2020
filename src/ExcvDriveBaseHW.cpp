@@ -55,6 +55,15 @@ int main (int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
+	// Publishes the message to the hardware interface
+	ros::Publisher l_current_pub = n.advertise<std_msgs::Float32>("ExcvLDrvCurrent", 100);
+	ros::Publisher r_current_pub = n.advertise<std_msgs::Float32>("ExcvRDrvCurrent", 100);
+
+
+    // sets the message to the message variable
+	std_msgs::Float32 l_current_msg;
+	std_msgs::Float32 r_current_msg;
+
 	phoenix::platform::can::SetCANInterface("can0");
 	
 	Listener listener;
@@ -68,6 +77,8 @@ int main (int argc, char **argv)
 	ros::Subscriber twistSpeedSub = n.subscribe("cmd_vel", 100, &Listener::getTwistSpeed, &listener);
 	// Right and Left speed of excavator drive power
 
+	
+
 	int x;
 	string mssg;
 
@@ -80,6 +91,12 @@ int main (int argc, char **argv)
 		ROS_INFO_STREAM("Msg: " << mssg);
 
 		listener.setMotorOutput(listener.leftPower, listener.rightPower);
+		l_current_msg.data = listener.leftDrive.GetOutputCurrent();
+		l_current_pub.publish(l_current_msg);
+		r_current_msg.data = listener.rightDrive.GetOutputCurrent();
+		r_current_pub.publish(r_current_msg);
+		
+		
 
 		ros::spinOnce();
 		loop_rate.sleep();

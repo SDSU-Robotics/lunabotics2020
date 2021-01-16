@@ -36,6 +36,9 @@ int main (int argc, char **argv)
 
 	phoenix::platform::can::SetCANInterface("can0"); // set Canable
 
+	ros::Publisher hm_current_pub = n.advertise<std_msgs::Float32>("ExcvHmDrvCurrent", 100);
+
+	std_msgs::Float32 hm_current_msg;
 	std_msgs::Float32 conveyor_pwr;
 
 	Listener listener;
@@ -45,6 +48,9 @@ int main (int argc, char **argv)
 
 	while (ros::ok()) //while ros is running
 	{
+		hm_current_msg.data = listener.HMDrive.GetOutputCurrent();
+		hm_current_pub.publish(hm_current_msg);
+
 		ros::spinOnce();
 		loop_rate.sleep();
 	}

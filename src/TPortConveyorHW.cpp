@@ -61,6 +61,10 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(100);
 
     phoenix::platform::can::SetCANInterface("can0");
+    
+    ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
+    std_msgs::Float32 conveyor_current_msg;
+
 
 
     Listener listener;
@@ -78,6 +82,8 @@ int main(int argc, char **argv)
 
         extendPos_pub.publish(extend_pos);
 
+        conveyor_current_msg.data = listener.TPortConveyorDrvVic.GetOutputCurrent();
+		conveyor_current_pub.publish(conveyor_current_msg);
         ros::spinOnce();
         loop_rate.sleep();
     }
