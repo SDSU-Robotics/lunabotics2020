@@ -23,7 +23,6 @@ namespace JoyMap
     static const int ExcvTrencherDriveDecrease = 4;
     static const int ExcvTrencherDriveIncrease = 5;
     static const int ExcvTrencherExtend = 7;
-
 };
 
 #endif

@@ -24,6 +24,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/UInt16 TportExtendPos - tport extender position    ****
 *****************************************************************************/
 
+#define CONVEYOR_SPEED_SCALE 0.1
+
 class Listener
 {
     public:
@@ -61,10 +63,7 @@ int main(int argc, char **argv)
 
     phoenix::platform::can::SetCANInterface("can0");
     
-    ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
     std_msgs::Float32 conveyor_current_msg;
-
-
 
     Listener listener;
 
@@ -72,6 +71,7 @@ int main(int argc, char **argv)
     ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);
 
     ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+    ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
 
     std_msgs::UInt16 extend_pos;	
 
@@ -98,7 +98,7 @@ void Listener::setExtendSpeed(const std_msgs::Int8 msg)
 
 void Listener::setDriveSpeed(const std_msgs::Float32 msg)
 {
-    TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data);
+    TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
 
     ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }

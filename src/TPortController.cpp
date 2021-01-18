@@ -1,6 +1,6 @@
 #include <string>
 #include <unistd.h>
-
+#include <cmath>
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Int8.h"
@@ -20,6 +20,8 @@ using namespace std;
 ****          std_msgs/Float32 TPortConveyorDrvPwr - conveyor motor power****
 ****          std_msgs/Int8 TportExtendPwr - extender true/false value   ****
 ****************************************************************************/
+
+#define DRIVE_SCALE 0.5
 
 class Listener
 {
@@ -110,8 +112,8 @@ int main (int argc, char **argv)
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
 		*/
-		l_speed_msg.data = axes[ForwardAxis]; // left Y
-		r_speed_msg.data = axes[TurnAxis]; // right Y
+		l_speed_msg.data = pow(axes[ForwardAxis], 3.0) * DRIVE_SCALE; // left Y
+		r_speed_msg.data = pow(axes[TurnAxis], 3.0) * DRIVE_SCALE; // right Y
 
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
