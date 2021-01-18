@@ -40,8 +40,7 @@ class Listener
 		void setMotorOutput(const float left, const float right);
 		float leftPower = 0;
 		float rightPower = 0;
-
-   //private:
+		
         TalonSRX leftDrive = {DeviceIDs::ExcvDrvLTal};
         TalonSRX rightDrive = {DeviceIDs::ExcvDrvRTal};
 	//	SensorCollection lDrive(leftDrive);//(leftDrive.getSensorCollection());

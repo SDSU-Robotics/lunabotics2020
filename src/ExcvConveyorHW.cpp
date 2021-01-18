@@ -22,9 +22,7 @@ class Listener
 {
     public:
         void setSpeed(const std_msgs::Float32 hm_speed);
-       
-    private:
-        VictorSPX HMDrive = {DeviceIDs::ExcvConveyorDrvVic};
+        VictorSPX ConveyorVictor = {DeviceIDs::ExcvConveyorDrvVic};
         
 };
 
@@ -48,9 +46,6 @@ int main (int argc, char **argv)
 
 	while (ros::ok()) //while ros is running
 	{
-		hm_current_msg.data = listener.HMDrive.GetOutputCurrent();
-		hm_current_pub.publish(hm_current_msg);
-
 		ros::spinOnce();
 		loop_rate.sleep();
 	}
@@ -60,7 +55,7 @@ int main (int argc, char **argv)
 
 void Listener::setSpeed(const std_msgs::Float32 hm_speed)
 {
-    HMDrive.Set(ControlMode::PercentOutput, hm_speed.data); // set drive speed
+    ConveyorVictor.Set(ControlMode::PercentOutput, hm_speed.data); // set drive speed
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }

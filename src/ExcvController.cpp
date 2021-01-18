@@ -63,24 +63,7 @@ void Listener::getJoyVals(bool buttons[], double axes[], bool &lTgrInit, bool &r
 
     for (int i = 0; i < 6; i++)
         axes[i] = _axes[i];
-/*
-	if(!lTgrInit && axes[2] != 0)
-	{
-		lTgrInit = true;
-	}
-	else
-	{
-		axes[2] = 1;
-	}
-	
-	if(!rTgrInit && axes[5] != 0)
-	{
-		rTgrInit = true;
-	}
-	else
-	{
-		axes[5] = 1;
-	}*/
+
 }
 
 void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message)
@@ -121,19 +104,19 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 		//Toggle On button release
 	}
 	else if (lastButton4 && !currentButton4)
+	{
+		if (message.data > minSpeed)
 		{
-				if(message.data > minSpeed)
-				{
-				
-					message.data = message.data - stepSize;
-					ROS_INFO("speed decreased");
-				}
-				else if (message.data <= minSpeed)
-				{
-					message.data = minSpeed;
-					ROS_INFO("Min Speed reached");
-				}
+
+			message.data = message.data - stepSize;
+			ROS_INFO("speed decreased");
 		}
+		else if (message.data <= minSpeed)
+		{
+			message.data = minSpeed;
+			ROS_INFO("Min Speed reached");
+		}
+	}
 }
 
 void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
@@ -214,8 +197,8 @@ int main (int argc, char **argv)
 	double axes[6];
 
 	//axes
-	int ForwardAxis = {JoyMap::ExcvForwardAxis};
-    int TurnAxis = {JoyMap::ExcvTurnAxis};
+	int LeftAxis = {JoyMap::ExcvLeftAxis};
+    int RightAxis = {JoyMap::ExcvRightAxis};
 	int TrencherUp = {JoyMap::ExcvTrencherUp};
 	int TrencherDown = {JoyMap::ExcvTrencherDown};
 
@@ -268,8 +251,8 @@ int main (int argc, char **argv)
 		/*l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y */
 		
-		l_speed_msg.data = axes[ForwardAxis]; // left Y
-		r_speed_msg.data = axes[TurnAxis]; // right Y
+		l_speed_msg.data = axes[LeftAxis]; // left Y
+		r_speed_msg.data = axes[RightAxis]; // right Y
 
 		l_speed_pub.publish(l_speed_msg); // left speed
 		r_speed_pub.publish(r_speed_msg); // right speed

@@ -31,10 +31,7 @@ class Listener
         void setPitchSpeed(const std_msgs::Float32 pitchspeed); // Pitch speed
 		void setDriveSpeed(const std_msgs::Float32 drivespeed); //Drive speed 
 		int linearActuator();
-
-    private:
 		// motor controls using Victors
-       // VictorSPX extendVictor = {DeviceIDs::ExcvExtendVic};
         VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
 		VictorSPX driveVictor = {DeviceIDs::ExcvDriveVic};
 		
@@ -54,7 +51,7 @@ int main (int argc, char **argv)
 	ros::Publisher pitch_current_pub = n.advertise<std_msgs::Float32>("ExcvPitchCurrent", 100);
 	ros::Publisher drive_current_pub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
 
-	// sets the message to the message variable
+	// sets the message type to the message variable
 	std_msgs::Float32 pitch_current_msg;
 	std_msgs::Float32 drive_current_msg;
 
@@ -67,11 +64,6 @@ int main (int argc, char **argv)
 
 	while (ros::ok()) // while ros is running
 	{
-		pitch_current_msg.data = listener.pitchVictor.GetOutputCurrent();
-		pitch_current_pub.publish(pitch_current_msg);
-		drive_current_msg.data = listener.driveVictor.GetOutputCurrent();
-		drive_current_pub.publish(drive_current_msg);
-
 		ros::spinOnce();
 		loop_rate.sleep();
 	}

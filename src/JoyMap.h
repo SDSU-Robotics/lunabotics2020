@@ -8,8 +8,8 @@ namespace JoyMap
 	static const int TPortTurnAxis = 4;
 
     //Excv - axes
-    static const int ExcvForwardAxis = 1;
-	static const int ExcvTurnAxis = 4;	
+    static const int ExcvLeftAxis = 1;
+	static const int ExcvRightAxis = 4;	
     static const int ExcvTrencherUp = 2;
     static const int ExcvTrencherDown = 5;
 

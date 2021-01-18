@@ -36,8 +36,6 @@ class Listener
 		void setMotorOutput(const float left, const float right);
 		float leftPower = 0;
 		float rightPower = 0;
-
-   private:
         TalonSRX leftDrive = {DeviceIDs::TPortDrvLTal};
         TalonSRX rightDrive = {DeviceIDs::TPortDrvRTal};
 };

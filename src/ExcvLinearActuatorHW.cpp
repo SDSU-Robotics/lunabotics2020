@@ -24,7 +24,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 //Subscribe to the actualPosition topic and manually extend and retract the linear actuator
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
-#define MIN_POT_READING -495
+#define MIN_POT_READING -500
 #define MAX_POT_READING -975
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
@@ -40,8 +40,6 @@ public:
 	void setPosition(const std_msgs::Float32 msg);
 	double getActualPosition();
 	double getPercentOutput();
-
-private:
 	TalonSRX _motor = {DeviceIDs::ExcvExtendTal};
 };
 
@@ -129,8 +127,8 @@ Listener::Listener()
 	motorProfile.primaryPID.selectedFeedbackCoefficient = 1.0f;//0.25f;// 0.328293f;
 
 	//PID Constants
-	motorProfile.slot0.kP                       = 10.0f; //0.01f; //Propotional Constant.  Controls the speed of error correction.
-	motorProfile.slot0.kI                       = 0.01f; //Integral Constant.     Controls the steady-state error correction.
+	motorProfile.slot0.kP                       = 1.0f; //0.01f; //Propotional Constant.  Controls the speed of error correction.
+	motorProfile.slot0.kI                       = 0.03f; //Integral Constant.     Controls the steady-state error correction.
 	motorProfile.slot0.kD                       = 0.0f; //Derivative Constant.   Controls error oscillation.
 	motorProfile.slot0.kF                       = 0.0f; //Feed Forward Constant. (IDK what this does)
 	motorProfile.slot0.integralZone             = 100000;   //Maximum value for the integral error accumulator. Automatically cleared when exceeded.

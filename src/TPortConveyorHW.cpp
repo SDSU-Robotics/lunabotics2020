@@ -30,11 +30,10 @@ class Listener
         void setExtendSpeed(const std_msgs::Int8 msg);
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
         void setExtendPos(std_msgs::UInt16 extend_pos);
-        
+        VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};
+        CANifier _canifer = {DeviceIDs::canifier};        
 
     private:
-        VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};
-        CANifier _canifer = {DeviceIDs::canifier};
         int extendVal = 0;
 
 };
@@ -82,8 +81,6 @@ int main(int argc, char **argv)
 
         extendPos_pub.publish(extend_pos);
 
-        conveyor_current_msg.data = listener.TPortConveyorDrvVic.GetOutputCurrent();
-		conveyor_current_pub.publish(conveyor_current_msg);
         ros::spinOnce();
         loop_rate.sleep();
     }
