@@ -71,8 +71,6 @@ Listener::Listener()
 {
 	rightDrive.SetInverted(true);
 	//lDrive = leftDrive.GetSensorCollection();
-
-
 }
 
 void Listener::setLSpeed(const std_msgs::Float32 lspeed)
