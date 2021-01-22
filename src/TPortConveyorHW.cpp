@@ -52,5 +52,5 @@ void Listener::setDriveSpeed(const std_msgs::Float32 extendspeed)
 {
     ExcvConveyorDrvVic.Set(ControlMode::PercentOutput, extendspeed.data);
 
-    ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
 }
