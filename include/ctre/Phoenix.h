@@ -35,13 +35,14 @@
 #include "ctre/phoenix/tasking/ILoopable.h"
 #include "ctre/phoenix/tasking/IProcessable.h"
 #include "ctre/phoenix/Utilities.h"
-
+/*
 #ifdef Phoenix_WPI
 #include "ctre/phoenix/motorcontrol/can/WPI_TalonFX.h"
 #include "ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h"
 #include "ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h"
 #include "ctre/phoenix/tasking/ButtonMonitor.h"
 #endif
+*/
 
 /*
  * In general it is bad-practice to include namespaces in a C++ header, as this 
