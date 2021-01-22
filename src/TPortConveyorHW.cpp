@@ -31,16 +31,15 @@ class Listener
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
-        void setExtendPos(std_msgs::UInt16 extend_pos);
-        VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};
-        CANifier _canifer = {DeviceIDs::canifier};        
+        void setExtendPos(std_msgs::UInt16 &extend_pos);
+        VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
 
     private:
         int extendVal = 0;
 
 };
 
-void Listener::setExtendPos(std_msgs::UInt16 extend_pos)
+void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
 {
     int maxPos = 140;
     int minPos = 45;
@@ -49,7 +48,7 @@ void Listener::setExtendPos(std_msgs::UInt16 extend_pos)
     {
         extend_pos.data = maxPos;
     }
-    else if(extendVal == -1)
+    else if(extendVal == 0)
     {
         extend_pos.data = minPos;
     }
@@ -78,7 +77,7 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         listener.setExtendPos(extend_pos);
-
+        
         extendPos_pub.publish(extend_pos);
 
         ros::spinOnce();

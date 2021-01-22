@@ -29,7 +29,8 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
-	void whileHeld(bool button, std_msgs::Int8 msg, double value);
+	void toggleInt(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message);
+	void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 
 private:
     bool _buttons[12] = { 0 };
@@ -54,7 +55,7 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 6; i++)
         axes[i] = _axes[i];
 }
-void Listener::whileHeld(bool button, std_msgs::Int8 msg, double value)
+void Listener::whileHeld(bool button, std_msgs::Int8 & msg, double value)
 {
 	if (button)
 	{
@@ -62,7 +63,7 @@ void Listener::whileHeld(bool button, std_msgs::Int8 msg, double value)
 	}
 	else
 	{
-		msg.data = 0;
+		msg.data = 1;
 	}
 }
 
@@ -85,11 +86,13 @@ int main (int argc, char **argv)
 
 	//buttons
 	int ConveyorToggle = {JoyMap::TPortConveyorToggle};
-	int PositiveExtension = {JoyMap::TPortPositveExtension};
-	int NegativeExtension = {JoyMap::TPortNegativeExtension};
+	int ToggleExtension = {JoyMap::TPortToggleExtension};
 
 	bool currentButton = false;
 	bool on = false;
+
+	bool currentButtonExtend = false;
+	bool onExtend = false;
 
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
@@ -105,8 +108,7 @@ int main (int argc, char **argv)
 	{
         listener.getJoyVals(buttons, axes);
 		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
-		listener.whileHeld(buttons[PositiveExtension],extend_pwr, 1); //extend - button Start
-		listener.whileHeld(buttons[NegativeExtension],extend_pwr, -1); //retract - button Back
+		listener.toggleInt(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr);
 		
 		/*
 		l_speed_msg.data = axes[1]; // left Y
@@ -118,6 +120,7 @@ int main (int argc, char **argv)
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
+
 		extend_pub.publish(extend_pwr);
 		
 		ros::spinOnce();
@@ -149,6 +152,30 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	else
 	{
 		ROS_INFO("A button off");
+		message.data = 0;
+	}
+}
+
+void Listener::toggleInt(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		ROS_INFO("Extend button released");
+	}
+		
+	if (on)
+	{
+		ROS_INFO("Extend button on");
+		message.data = 1;
+	}
+	else
+	{
+		ROS_INFO("Extend button off");
 		message.data = 0;
 	}
 }
