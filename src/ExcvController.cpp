@@ -23,6 +23,7 @@ using namespace std;
 ****          std_msgs/Float32 ExcvConveyorDrvPwr - conveyor motor power ****
 ****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor power ****
 ****          std_msgs/Float32 ExcvTrencherPos - trencher set position   ****
+****          std_msgs/Float32 ExcvTrencherPitchPwr - trencher pitch pwr ****
 ****************************************************************************/
 
 class Listener
@@ -212,14 +213,18 @@ void Listener::trencherPitch(double &downTgr, double &upTgr, std_msgs::Float32 &
 		}
 	}*/
 
-	if(upTgr == 0 && downTgr == 0)
-		msg.data = 0;
-	
-	if(upTgr == 1 && downTgr == 1)
+	bool triggersPressed = false;
+
+
+	if(upTgr < 0 && upTgr >= -1)
+		msg.data = upTgr*(-1);
+	else if(downTgr < 0 && downTgr >= -1)
+		msg.data = downTgr;
+	else
 		msg.data = 0;
 
-	
-	
+	//else if(downTgr == 1 && upTgr ==1)
+		//triggersPressed = false;
 }
 
 void ResetTrencherPitch (double &downTgr, double &upTgr){
@@ -275,7 +280,6 @@ int main (int argc, char **argv)
 	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
 	ros::Publisher excavator_pos_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
 	ros::Publisher excavator_pitch_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPitchPwr", 100);
-	//ros::Publisher trencher_pitchvalue_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPitchPwr", 100);
 
 
 	// sets the message to the message variable
@@ -290,8 +294,8 @@ int main (int argc, char **argv)
 		
 	while (ros::ok()) // runs while ros is running
 	{
-		//axes[TrencherDown] = 1;
-		//axes[TrencherUp] = 1;
+		//axes[TrencherDown] = 0;
+		//axes[TrencherUp] = 0;
 	
 
 		//listener.ResetTrencherPitch();

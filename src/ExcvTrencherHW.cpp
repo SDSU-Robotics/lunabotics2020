@@ -32,7 +32,8 @@ class Listener
 		void setDriveSpeed(const std_msgs::Float32 drivespeed); //Drive speed 
 		int linearActuator();
 		// motor controls using Victors
-        VictorSPX pitchVictor = {DeviceIDs::ExcvPitchVic};
+        TalonSRX pitchTalon = {DeviceIDs::ExcvPitchTal};
+		
 		VictorSPX driveVictor = {DeviceIDs::ExcvDriveVic};
 		
 };
@@ -81,7 +82,7 @@ int main (int argc, char **argv)
 
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {
-    pitchVictor.Set(ControlMode::PercentOutput, pitchspeed.data);
+    pitchTalon.Set(ControlMode::PercentOutput, pitchspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
