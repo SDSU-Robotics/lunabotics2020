@@ -10,8 +10,8 @@ namespace JoyMap
     //Excv - axes
     static const int ExcvLeftAxis = 1;
 	static const int ExcvRightAxis = 4;	
-    static const int ExcvTrencherUp = 2;
-    static const int ExcvTrencherDown = 5;
+    static const int ExcvTrencherUp = 5;
+    static const int ExcvTrencherDown = 2;
 
     //TPort - buttons
     static const int TPortConveyorToggle = 0;
