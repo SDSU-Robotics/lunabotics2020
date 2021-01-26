@@ -18,6 +18,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvConveyorDrvPwr - conveyor power value ****
 ****************************************************************************/
 
+#define CONVEYOR_SPEED 0.05
+
 class Listener
 {
     public:
@@ -53,9 +55,9 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void Listener::setSpeed(const std_msgs::Float32 hm_speed)
+void Listener::setSpeed(const std_msgs::Float32 msg)
 {
-    ConveyorVictor.Set(ControlMode::PercentOutput, hm_speed.data); // set drive speed
+    ConveyorVictor.Set(ControlMode::PercentOutput, msg.data* CONVEYOR_SPEED); // set drive speed
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }

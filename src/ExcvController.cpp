@@ -4,7 +4,7 @@
 #include <string>
 #include <unistd.h>
 #include <iostream>
-
+#include "std_msgs/Bool.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include <sensor_msgs/Joy.h>
@@ -32,7 +32,8 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]);
 	void toggleDrvSpeed(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message);
-	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
+	void toggleConveyor(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
+	void toggleTrencher(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
 	void toggleLinearActuator(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 	void trencherPitch(double &downTgr, double &upTgr, std_msgs::Float32 &msg);
 
@@ -120,7 +121,32 @@ void Listener::toggleDrvSpeed(const bool down, const bool up, bool &currentButto
 	}
 }
 
-void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
+void Listener::toggleTrencher(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		ROS_INFO("B button released");
+	}
+		
+	if (on)
+	{
+		ROS_INFO("B button on");
+		message.data = true;
+
+	}
+	else
+	{
+		ROS_INFO("B button off");
+		message.data = false;
+	}
+}	
+
+void Listener::toggleConveyor(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
 {
 	bool lastButton;
 	lastButton = currentButton;
@@ -135,7 +161,7 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	if (on)
 	{
 		ROS_INFO("A button on");
-		message.data = 0.08;
+		message.data = 1;
 
 	}
 	else
@@ -173,58 +199,12 @@ void Listener::toggleLinearActuator(const bool keys, bool &currentButton, bool &
 
 void Listener::trencherPitch(double &downTgr, double &upTgr, std_msgs::Float32 &msg)
 {
-	// y = 1/4 (x-1)^2
-	//string myMssg;
-	//bool triggerEnabled = false;
-	/*
-	if(upTgr == 0 && downTgr == 0)
-	{
-		msg.data = 0;
-
-		if (upTgr != 1)
-		{
-			msg.data = 0.25 * ((upTgr - 1) * (upTgr - 1));
-			//msg.data = 0.25;
-			
-		}	
-		else if(downTgr != 1)
-		{
-			msg.data = -0.25 * ((downTgr - 1) * (downTgr - 1));
-			//msg.data = -0.25;
-					
-		}
-	}
-
-	else if(upTgr == 1 && downTgr == 1)
-	{
-		msg.data = 0;
-
-		if (upTgr != 1)
-		{
-			msg.data = 0.25 * ((upTgr - 1) * (upTgr - 1));
-			//msg.data = 0.25;
-			
-		}	
-		else if(downTgr != 1)
-		{
-			msg.data = -0.25 * ((downTgr - 1) * (downTgr - 1));
-			//msg.data = -0.25;
-					
-		}
-	}*/
-
-	bool triggersPressed = false;
-
-
 	if(upTgr < 0 && upTgr >= -1)
 		msg.data = upTgr*(-1);
 	else if(downTgr < 0 && downTgr >= -1)
 		msg.data = downTgr;
 	else
 		msg.data = 0;
-
-	//else if(downTgr == 1 && upTgr ==1)
-		//triggersPressed = false;
 }
 
 void ResetTrencherPitch (double &downTgr, double &upTgr){
@@ -256,6 +236,7 @@ int main (int argc, char **argv)
 
 	//buttons
 	int ConveyorToggle = {JoyMap::ExcvConveyorToggle};
+	int TrencherToggle = {JoyMap::ExcvTrencherToggle};
 	int TrencherDriveIncrease = {JoyMap::ExcvTrencherDriveIncrease};
 	int TrencherDriveDecrease = {JoyMap::ExcvTrencherDriveDecrease};
 	int TrencherExtend = {JoyMap::ExcvTrencherExtend};
@@ -273,10 +254,14 @@ int main (int argc, char **argv)
 	bool currentButton2 = 0;
 	bool on2 = false;
 
+	bool currentButtonTrencher = 0;
+	bool onTrencher = false;
+
 	// Publishes the message to the hardware interface
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 	ros::Publisher conveyor_pwr_pub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
+	ros::Publisher trencher_toggle_pub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
 	ros::Publisher excavator_pwr_pub = n.advertise<std_msgs::Float32>("ExcvTrencherDrvPwr", 100);
 	ros::Publisher excavator_pos_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
 	ros::Publisher excavator_pitch_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPitchPwr", 100);
@@ -286,6 +271,7 @@ int main (int argc, char **argv)
 	std_msgs::Float32 l_speed_msg;
 	std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr_msg;
+	std_msgs::Bool trencher_toggle_msg;
 	std_msgs::Float32 excavator_pwr_msg;
 	std_msgs::Float32 excavator_pos_msg;
 	std_msgs::Float32 excavator_pitch_msg;
@@ -303,7 +289,8 @@ int main (int argc, char **argv)
 
 		
 		listener.toggleDrvSpeed(buttons[TrencherDriveDecrease], buttons[TrencherDriveIncrease], currentButton4, currentButton5, excavator_pwr_msg);
-		listener.toggle(buttons[ConveyorToggle], currentButton1, on1, conveyor_pwr_msg);
+		listener.toggleConveyor(buttons[ConveyorToggle], currentButton1, on1, conveyor_pwr_msg);
+		listener.toggleTrencher(buttons[ConveyorToggle], currentButtonTrencher, onTrencher, trencher_toggle_msg);
 		listener.toggleLinearActuator(buttons[TrencherExtend], currentButton2, on2, excavator_pos_msg);
 		
 		listener.trencherPitch(axes[TrencherDown], axes[TrencherUp], excavator_pitch_msg);
@@ -321,8 +308,11 @@ int main (int argc, char **argv)
 		conveyor_pwr_pub.publish(conveyor_pwr_msg); // conveyor power
 		excavator_pwr_pub.publish(excavator_pwr_msg); // excavator power
 		
+		//trencher_toggle_msg.data = true;
+
 		excavator_pos_pub.publish(excavator_pos_msg);
 		excavator_pitch_pub.publish(excavator_pitch_msg);
+		trencher_toggle_pub.publish(trencher_toggle_msg);
 
 		//trencher_pitchvalue_pub.publish(trencherPitchValue_msg);
 
