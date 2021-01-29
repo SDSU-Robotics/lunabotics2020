@@ -48,5 +48,5 @@ void Listener::setSpeed(const std_msgs::Float32 hm_speed)
 {
     HMDrive.Set(ControlMode::PercentOutput, hm_speed.data); // set drive speed
 
-	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
