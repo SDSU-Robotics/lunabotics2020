@@ -28,7 +28,6 @@ enum ErrorCode
 	FirmwareTooOld = -8,
 	CouldNotChangePeriod = -9,
 	BufferFailure = -10,
-	FirwmwareNonFRC = -11,
 
 
 	//General
@@ -57,7 +56,6 @@ enum ErrorCode
 	DistanceBetweenWheelsTooSmall = -502,
 	GainsAreNotSet = -503,
 	WrongRemoteLimitSwitchSource = -504,
-	DoubleVoltageCompensatingWPI = -505,
 
 	//Higher Level
 	IncompatibleMode = -600,
@@ -68,23 +66,11 @@ enum ErrorCode
     MotorControllerFeatureRequiresHigherFirm = -701,
     TalonFeatureRequiresHigherFirm = MotorControllerFeatureRequiresHigherFirm,
     ConfigFactoryDefaultRequiresHigherFirm = -702,
-	ConfigMotionSCurveRequiresHigherFirm = -703,
-	TalonFXFirmwarePreVBatDetect = -704,
 
 	//Operating system centric
 	LibraryCouldNotBeLoaded = -800,
 	MissingRoutineInLibrary = -801,
 	ResourceNotAvailable = -802,
-	
-	//MIDI and Orchestra centric
-	MusicFileNotFound = -900,
-	MusicFileWrongSize = -901,
-	MusicFileTooNew = -902,
-	MusicFileInvalid = -903,
-	InvalidOrchestraAction = -904,
-	MusicFileTooOld = -905,
-	MusicInterrupted = -906,
-	MusicNotSupported = -907,
 	
 	//CAN Related
 	PulseWidthSensorNotPresent = +10,	//!< Special Code for "isSensorPresent"
@@ -102,36 +88,28 @@ enum ErrorCode
 	RemoteSensorsNotSupportedYet= 108,
 	MotProfFirmThreshold= 109,
 	MotProfFirmThreshold2 = 110,
-
-	//Simulation
-	SimDeviceNotFound = 200,
-	SimPhysicsTypeNotSupported = 201,
-	SimDeviceAlreadyExists = 202,
 };
 class ErrorCollection {
 public:
-	ErrorCollection() {
-		_firstError = OK;
-	}
+    static ErrorCode worstOne(ErrorCode errorCode1, ErrorCode errorCode2) {
+        if (errorCode1 != OK)
+            return errorCode1;
+        return errorCode2;
+    }
     void NewError(ErrorCode err) {
-        _firstError = FirstOne(_firstError, err);
+        _worstError = worstOne(_worstError, err);
     }
     void NewError(int err) {
-        _firstError = FirstOne(_firstError, (ErrorCode) err); 
+        _worstError = worstOne(_worstError, (ErrorCode) err); 
     }
-	ErrorCode GetFirstNonZeroError()
-	{
-		return _firstError;
-	}
-private:
+    ErrorCode _worstError;
+    ErrorCollection() {
+        _worstError = OK;
+    }
 
-	static ErrorCode FirstOne(ErrorCode errorCode1, ErrorCode errorCode2) {
-		if (errorCode1 != OK)
-			return errorCode1;
-		return errorCode2;
-	}
 
-	ErrorCode _firstError;
+
+
 };
 
 } // namespace phoenix

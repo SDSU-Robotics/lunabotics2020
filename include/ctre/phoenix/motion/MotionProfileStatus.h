@@ -25,40 +25,34 @@ struct MotionProfileStatus {
 	 */
 	size_t topBufferCnt;
 	/**
-	 * The number of points in the low level Talon/Victor buffer.
+	 * The number of points in the low level Talon buffer.
 	 */
 	int btmBufferCnt;
 	/**
 	 * Set if isUnderrun ever gets set.
-	 * Can be manually cleared by ClearMotionProfileHasUnderrun() or automatically cleared by StartMotionProfile().
+	 * Only is cleared by clearMotionProfileHasUnderrun() to ensure
+	 * robot logic can react or instrument it.
 	 * @see clearMotionProfileHasUnderrun()
 	 */
 	bool hasUnderrun;
 	/**
-	 * This is set if Talon/Victor needs to shift a point from its buffer into
+	 * This is set if Talon needs to shift a point from its buffer into
 	 * the active trajectory point however the buffer is empty. This gets cleared
 	 * automatically when is resolved.
 	 */
 	bool isUnderrun;
 	/**
-	 * True if the active trajectory point is not empty, false otherwise.
+	 * True if the active trajectory point has not empty, false otherwise.
 	 * The members in activePoint are only valid if this signal is set.
 	 */
 	bool activePointValid;
 
-	/**
-	 * True if the active trajectory point is the last point of the profile
-	 */
 	bool isLast;
 
-	/**
-	 * The selected PID[0] profile slot of current profile
-	 */
+	/** Selected slot for PID Loop 0 */
 	int profileSlotSelect0;
 
-	/**
-	 * The selected auxiliary PID[1] profile slot of current profile
-	 */
+	/** Selected slot for PID Loop 0 */
 	int profileSlotSelect1;
 
 	/**

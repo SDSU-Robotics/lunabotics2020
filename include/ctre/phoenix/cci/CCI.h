@@ -1,4 +1,3 @@
-//Legacy Export Define.  New code should use CTREXPORT from ctre/phoenix/export.h
 #ifndef CCIEXPORT
 
 	#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)

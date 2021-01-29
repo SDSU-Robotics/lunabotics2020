@@ -25,9 +25,6 @@ namespace ctre {
 namespace phoenix {
 namespace signals {
 
-/**
- * Class to calculate the rolling average of a signal
- */
 class MovingAverage {
 private:
 
@@ -38,27 +35,15 @@ private:
 	float _sum; //!< sum of all elements in ring buffer
 	float * _d; //!< ring buffer
 public:
-	/**
-	 * Constructor for a MovingAverage Object
-	 * @param capacity maximum number of items this will hold
-	 */
 	MovingAverage(int capacity) {
 		_cap = capacity;
 		_d = new float[_cap];
 		Clear();
 	}
-	/**
-	 * Add input & calculate average
-	 * @param input Value to add
-	 * @return new average
-	 */
 	float Process(float input) {
 		Push(input);
 		return _sum / (float) _cnt;
 	}
-	/**
-	 * Clears all data points
-	 */
 	void Clear() {
 		_in = 0;
 		_ou = 0;
@@ -66,10 +51,6 @@ public:
 
 		_sum = 0;
 	}
-	/**
-	 * Add new item
-	 * @param d item to add
-	 */
 	void Push(float d) {
 		/* process it */
 		_sum += d;
@@ -84,9 +65,6 @@ public:
 			_in = 0;
 		++_cnt;
 	}
-	/**
-	 * Pull out oldest item
-	 */
 	void Pop() {
 		/* get the oldest */
 		float d = _d[_ou];
@@ -100,15 +78,9 @@ public:
 		--_cnt;
 	}
 	//-------------- Properties --------------//
-	/**
-	 * @return the sum of the items
-	 */
 	float GetSum() {
 		return _sum;
 	}
-	/**
-	 * @return the count of the items
-	 */
 	int GetCount() {
 		return _cnt;
 	}
