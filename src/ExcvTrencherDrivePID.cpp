@@ -36,9 +36,7 @@ class Listener
 		void setDriveSpeed(); //Drive speed 
 		void getDriveSpeed(const std_msgs::Float32 drivespeed);
 		void setPosition();
-		void setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg);
 		void trencherToggle(const std_msgs::Bool toggle);
-		void trencherDriveToggle(const std_msgs::Bool toggle);
 		double getActualCurrent();
 		double getPercentOutput();
 		int linearActuator();
@@ -48,7 +46,6 @@ class Listener
 
 		float TrencherDrvPwr;
 		bool PIDEnable;
-		bool DrivePIDEnable;
 
 		float P = 0.1;
 		float I = 0.01;
@@ -61,21 +58,18 @@ int main (int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
-//	pcf8591Setup (int pinBase, int 12cAddress);
+	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
+    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 
 	phoenix::platform::can::SetCANInterface("can0");
 
 	// Publishes the message to the hardware interface
 	//ros::Publisher pitch_current_pub = n.advertise<std_msgs::Float32>("ExcvPitchCurrent", 100);
 	ros::Publisher drive_current_pub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
-	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
-    ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
 
 	// sets the message type to the message variable
 	std_msgs::Float32 pitch_current_msg;
 	std_msgs::Float32 drive_current_msg;
-	std_msgs::Float32 l_speed_msg;
-	std_msgs::Float32 r_speed_msg;
 
 	Listener listener;
 
@@ -84,27 +78,18 @@ int main (int argc, char **argv)
 	ros::Subscriber pitchSpeedSub = n.subscribe("ExcvTrencherPitchPwr", 100, &Listener::setPitchSpeed, &listener);
 	ros::Subscriber driveSpeedSub = n.subscribe("ExcvTrencherDrvPwr", 100, &Listener::getDriveSpeed, &listener);
 	ros::Subscriber trencherToggleSub = n.subscribe("ExcvTrencherToggle", 100, &Listener::trencherToggle, &listener);
-	ros::Subscriber trencherDriveToggleSub = n.subscribe("ExcvTrencherDriveToggle", 100, &Listener::trencherDriveToggle, &listener);
 
 	while (ros::ok()) // while ros is running
 	{
-		if(listener.DrivePIDEnable == true)
+		if(listener.PIDEnable == true)
 		{
-			listener.setDrivePID(l_speed_msg, r_speed_msg);
-			l_speed_pub.publish(l_speed_msg); // left speed
-			r_speed_pub.publish(r_speed_msg); // right speed
+			listener.setPosition();
 		}
-		else{
-			if(listener.PIDEnable == true)
-			{
-				listener.setPosition();
-			}
-			else
-			{
-				listener.setDriveSpeed();
-			}
+		else
+		{
+			listener.setDriveSpeed();
 		}
-
+		
 		drive_current_msg.data = listener.driveTalon.GetOutputCurrent();
 		drive_current_pub.publish(drive_current_msg);
 
@@ -143,35 +128,6 @@ void Listener::setPosition()
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
-void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg)
-{
-	float driveOut;
-	float eT = targetCurrent - driveTalon.GetOutputCurrent();
-
-	ros::Time timeCurrent;
-	ros::Time timeLast = timeCurrent;
-	timeCurrent = ros::Time::now();
-	ros::Duration timeDiff = timeCurrent - timeLast;
-
-	double dT = timeDiff.toSec();
-
-	driveOut = P*eT + I*(eT*dT);
-
-	if(driveOut > 0.6)
-		driveOut = 0.6;
-	else if(driveOut < -0.6)
-		driveOut = -0.6;
-
-	l_speed_msg.data = driveOut;
-	r_speed_msg.data = driveOut;
-
-	//Set motor to newly mapped position
-	driveTalon.Set(ControlMode::PercentOutput, -1);
-
-
-	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
-}
-
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {
     //pitchTalon.Set(ControlMode::PercentOutput, pitchspeed.data);
@@ -194,11 +150,6 @@ void Listener::getDriveSpeed(const std_msgs::Float32 drivespeed)
 void Listener::trencherToggle(const std_msgs::Bool toggle)
 {
 	PIDEnable = toggle.data;
-}
-
-void Listener::trencherDriveToggle(const std_msgs::Bool toggle)
-{
-	DrivePIDEnable = toggle.data;
 }
 
 double Listener::getActualCurrent()
