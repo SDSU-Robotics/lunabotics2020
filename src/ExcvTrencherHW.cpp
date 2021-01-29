@@ -62,20 +62,20 @@ void Listener::setExtendSpeed(const std_msgs::Float32 extendspeed)
 {
     extendVictor.Set(ControlMode::PercentOutput, extendspeed.data);
 
-	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {
     pitchVictor.Set(ControlMode::PercentOutput, pitchspeed.data);
 
-	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 void Listener::setDriveSpeed(const std_msgs::Float32 drivespeed)
 {
     driveVictor.Set(ControlMode::PercentOutput, drivespeed.data);
 
-	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 int Listener::linearActuator()
 {

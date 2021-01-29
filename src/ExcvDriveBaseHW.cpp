@@ -77,12 +77,12 @@ void Listener::setLSpeed(const std_msgs::Float32 lspeed)
 {
     leftDrive.Set(ControlMode::PercentOutput, lspeed.data);
 
-	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
 
 void Listener::setRSpeed(const std_msgs::Float32 rspeed)
 {
     rightDrive.Set(ControlMode::PercentOutput, rspeed.data);
 
-	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100); // feed watchdog
+	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
