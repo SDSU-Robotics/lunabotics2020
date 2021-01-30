@@ -214,7 +214,7 @@ void ResetTrencherPitch (double &downTgr, double &upTgr){
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "DriveController");
+    ros::init(argc, argv, "ExcvController");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
@@ -315,7 +315,7 @@ int main (int argc, char **argv)
 			l_speed_pub.publish(l_speed_msg); // left speed
 			r_speed_pub.publish(r_speed_msg); // right speed
 		}
-		
+
 		conveyor_pwr_pub.publish(conveyor_pwr_msg); // conveyor power
 		excavator_pwr_pub.publish(excavator_pwr_msg); // excavator power
 		

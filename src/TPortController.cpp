@@ -69,7 +69,7 @@ void Listener::whileHeld(bool button, std_msgs::Int8 & msg, double value)
 
 int main (int argc, char **argv)
 {
-    ros::init(argc, argv, "DriveController");
+    ros::init(argc, argv, "TPortController");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
