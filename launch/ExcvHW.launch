@@ -1,0 +1,15 @@
+<launch>
+    <node respawn="true" pkg="joy" type="joy_node" name="ExcvJoyNode" >
+		<param name="dev" type="string" value="/dev/input/js0" />
+		<param name="deadzone" value="0.05" />
+        <remap from="/joy" to="/Excv/joy" />
+	</node>
+
+    <node pkg="lunabotics2020" type="ExcvController" name="ExcvController" />
+    <node pkg="lunabotics2020" type="ExcvConveyorHW" name="ExcvConveyorHW" />
+    <node pkg="lunabotics2020" type="ExcvDriveBaseHW" name="ExcvDriveBaseHW" />
+    <node pkg="lunabotics2020" type="ExcvTrencherHW" name="ExcvTrencherHW" />
+    <node pkg="lunabotics2020" type="ExcvLinearActuatorHW" name="ExcvLinearActuatorHW" />
+
+
+</launch>
