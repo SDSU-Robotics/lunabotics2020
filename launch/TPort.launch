@@ -1,0 +1,13 @@
+<launch>
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+    	<param name="port" value="/dev/ttyUSB0"/>
+    </node>
+	<!--node respawn="true" pkg="phoenix-template" type="CanifierServo" name="CanifierServo" />
+	<node respawn="true" pkg="phoenix-template" type="SimpleJoystick" name="SimpleJoystick">
+		<remap from="speed" to="position"/>
+	</node-->
+
+    <node pkg="lunabotics2020" type="TPortConveyorHW" name= "TPortConveyorHW" />
+    <node pkg="lunabotics2020" type= "TPortDriveBaseHW" name= "TPortDriveBaseHW" />
+    
+</launch>
