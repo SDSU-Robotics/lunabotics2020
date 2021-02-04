@@ -31,11 +31,13 @@ add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(SLS ${PROJECT_SOURCE_DIR}/src/SLS.cpp)
 add_executable(Odometry ${PROJECT_SOURCE_DIR}/src/Odometry.cpp)
+#add_executable(GlobalPlanner ${PROJECT_SOURCE_DIR}/src/GlobalPlanner.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
 target_link_libraries(SLS ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(Odometry ${catkin_LIBRARIES})
+#target_link_libraries(GlobalPlanner ${catkin_LIBRARIES})
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
