@@ -26,7 +26,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor value ****
 ****************************************************************************/
 
-#define targetCurrent 2.5
+#define targetCurrent 3.0
 
 class Listener
 {
@@ -47,10 +47,11 @@ class Listener
 		TalonSRX driveTalon = {DeviceIDs::ExcvDriveTal};
 
 		float TrencherDrvPwr;
+		float pitchSpeed;
 		bool PIDEnable;
 		bool DrivePIDEnable;
 
-		float P = 0.1;
+		float P = 0.08;
 		float I = 0.01;
 		
 };
@@ -102,6 +103,9 @@ int main (int argc, char **argv)
 			else
 			{
 				listener.setDriveSpeed();
+				listener.pitchTalon.Set(ControlMode::PercentOutput, listener.pitchSpeed);
+
+				ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 			}
 		}
 
@@ -131,8 +135,8 @@ void Listener::setPosition()
 
 	if(driveOut > 0.05)
 		driveOut = 0.05;
-	else if(driveOut < -0.6)
-		driveOut = -0.8;
+	else if(driveOut < -0.5)
+		driveOut = -0.5;
 
 
 	//Set motor to newly mapped position
@@ -174,6 +178,7 @@ void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & 
 
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {
+	pitchSpeed = pitchspeed.data;
     //pitchTalon.Set(ControlMode::PercentOutput, pitchspeed.data);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
