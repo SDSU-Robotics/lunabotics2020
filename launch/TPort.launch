@@ -9,6 +9,6 @@
 
     <node pkg="lunabotics2020" type="TPortConveyorHW" name= "TPortConveyorHW" />
     <node pkg="lunabotics2020" type= "TPortDriveBaseHW" name= "TPortDriveBaseHW" />
-	<include file="$(find lunabotics2020)/launch/test.launch" >
+	<include file="$(find lunabotics2020)/launch/test.launch" />
     
 </launch>

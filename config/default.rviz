@@ -7,6 +7,9 @@ Panels:
         - /Global Options1
         - /Status1
         - /PointCloud21
+        - /PointCloud21/Status1
+        - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -27,7 +30,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -63,7 +66,7 @@ Visualization Manager:
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 255; 255; 255
-      Color Transformer: RGB8
+      Color Transformer: Intensity
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -76,7 +79,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.0010000000474974513
       Style: Flat Squares
       Topic: /camera/depth/color/points
       Unreliable: false
@@ -87,15 +90,23 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         beacon_frame:
           Value: true
+        camera_color_frame:
+          Value: true
+        camera_color_optical_frame:
+          Value: true
+        camera_depth_frame:
+          Value: true
         camera_depth_optical_frame:
+          Value: true
+        camera_link:
           Value: true
         flag:
           Value: true
         head_camera:
-          Value: true
+          Value: false
         map:
           Value: true
         transportation:
@@ -106,17 +117,22 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
+        flag:
+          camera_depth_optical_frame:
+            {}
+          transportation:
+            head_camera:
+              {}
         map:
           beacon_frame:
-            camera_depth_optical_frame:
-              {}
+            {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: map
+    Fixed Frame: flag
     Frame Rate: 30
   Name: root
   Tools:
@@ -140,25 +156,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.366086483001709
+      Distance: 4.694326400756836
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.1975841522216797
-        Y: -1.5820285081863403
-        Z: -0.639580488204956
+        X: 0.874268651008606
+        Y: -0.6761146783828735
+        Z: -1.6369245052337646
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8603979349136353
+      Pitch: 0.6003981828689575
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.598578929901123
+      Yaw: 3.073578119277954
     Saved: ~
 Window Geometry:
   Displays:
