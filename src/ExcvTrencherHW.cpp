@@ -26,7 +26,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor value ****
 ****************************************************************************/
 
-#define targetCurrent 3.0
+#define targetCurrent 6.0
 
 class Listener
 {
@@ -140,7 +140,7 @@ void Listener::setPosition()
 
 
 	//Set motor to newly mapped position
-	driveTalon.Set(ControlMode::PercentOutput, -1);
+	driveTalon.Set(ControlMode::PercentOutput, 1);
 	pitchTalon.Set(ControlMode::PercentOutput, driveOut);
 
 

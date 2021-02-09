@@ -10,7 +10,7 @@
 	<node pkg="lunabotics2020" type="DriveController" name="DriveController" />
 
 	<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
-		<param name="serial_port"         type="string" value="/dev/ttyUSB1"/>  
+		<param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
 		<param name="serial_baudrate"     type="int"    value="256000"/>
 		<param name="frame_id"            type="string" value="beacon_frame"/>
 		<param name="inverted"            type="bool"   value="false"/>
@@ -61,7 +61,7 @@
 	<node pkg="tf2_ros" type="static_transform_publisher" name="beacon_broadcaster" args="3.255 0.04 0 0 0 0 map beacon_frame" /> <!-- Map to Lidar Transform-->
 	<node pkg="tf2_ros" type="static_transform_publisher" name="flag_broadcaster" args="-0.08 .22 0 0 0 0 flag transportation" /> <!-- Flag to Center of Robot Transform-->
 	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="0 0.3 0 3.14 0 1.57 transportation head_camera" /> <!-- Center of Robot to Camera Transform-->
-	<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="-0.08 0 -0.4 0 3.14159 1.04719 beacon_frame camera_depth_optical_frame 100" />
+	<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="-0.08 0 -0.4 0 3.14159 1.04719 flag camera_depth_optical_frame 100" />
 
   	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find lunabotics2020)/config/default.rviz" />
 
