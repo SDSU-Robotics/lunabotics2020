@@ -1,3 +1,0 @@
-
-roscore
-rosrun lunabotics2020 HardwareInterface.cpp
