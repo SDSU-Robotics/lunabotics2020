@@ -1,2 +1,2 @@
-gnome-terminal -- /bin/sh -c 'echo UDU;ssh 172.31.99.109; exec bash';    #udu
-gnome-terminal -- /bin/sh -c 'echo PI;ssh 172.31.99.76; exec bash';    #pi
+gnome-terminal -- /bin/sh -c 'echo UDOO;ssh robotics@172.31.99.109; exec bash';    #udoo
+gnome-terminal -- /bin/sh -c 'echo PI;ssh ubuntu@172.31.99.167; exec bash';    #pi

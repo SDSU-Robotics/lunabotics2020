@@ -94,22 +94,28 @@ int main (int argc, char **argv)
 	bool currentButtonExtend = false;
 	bool onExtend = false;
 
+	bool currentButtonFlag = false;
+	bool onFlag = false;
+
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
 	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
 	ros::Publisher extend_pub = n.advertise<std_msgs::Int8>("TPortExtendPwr", 100);
-	
+	ros::Publisher flag_pub = n.advertise<std_msgs::Int8>("TPortFlag", 100);
+
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr;
 	std_msgs::Int8 extend_pwr;
+	std_msgs::Int8 flag_pwr;
 	
 	while (ros::ok())
 	{
         listener.getJoyVals(buttons, axes);
 		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
 		listener.toggleInt(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr);
-		
+		listener.toggleInt(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr);
+
 		/*
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
@@ -120,8 +126,8 @@ int main (int argc, char **argv)
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
-
 		extend_pub.publish(extend_pwr);
+		flag_pub.publish(flag_pwr);
 		
 		ros::spinOnce();
 		loop_rate.sleep();
