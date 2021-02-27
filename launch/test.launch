@@ -56,11 +56,19 @@
 		<remap from="camera_info"   to="/usb_cam/camera_info" />
 	</node>
 
+	<!-- Run the costmap node -->
+    <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
+        <rosparam file="$(find lunabotics2020)/src/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    	<rosparam file="$(find lunabotics2020)/src/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    	<rosparam file="$(find lunabotics2020)/src/local_costmap_params.yaml" command="load" />
+    	<rosparam file="$(find lunabotics2020)/src/global_costmap_params.yaml" command="load" />
+    </node>
+
   <!--Transforms-->
 
 	<node pkg="tf2_ros" type="static_transform_publisher" name="beacon_broadcaster" args="3.255 0.04 0 0 0 0 map beacon_frame" /> <!-- Map to Lidar Transform-->
-	<node pkg="tf2_ros" type="static_transform_publisher" name="flag_broadcaster" args="-0.08 .22 0 0 0 0 flag transportation" /> <!-- Flag to Center of Robot Transform-->
-	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="0 0.3 0 3.14 0 1.57 transportation head_camera" /> <!-- Center of Robot to Camera Transform-->
+	<node pkg="tf2_ros" type="static_transform_publisher" name="flag_broadcaster" args="-0.08 .22 0 0 0 0 flag base_link" /> <!-- Flag to Center of Robot Transform-->
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="0 0.3 0 3.14 0 1.57 base_link head_camera" /> <!-- Center of Robot to Camera Transform-->
 	<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="-0.08 0 -0.4 0 3.14159 1.04719 flag camera_depth_optical_frame 100" />
 
   	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find lunabotics2020)/config/default.rviz" />

@@ -24,18 +24,21 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/UInt16 TportExtendPos - tport extender position    ****
 *****************************************************************************/
 
-#define CONVEYOR_SPEED_SCALE 0.1
+#define CONVEYOR_SPEED_SCALE 0.2
 
 class Listener
 {
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
+        void setFlagSpeed(const std_msgs::Int8 msg);
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
         void setExtendPos(std_msgs::UInt16 &extend_pos);
+        void setFlagPos(std_msgs::UInt16 &flag_pos);
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
 
     private:
         int extendVal = 0;
+        int flagVal = 0;
 
 };
 
@@ -54,6 +57,21 @@ void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
     }
 }
 
+void Listener::setFlagPos(std_msgs::UInt16 &flag_pos)
+{
+    int maxPos = 140;
+    int minPos = 45;
+
+    if(flagVal == 1)
+    {
+        flag_pos.data = maxPos;
+    }
+    else if(flagVal == 0)
+    {
+        flag_pos.data = minPos;
+    }
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "TPortConveyorHW");
@@ -67,18 +85,23 @@ int main(int argc, char **argv)
     Listener listener;
 
     ros::Subscriber extendSpeedSub = n.subscribe("TPortExtendPwr", 100, &Listener::setExtendSpeed, &listener);
+    ros::Subscriber flagSpeedSub = n.subscribe("TPortFlag", 100, &Listener::setFlagSpeed, &listener);
     ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);
 
     ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+    ros::Publisher flagPos_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
 
     std_msgs::UInt16 extend_pos;	
+    std_msgs::UInt16 flag_pos;	
 
     while (ros::ok())
     {
         listener.setExtendPos(extend_pos);
-        
+        listener.setFlagPos(flag_pos);
+
         extendPos_pub.publish(extend_pos);
+        flagPos_pub.publish(flag_pos);
 
         ros::spinOnce();
         loop_rate.sleep();
@@ -93,7 +116,11 @@ void Listener::setExtendSpeed(const std_msgs::Int8 msg)
 	extendVal = msg.data;
 }
 
-
+void Listener::setFlagSpeed(const std_msgs::Int8 msg)
+{
+	// limit values
+	flagVal = msg.data;
+}
 
 void Listener::setDriveSpeed(const std_msgs::Float32 msg)
 {
