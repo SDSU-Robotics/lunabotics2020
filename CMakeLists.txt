@@ -40,6 +40,7 @@ add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
 add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
 add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuatorHW.cpp)
 add_executable(DigTasks ${PROJECT_SOURCE_DIR}/src/DigTasks.cpp)
+add_executable(DugTasks ${PROJECT_SOURCE_DIR}/src/DugTasks.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
@@ -54,6 +55,7 @@ target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(DigTasks ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(DugTasks ${catkin_LIBRARIES} Threads::Threads)
 
 # Phoenix includes
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi

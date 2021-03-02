@@ -21,7 +21,7 @@ using namespace std;
 ****          std_msgs/Int8 TportExtendPwr - extender true/false value   ****
 ****************************************************************************/
 
-#define DRIVE_SCALE 0.5
+#define DRIVE_SCALE 0.7
 
 class Listener
 {

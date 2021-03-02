@@ -4,6 +4,7 @@
 #include "DeviceIDs.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "GlobalVariables.h"
 
 using namespace std;
 using namespace ctre::phoenix;
@@ -24,8 +25,9 @@ using namespace ctre::phoenix::motorcontrol::can;
 //Subscribe to the actualPosition topic and manually extend and retract the linear actuator
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
-#define MIN_POT_READING -470
-#define MAX_POT_READING -1050
+//#define MIN_POT_READING -470
+//#define MAX_POT_READING -1022
+//(min and max pot readings redefined in GlobalVariables.h)
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
 //		These will map to the above values respectively
@@ -95,7 +97,7 @@ void Listener::setPosition(const std_msgs::Float32 msg)
 	if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
 
 	//Linearly maps pos between MIN_POT_READING and MAX_POT_READING
-	pos = LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_POT_READING, MAX_LINEAR_INPUT, MAX_POT_READING);
+	pos = LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, GlobalVariables::ExcvMinPotReading, MAX_LINEAR_INPUT, GlobalVariables::ExcvMaxPotReading);
 
 	//Set motor to newly mapped position
 	_motor.Set(ControlMode::Position, pos);
