@@ -44,7 +44,7 @@ class Listener
 
 void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
 {
-    int maxPos = 140;
+    int maxPos = 150;
     int minPos = 45;
 
     if(extendVal == 1)
