@@ -9,6 +9,9 @@ class Task
         //member functions()
         TaskFunction taskFunction;
         void setTaskFunction(TaskFunction f);
+       
+        
+
 
     private:
          //Data Members
