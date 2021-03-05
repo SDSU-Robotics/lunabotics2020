@@ -53,7 +53,7 @@ class Listener
 
 		float P = 0.08;
 		float I = 0.01;
-		
+		float D = 0.001;
 };
 
 int main (int argc, char **argv)
@@ -123,6 +123,7 @@ void Listener::setPosition()
 {
 	float driveOut;
 	float eT = targetCurrent - driveTalon.GetOutputCurrent();
+	float etLast = 0;
 
 	ros::Time timeCurrent;
 	ros::Time timeLast = timeCurrent;
@@ -131,6 +132,9 @@ void Listener::setPosition()
 
 	double dT = timeDiff.toSec();
 
+	double dC = D * (eT - etLast)/dT;
+
+	driveOut = P*eT + I*(eT*dT) + dC;
 	driveOut = P*eT + I*(eT*dT);
 
 	if(driveOut > 0.05)
@@ -145,6 +149,8 @@ void Listener::setPosition()
 
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+
+	etLast = eT;
 }
 
 void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg)

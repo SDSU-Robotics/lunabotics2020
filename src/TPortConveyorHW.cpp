@@ -24,7 +24,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/UInt16 TportExtendPos - tport extender position    ****
 *****************************************************************************/
 
-#define CONVEYOR_SPEED_SCALE 0.2
+#define CONVEYOR_SPEED_SCALE 0.1
 
 class Listener
 {
