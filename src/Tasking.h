@@ -1,20 +1,21 @@
 #ifndef _TASKING_H  //Guard
 #define _TASKING_H
+
 #include <list>
 #include "Task.h"
-class Tasking{
 
+struct TaskStruct
+{
+    Task task;
+};
+
+class Tasking
+{
     public:
-    void addFunction (TaskFunction F);
-
+        void addTask(Task T);
 
     private:
-    struct TaskStruct 
-    {
-        Task task;
-    };
-    std::list<TaskStruct> tasks;
-
-}; 
+        std::list<TaskStruct> TaskList;
+};
 
 #endif

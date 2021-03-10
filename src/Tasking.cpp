@@ -2,12 +2,12 @@
 #include "Task.h"
 
 using namespace std;
-void Tasking::addFunction(taskFunction f)
+
+void Tasking::addTask(Task t)
 {
     //make a struct
-    TaskStruct ts;
-    ts.task = f;
+    struct TaskStruct ts = {t};
     // add to list
-    tasks.push_front(ts);
+    TaskList.push_front(ts);
     return;
 }

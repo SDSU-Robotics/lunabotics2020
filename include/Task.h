@@ -7,12 +7,13 @@ typedef bool(*TaskFunction)();
 class Task
 {
     public:
+
         //member functions()
+        TaskFunction taskFunction;
         Task(TaskFunction f);
-        void run();
 
     private:
-        //Data Members
-        TaskFunction taskFunction;
+         //Data Members
+
 };
 #endif
