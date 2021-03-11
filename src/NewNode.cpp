@@ -9,6 +9,12 @@ bool func()
     return true;
 }
 
+bool func1()
+{
+    ROS_INFO("FUNCTION 1 RAN");
+    return true;
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "NewNode");
@@ -16,8 +22,13 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(100);
     
     Task t(&func);
+    Task t1(&func1);
     Tasking g;
     g.addTask(t);
+    g.addTask(t1);
+    g.getTask(1).task.run();
+    g.getTask(1).task.run();
+    g.getTask(0).task.run();
 
     while (ros::ok())
     {
