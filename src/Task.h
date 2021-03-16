@@ -2,17 +2,17 @@
 #define _TASK_H
 
 using namespace std;
-typedef bool(*TaskFunction)();
+
 
 class Task
 {
     public:
         //member functions()
-        Task(TaskFunction f);
-        void run();
+        Task();
+        virtual bool initialize();
 
     private:
         //Data Members
-        TaskFunction taskFunction;
+        
 };
 #endif

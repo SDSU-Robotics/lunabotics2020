@@ -30,6 +30,7 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 # NON EXECUTABLES (Classes. Not ROS Nodes, no main function)
 add_library(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
 add_library(Tasking ${PROJECT_SOURCE_DIR}/src/Tasking.cpp)
+add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
 
 # EXECUTABLES (ROS nodes, main function)
 add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
@@ -63,6 +64,7 @@ target_link_libraries(NewNode ${catkin_LIBRARIES} Threads::Threads)
 #Tasking, Task Includes
 target_link_libraries(NewNode ${PROJECT_SOURCE_DIR}/src/Task.cpp)
 target_link_libraries(NewNode ${PROJECT_SOURCE_DIR}/src/Tasking.cpp)
+target_link_libraries(NewNode ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
 
 # Phoenix includes
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture

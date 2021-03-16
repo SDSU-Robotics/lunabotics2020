@@ -3,13 +3,13 @@
 
 using namespace std;
 
-Task::Task(TaskFunction f)
+Task::Task()
 {
-    taskFunction = f;
-    //(*TaskFunction)();
+
+    
 }
 
-void Task::run()
+bool Task::initialize()
 {
-    (*taskFunction)();
+    return false;
 }
