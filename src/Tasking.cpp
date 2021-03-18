@@ -22,3 +22,10 @@ TaskStruct Tasking::getTask(int element)
     // Returns task struct at pointer 
     return *position;   
 }
+
+void callAndRun
+{
+    callInitialize
+    runExecute
+}
+

@@ -10,6 +10,7 @@ class Task
         //member functions()
         Task();
         virtual bool initialize();
+        TaskBucket taskBucket();
 
     private:
         //Data Members
