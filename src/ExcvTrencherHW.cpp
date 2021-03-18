@@ -26,7 +26,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor value ****
 ****************************************************************************/
 
-#define targetCurrent 6.0
+#define targetCurrent 9.0
 
 class Listener
 {
@@ -51,9 +51,9 @@ class Listener
 		bool PIDEnable;
 		bool DrivePIDEnable;
 
-		float P = 0.08;
+		float P = 0.04;
 		float I = 0.01;
-		float D = 0.001;
+		float D = 0.01;
 };
 
 int main (int argc, char **argv)
@@ -131,17 +131,23 @@ void Listener::setPosition()
 	ros::Duration timeDiff = timeCurrent - timeLast;
 
 	double dT = timeDiff.toSec();
+	double IC = 0;
+	IC += I*eT;
 
-	double dC = D * (eT - etLast)/dT;
+	if(IC > 1000)IC = 1000;
+	if(IC < -1000)IC = -1000;
 
-	driveOut = P*eT + I*(eT*dT) + dC;
-	driveOut = P*eT + I*(eT*dT);
+	double dC = D * (eT - etLast);
 
-	if(driveOut > 0.05)
-		driveOut = 0.05;
-	else if(driveOut < -0.5)
-		driveOut = -0.5;
+	driveOut = P*eT + IC + dC;
+	//driveOut = P*eT + I*(eT*dT);
 
+	if(driveOut > 0.0)
+		driveOut = 0.0;
+	else if(driveOut < -0.3)
+		driveOut = -0.3;
+
+	cout<<driveOut << "\t" << driveTalon.GetOutputCurrent() << endl;
 
 	//Set motor to newly mapped position
 	driveTalon.Set(ControlMode::PercentOutput, 1);
