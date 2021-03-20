@@ -21,6 +21,10 @@ class DugTasks
         //void setLinearActuatorExtendPos(std_msgs::UInt16 &extend_pos);
         //float extendSpeed = 0;
         //float linearActuatorExtendPos = 0;
+        bool startConveyor(std_msgs::Float32 &msg);
+        bool stopConveyor(std_msgs::Float32 &msg);
+        bool extLinAct(std_msgs::UInt16 &msg);
+        bool extFlags(std_msgs::UInt16 &msg);
 
 
 };
@@ -34,11 +38,20 @@ int main(int argc, char **argv)
     DugTasks dugTasks;
     ros::Publisher ExtendLinearActuatorExtendPwrPub = n.advertise<std_msgs::UInt16>("TPortExtendPwr", 100);
     //ros::Subscriber ExtendLinearActuatorExtendPosSub = n.subscribe("TPortExtendPwr", 100, &DugTasks::setLinearActuatorExtendPos, &dugTasks);
+    ros::Publisher DugConveyorTogglePub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
+
+    std_msgs::Float32 DugConveyorEnableMsg;
+    std_msgs::UInt16 ExtLinActMsg;
+    std_msgs::UInt16 ExtFlagsMsg;
 
     while (ros::ok())
     {
         ros::spinOnce();
         loop_rate.sleep();
+        dugTasks.startConveyor(DugConveyorEnableMsg);
+        dugTasks.stopConveyor(DugConveyorEnableMsg);
+        dugTasks.extLinAct(ExtLinActMsg);
+        dugTasks.extFlags(ExtFlagsMsg);
     }
     
     return 0;
@@ -46,11 +59,49 @@ int main(int argc, char **argv)
 
 
 //prepare flags and lin act
-bool DugTasks::prime()
+bool DugTasks::extLinAct(std_msgs::UInt16 &msg)
 {
+    // Topic: TPortExtendPwr
+    // Message: ExtLinActMsg
+    
     //set msg to 1
-    LinearActuatorExtendPwrMsg.data = 1;
+    msg.data = 1;
 
+    return false;
+}
+
+bool DugTasks::extFlags(std_msgs::UInt16 &msg)
+{
+    // Topic: TPortExtendPwr
+    // Message: ExtFlagsMsg
+
+    msg.data = 1;
+
+    return false;
+}
+
+bool DugTasks::startConveyor(std_msgs::Float32 &msg)
+{
+    // This function starts the conveyor on Dug.
+    
+    // Topic: TPortConveyorDrvPwr
+    // Message: DugConveyorEnableMsg
+    
+    msg.data = 1;
+
+    return false;
+}
+
+bool DugTasks::stopConveyor(std_msgs::Float32 &msg)
+{
+    // This function stops the conveyor on Dug.
+    
+    // Topic: TPortConveyorDrvPwr
+    // Message: DugConveyorEnableMsg
+
+    msg.data = 0;
+
+    return false;
 }
 
 /*

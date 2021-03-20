@@ -43,7 +43,7 @@ int main (int argc, char **argv)
 
 	Listener listener;
 
-	ros::Subscriber SpeedSub = n.subscribe("ExcvConveyorDrvPwr", 100, &Listener::setSpeed, &listener);
+	ros::Subscriber ConveyorSpeedSub = n.subscribe("ExcvConveyorDrvPwr", 100, &Listener::setSpeed, &listener);
 	
 
 	while (ros::ok()) //while ros is running
