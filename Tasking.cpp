@@ -23,9 +23,9 @@ TaskStruct Tasking::getTask(int element)
     return *position;   
 }
 
-void callAndRun
+void callAndRun ()
 {
-    callInitialize
-    runExecute
+    //callInitialize
+    //runExecute
 }
 
