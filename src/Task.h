@@ -1,6 +1,6 @@
 #ifndef _TASK_H  //Guard
 #define _TASK_H
-//#include "geometry_msgs/Pose.h"
+#include "geometry_msgs/Pose.h"
 
 
 using namespace std;
@@ -15,7 +15,7 @@ class Task
         //TaskBucket taskBucket();
         virtual bool onFinish();
         virtual bool basic();
-       // virtual bool navigation(geometry_msgs::Pose);
+        virtual bool navigation(geometry_msgs::Pose);
         enum goRun
         {
             BASIC,

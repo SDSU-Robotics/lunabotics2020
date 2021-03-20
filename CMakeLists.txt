@@ -28,9 +28,9 @@ catkin_package()
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
 # NON EXECUTABLES (Classes. Not ROS Nodes, no main function)
-add_executable(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
-add_executable(Tasking ${PROJECT_SOURCE_DIR}/src/Tasking.cpp ${PROJECT_SOURCE_DIR}/src/Task.h)
-add_executable(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp ${PROJECT_SOURCE_DIR}/src/Task.h)
+add_library(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
+add_library(Tasking ${PROJECT_SOURCE_DIR}/src/Tasking.cpp)
+add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
 #add_library(TaskH ${PROJECT_SOURCE_DIR}/src/Task.h)
 
 
@@ -63,14 +63,8 @@ target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(NewNode ${catkin_LIBRARIES} Threads::Threads)
 
-target_link_libraries(Task ${catkin_LIBRARIES})
-target_link_libraries(Tasking ${catkin_LIBRARIES})
-target_link_libraries(TaskTypes ${catkin_LIBRARIES})
-
 #Tasking, Task Includes
-target_link_libraries(NewNode ${PROJECT_SOURCE_DIR}/src/Task.cpp)
-target_link_libraries(NewNode ${PROJECT_SOURCE_DIR}/src/Tasking.cpp)
-target_link_libraries(NewNode ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
+target_link_libraries(NewNode Task Tasking TaskTypes ${catkin_LIBRARIES})
 
 # Phoenix includes
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture

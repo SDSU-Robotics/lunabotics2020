@@ -7,8 +7,7 @@ using namespace std;
 
 Task::Task()
 {
-
-
+        
     
 }
 
@@ -18,14 +17,14 @@ bool Task::initialize()
 }
 bool Task::basic()
 {
-    //geometry_msgs:/Pose
+    //geometry_msgs:Pose
     return false;
 }
 bool Task::onFinish()
 {
     return false;
 }
-bool Task::navigation(geometry_msgs:Pose pos)
+bool Task::navigation(geometry_msgs::Pose pos)
 {
     return false;
 }
