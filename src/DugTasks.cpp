@@ -6,23 +6,10 @@
 #include "DeviceIDs.h"
 
  class DugTasks
-{
-    private:
-        // listeners are private
-        bool prime(); //prepare flags and lin act
-        bool drvTrench; //drive to beginning of current trench being excavated
-        bool collectGravel; //drive straight until docked with Dig and flipped gravel switch
-        bool drvCollector; //reverse over trench and traverse to collector
-        bool alignCollector; //align with collector and dock collector
-        bool dumpGravel; //activate belt to transfer gravel to collector
-        std_msgs::UInt16 LinearActuatorExtendPwrMsg;
-        
+{       
 
     public:
-        //void setLinearActuatorExtendSpeed(const std_msgs::Int8 msg);
-        //void setLinearActuatorExtendPos(std_msgs::UInt16 &extend_pos);
-        //float extendSpeed = 0;
-        //float linearActuatorExtendPos = 0;
+
         bool startConveyor(std_msgs::Float32 &msg);
         bool stopConveyor(std_msgs::Float32 &msg);
         bool extLinAct(std_msgs::UInt16 &msg);
@@ -30,8 +17,8 @@
         bool drvForward(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool drvBackward(std_msgs::Float32 &Rmsg, std_msgs::Float32 &LMsg);
         bool stopDrv(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
-        //bool turnLeft();
-        //bool turnRight();
+        bool turnLeft(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+        bool turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
 
 
 };
@@ -60,15 +47,15 @@ int main(int argc, char **argv)
     {
         ros::spinOnce();
         loop_rate.sleep();
-        dugTasks.startConveyor(DugConveyorEnableMsg); //to check topic, do not run start/stop conveyor functions at same time
+        dugTasks.startConveyor(DugConveyorEnableMsg); //to check data being published to topic, do not run start/stop conveyor functions at same time
         dugTasks.stopConveyor(DugConveyorEnableMsg);
         dugTasks.extLinAct(ExtLinActMsg);
         dugTasks.extFlags(ExtFlagsMsg);
-        //dugTasks.drvForward(r_speed_msg, l_speed_msg);
-        //dugTasks.drvBackward(r_speed_msg, l_speed_msg);
-        //dugTasks.stopDrv(r_speed_msg, l_speed_msg);
-        //dugTasks.turnLeft();
-        //dugTasks.turnRight();
+        dugTasks.drvForward(r_speed_msg, l_speed_msg);
+        dugTasks.drvBackward(r_speed_msg, l_speed_msg);
+        dugTasks.stopDrv(r_speed_msg, l_speed_msg);
+        dugTasks.turnLeft(r_speed_msg, l_speed_msg);
+        dugTasks.turnRight(r_speed_msg, l_speed_msg);
         l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
         DugConveyorTogglePub.publish(DugConveyorEnableMsg);
@@ -77,6 +64,24 @@ int main(int argc, char **argv)
     
     return 0;
 }
+
+/*
+
+Finished tasks:
+
+        dugTasks.startConveyor(DugConveyorEnableMsg); 
+        dugTasks.stopConveyor(DugConveyorEnableMsg);
+        dugTasks.extLinAct(ExtLinActMsg);
+        dugTasks.drvForward(r_speed_msg, l_speed_msg);
+        dugTasks.drvBackward(r_speed_msg, l_speed_msg);
+        dugTasks.stopDrv(r_speed_msg, l_speed_msg);
+        dugTasks.turnLeft(r_speed_msg, l_speed_msg);
+        dugTasks.turnRight(r_speed_msg, l_speed_msg);
+
+Unfinished tasks:
+        dugTasks.extFlags(ExtFlagsMsg);
+
+*/
 
 
 //prepare flags and lin act
@@ -161,6 +166,34 @@ bool DugTasks::stopDrv(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg)
     
     RMsg.data = 0;
     LMsg.data = 0;
+
+    return false;
+}
+
+bool DugTasks::turnLeft(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg)
+{
+    // Topic: TPortRDrvPwr (left), TPortLDrvPwr (right)
+    // yes, TPortRDrvPwr controls the left and TPortLDrvPwr controls the right
+    // Message: l_speed_msg, r_speed_msg
+    
+    // This function turns left
+    
+    RMsg.data = 0.5;
+    LMsg.data = 1;
+
+    return false;
+}
+
+bool DugTasks::turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg)
+{
+    // Topic: TPortRDrvPwr (left), TPortLDrvPwr (right)
+    // yes, TPortRDrvPwr controls the left and TPortLDrvPwr controls the right
+    // Message: l_speed_msg, r_speed_msg
+    
+    // This function turns right
+    
+    RMsg.data = 1;
+    LMsg.data = 0.5;
 
     return false;
 }
