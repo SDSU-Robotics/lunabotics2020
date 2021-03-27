@@ -3,17 +3,18 @@
 	<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
 		<param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
 		<param name="serial_baudrate"     type="int"    value="256000"/>
-		<param name="frame_id"            type="string" value="perception_frame"/>
+		<param name="frame_id"            type="string" value="beacon_frame"/>
 		<param name="inverted"            type="bool"   value="false"/>
 		<param name="angle_compensate"    type="bool"   value="true"/>
+		<param name="scan_mode"			  type="string" value="DenseBoost"/>
 
 		<!--Change topic name to beacon_scan-->
 		<remap from="scan" to="perception_scan"/>
 	</node>
 
 	<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
-		<remap from="scan" to="beacon_scan" />  <!--Topic to subscribe to-->
-		<remap from="scan_filtered" to="beacon_scan_filtered"/>  <!--Topic to publish to-->
+		<remap from="scan" to="perception_scan" />  <!--Topic to subscribe to-->
+		<remap from="scan_filtered" to="perception_scan_filtered"/>  <!--Topic to publish to-->
 
 		<!--Load config file-->
 		<rosparam command="load" file="$(find lunabotics2020)/launch/beacon_filter.yaml" />
@@ -26,7 +27,7 @@
 
 	<node pkg="lunabotics2020" type="LaserToPointCloud" name="LaserToPointCloud"></node>
 
-  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find lunabotics2020)/.rviz/default.rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find lunabotics2020)/config/Perception.rviz" />
 
 	<node pkg="tf2_ros" type="static_transform_publisher" name="perception_broadcaster" args="0 0 0 0 0 0 map beacon_frame" /> <!-- Map to Lidar Transform-->
 	

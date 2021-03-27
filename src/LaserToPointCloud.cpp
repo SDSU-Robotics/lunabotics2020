@@ -31,10 +31,10 @@ int main (int argc, char **argv)
 	Listener listener;
 
 	//Subcribing to filtered lidar data "perception_scan_filtered"
-	ros::Subscriber scan_sub = n.subscribe("perception_scan_filtered", 100, &Listener::scanCB, &listener);
+	ros::Subscriber scan_sub = n.subscribe("perception_scan", 100, &Listener::scanCB, &listener);
 
 	//Publishing Pointcloud2
-	ros::Publisher perception_cloud = n.advertise<geometry_msgs::PointStamped>("perception_cloud", 1000);
+	ros::Publisher perception_cloud = n.advertise<sensor_msgs::PointCloud2>("perception_cloud", 1000);
 
 	while (ros::ok())
 	{
