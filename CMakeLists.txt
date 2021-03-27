@@ -31,7 +31,6 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 add_library(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
 add_library(TaskManager ${PROJECT_SOURCE_DIR}/src/TaskManager.cpp)
 add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
-#add_library(TaskH ${PROJECT_SOURCE_DIR}/src/Task.h)
 
 
 # EXECUTABLES (ROS nodes, main function)

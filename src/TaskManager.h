@@ -4,14 +4,20 @@
 #include <list>
 #include "Task.h"
 
-class Tasking
+class TaskManager
 {
     public:
         void addTask(Task T);
-        Task getTask(int element);
+        Task* getTask(int element);
+        bool cycle();
 
     private:
-        std::list<Task> TaskList;
+        int taskListElement = 0;
+        bool isTaskRunning = true;
+        bool isFirstTime = true;
+        bool done = false;
+        Task currentTask;
+        std::list<Task*> TaskList;
 };
 
 #endif

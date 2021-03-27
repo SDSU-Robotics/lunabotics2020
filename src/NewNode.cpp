@@ -15,14 +15,32 @@ bool func1()
     return true;
 }
 
+class NewTask : public Task
+{
+    bool basic() override
+    {
+        ROS_INFO("New Task");
+
+        return false;
+    }
+};
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "NewNode");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
+
+    NewTask t1;
+    NewTask t2;
+    TaskManager tm;
+    tm.addTask(t1);
+    tm.addTask(t2);
     
     while (ros::ok())
     {
+        tm.cycle();
+
         ros::spinOnce();
         loop_rate.sleep();
     }
