@@ -17,6 +17,7 @@ bool func1()
 
 class NewTask : public Task
 {
+    public:
     bool basic() override
     {
         ROS_INFO("New Task");
@@ -36,6 +37,7 @@ int main(int argc, char **argv)
     TaskManager tm;
     tm.addTask(t1);
     tm.addTask(t2);
+    t1.basic();
     
     while (ros::ok())
     {

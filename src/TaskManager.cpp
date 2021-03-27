@@ -29,7 +29,7 @@ bool TaskManager::cycle()
         // call Initialize
         if(isFirstTime)
         {
-            currentTask = *getTask(taskListElement);
+            //currentTask = getTask(taskListElement);
             currentTask.initialize();
             isFirstTime = false;
         }
@@ -56,7 +56,7 @@ bool TaskManager::cycle()
             // ADD NEW TASK FUNCTION TYPES HERE
             switch(currentTask.taskType)
             {
-                case Task::BASIC: isTaskRunning = currentTask.basic();
+                case Task::BASIC: isTaskRunning = getTask(taskListElement)->basic();
                 break;
                 case Task::NAVIGATION: isTaskRunning = currentTask.navigation();
                 break;

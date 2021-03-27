@@ -21,7 +21,7 @@ class Task
             BASIC,
             NAVIGATION
         };
-        TaskType taskType = BASIC;;
+        TaskType taskType = BASIC;
     
     private:
         // Data Members

@@ -2,6 +2,7 @@
 #include "Task.h"
 #include "TaskingVariables.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "ros/ros.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ bool Task::initialize()
 }
 bool Task::basic()
 {
-    //geometry_msgs:Pose
+    ROS_INFO("DEFULT TASK");
     return false;
 }
 bool Task::onFinish()
