@@ -9,6 +9,7 @@
 #include "sensor_msgs/LaserScan.h"
 #include "sensor_msgs/PointCloud.h"
 #include "geometry_msgs/PointStamped.h"
+#include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include "laser_geometry/laser_geometry.h"
 #include <tf2_ros/transform_listener.h>
 #include <geometry_msgs/TransformStamped.h>
@@ -26,6 +27,7 @@ public:
 	geometry_msgs::PointStamped getPoint1() { return _avgPt_1; }			//Average points found by adding all x and y values for each flag then dividing
 	geometry_msgs::PointStamped getPoint2() { return _avgPt_2; }			//by the # of points.  These happen to be geometric centroids of semicircles seen
 																		//by the lidar.
+	geometry_msgs::PoseWithCovarianceStamped flagPose;
 
 private:
 	laser_geometry::LaserProjection projector_;
@@ -169,9 +171,21 @@ void Listener::scanCB (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 	transformStamped.transform.translation.y = pnt1y;
 	transformStamped.transform.translation.z = 0.0;
 
+	flagPose.header.frame_id = "map";
+	
+	//Publish Flag as a Pose
+	flagPose.pose.pose.position.x = 0;
+	flagPose.pose.pose.position.y = 0;
+	flagPose.pose.pose.position.z = 0;
+
 	//Generates a quaternion value for the orientation/rotation of "flag" based on RPY values (0, 0, yaw)
 	tf2::Quaternion q;
 	q.setRPY(0, 0, yaw);
+
+	flagPose.pose.pose.orientation.x = 0;
+	flagPose.pose.pose.orientation.y = 0;
+	flagPose.pose.pose.orientation.z = 0;
+	flagPose.pose.pose.orientation.w = 0;
 
 	//Setting the quaternion orientation of frame "flag"
 	transformStamped.transform.rotation.x = q.x();
@@ -198,10 +212,13 @@ int main (int argc, char **argv)
 	ros::Publisher point_pub1 = n.advertise<geometry_msgs::PointStamped>("point1", 1000);
 	ros::Publisher point_pub2= n.advertise<geometry_msgs::PointStamped>("point2", 1000);
 
+	ros::Publisher pose_pub = n.advertise<geometry_msgs::PoseWithCovarianceStamped>("flagPose", 1000);
+
 	while (ros::ok())
 	{
 		point_pub1.publish(listener.getPoint1());
 		point_pub2.publish(listener.getPoint2());
+		pose_pub.publish(listener.flagPose);
 
 		ros::spinOnce();
 		loop_rate.sleep();
