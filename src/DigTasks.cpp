@@ -10,39 +10,32 @@ using namespace std;
 class DigTasks
 {
     public:
-        void setExcvLinearActuatorVar(std_msgs::Float32 &msg);
-        void setExcvDrvCurrent(std_msgs::Float32 msg, float excvDrvCurrent);
+        //void setExcvLinearActuatorVar(std_msgs::Float32 msg);
         bool startExcv(std_msgs::Bool &msg); //lower linear actuator and apply motor current for torque while conveyor belt is activated
         bool stopExcv(std_msgs::Bool &msg); //stop above defined process
-        bool startConveyor(std_msgs::Bool &msg);
-        bool stopConveyor(std_msgs::Bool &msg);
+        bool startConveyor(std_msgs::Float32 &msg);
+        bool stopConveyor(std_msgs::Float32 &msg);
         bool extLinAct(std_msgs::Float32 &msg);
-        
+
+        //float excvLinearActuatorCurrent;
 };
 
     /*
-    void setExcvLinearActuatorVar(std_msgs::Float32 &msg)
+    void DigTasks::setExcvLinearActuatorVar(std_msgs::Float32 msg)
     {
 
 	    // Set linear actuator position
-	    excvLinearActuatorPos = msg.data;
-    }
-    */
+	    excvLinearActuatorCurrent = msg.data;
 
+    }*/
+    
 
-    /*void DigTasks::trencherToggle(const std_msgs::Bool msg)
+    /*this is used for autonomous raising/lowering
+    void DigTasks::trencherToggle(const std_msgs::Bool msg)
     {
         PIDEnable = true;
-    }*/ //this is used for autonomous raising/lowering
-
-
-
-    void setExcvDrvCurrent(std_msgs::Float32 msg, float excvDrvCurrent)
-    {
-        //Set conveyor belt speed
-        excvDrvCurrent = msg.data;
-    }
-
+    }*/ 
+  
 
 
 
@@ -51,16 +44,17 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "DigTasks");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
-    DigTasks digTasks;
-	ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
-    ros::Publisher ConveyorSpeedPub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
-    ros::Publisher TrencherEnablePub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
-    ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Bool>("ExcvConveyorDrvPwr", 100);
-	ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
 
-    std_msgs::Bool ExcvTrencherEnableMsg;
-    std_msgs::Bool ExcvConveyorEnableMsg;
-    std_msgs::Float32 excvLinActPosMsg;
+    DigTasks digTasks;
+
+	ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
+    //ros::Publisher TrencherEnablePub = n.advertise<std_msgs::Float32>("ExcvTrencherToggle", 100);
+    ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
+    
+	
+    //ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", ExcvTrencherPos
+    std_msgs::Float32 ExcvConveyorEnableMsg;
+    std_msgs::Float32 ExcvLinActPosMsg;
 
     
     string s = "";
@@ -69,53 +63,76 @@ int main(int argc, char **argv)
     {
         ros::spinOnce();
         loop_rate.sleep();
-        digTasks.extLinAct(excvLinActPosMsg);
+
+        digTasks.extLinAct(ExcvLinActPosMsg);
         digTasks.startConveyor(ExcvConveyorEnableMsg);
         digTasks.stopConveyor(ExcvConveyorEnableMsg);
+
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);
+        ExcvLinearActuatorPosPub.publish(ExcvLinActPosMsg);
     }
     
     return 0;
 }
 
-
 /*
-// fully extends linear actuator
-bool extLinAct(std_msgs::Float32 &msg)
-{
-    bool extending = true;
-    excvLinearActuatorPos = GlobalVariables::ExcvMaxPotReading;
+Finished Tasks:
+        digTasks.startConveyor(ExcvConveyorEnableMsg);
+        digTasks.stopConveyor(ExcvConveyorEnableMsg);
+        digTasks.extLinAct(ExcvLinActPosMsg);
 
-    if (excvLinearActuatorPos == GlobalVariables::ExcvMaxPotReading)
+Unfinished Tasks:
+
+*/
+
+
+
+// fully extends linear actuator
+bool DigTasks::extLinAct(std_msgs::Float32 &msg)
+{
+    //Topic: ExcvTrencherPos
+    //Message: 
+
+    //set message to 1
+    msg.data = 1;
+
+    return false;
+
+    
+    
+    /*bool extending = true;
+    excvLinearActuatorCurrent = GlobalVariables::ExcvMaxPotReading;
+
+    if (excvLinearActuatorCurrent == GlobalVariables::ExcvMaxPotReading)
     {
         extending = false;
     }
 
-    return extending;
+    return extending;*/
 }
-*/
 
 
-bool DigTasks::startConveyor(std_msgs::Bool &msg)
+
+bool DigTasks::startConveyor(std_msgs::Float32 &msg)
 {
     // This function starts the conveyor on Dig.
     
     // Topic: ExcvConveyorDrvPwr
     // Message: ExcvConveyorEnableMsg
 
-    msg.data = true;
+    msg.data = 1;
 
     return false;
 }
 
-bool DigTasks::stopConveyor(std_msgs::Bool &msg)
+bool DigTasks::stopConveyor(std_msgs::Float32 &msg)
 {
     // This function stops the conveyor on Dig.
 
     // Topic: ExcvConveyorDrvPwr
     // Message: ExcvConveyorEnableMsg
 
-    msg.data = false;
+    msg.data = 0;
 
     return false;
 }
