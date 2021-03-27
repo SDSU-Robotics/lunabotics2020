@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "Task.h"
-#include "Tasking.h"
+#include "TaskManager.h"
 #include <list>
 
 bool func()
@@ -21,9 +21,6 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
     
-    
-   
-
     while (ros::ok())
     {
         ros::spinOnce();

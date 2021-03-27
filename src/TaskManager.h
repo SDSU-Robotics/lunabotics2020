@@ -4,19 +4,14 @@
 #include <list>
 #include "Task.h"
 
-struct TaskStruct
-{
-    Task task;
-};
-
 class Tasking
 {
     public:
         void addTask(Task T);
-        TaskStruct getTask(int element);
+        Task getTask(int element);
 
     private:
-        std::list<TaskStruct> TaskList;
+        std::list<Task> TaskList;
 };
 
 #endif

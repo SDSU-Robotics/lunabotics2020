@@ -1,18 +1,16 @@
-#include "Tasking.h"
+#include "TaskManager.h"
 #include "Task.h"
 
 using namespace std;
 
 void Tasking::addTask(Task t)
 {
-    //make a struct
-    struct TaskStruct ts = {t};
     // add to list
-    TaskList.push_back(ts);
+    TaskList.push_back(t);
     return;
 }
 
-TaskStruct Tasking::getTask(int element)
+Task Tasking::getTask(int element)
 {
     // get a pointer to the first element
     auto position = TaskList.begin();
