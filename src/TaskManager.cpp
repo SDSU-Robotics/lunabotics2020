@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void TaskManager::addTask(Task t)
+void TaskManager::addTask(Task &t)
 {
     // add to list
     TaskList.push_back(&t);

@@ -7,7 +7,7 @@
 class TaskManager
 {
     public:
-        void addTask(Task T);
+        void addTask(Task &T);
         Task* getTask(int element);
         bool cycle();
 
