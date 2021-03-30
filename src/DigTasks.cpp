@@ -14,28 +14,14 @@ using namespace std;
 
 class DigTasks
 {
-    private:
-        // listeners are private
-        bool prime; //put linear actuator in vertical position
-        bool drvExcvZone; //traverse straight until excavation zone
-        bool extLinAct(); //extend linear actuator to full extension
-        bool slowAndSteady; //once linear actuator is 180 degress from prime position, drive forward at constant rate
-        bool relocate; //if too close to edge, reverse from trench and begin new trench
-        bool reverse; //reverse function for relocating
-        bool liftLinAct; //when reversed from wall, lift lin act to vertical position
-        bool newTrench; //repeat necessary above functions
-        std_msgs::Float32 ExcvLinearActuatorPosMsg; 
-        std_msgs::Float32 ExcvDrvCurrentMsg;
-        
-        //std_msgs::Bool toggleConveyorMsg;
-
     public:
-        void setExcvLinearActuatorVar(const std_msgs::Float32 msg);
-        void setexcvDrvCurrent(const std_msgs::Float32 msg);
-        bool startExcv(std_msgs::Bool &msg); //lower linear actuator and apply motor current for torque while belt is activated
-        bool stopExcv(std_msgs::Bool &msg); //stop excavating
+        void setExcvLinearActuatorVar(std_msgs::Float32 &msg);
+        void setExcvDrvCurrent(std_msgs::Float32 msg, float excvDrvCurrent);
+        bool startExcv(std_msgs::Bool &msg); //lower linear actuator and apply motor current for torque while conveyor belt is activated
+        bool stopExcv(std_msgs::Bool &msg); //stop above defined process
         bool startConveyor(std_msgs::Bool &msg);
         bool stopConveyor(std_msgs::Bool &msg);
+<<<<<<< HEAD
         bool NavTask(double xPt, double zPt, double yRot, int time, int duration, geometry_msgs::PoseStamped &Position);
         //void trencherToggle(const std_msgs::Bool msg);
         //void toggleConveyorOn(const std_msgs::Bool msg);
@@ -43,18 +29,20 @@ class DigTasks
         float excvDrvCurrent = 0;
         float ExcvConveyorDrvPwr = 0;
         void timercallback(const ros::TimerEvent&);
+=======
+        bool extLinAct(std_msgs::Float32 &msg);
+>>>>>>> 4cad30e9303176cfc8695e10a7a20a72a48c50d4
         
-        //bool toggleConveyorMsg = false;
 };
 
-
-    void DigTasks::setExcvLinearActuatorVar(const std_msgs::Float32 msg)
+    /*
+    void setExcvLinearActuatorVar(std_msgs::Float32 &msg)
     {
 
 	    // Set linear actuator position
 	    excvLinearActuatorPos = msg.data;
     }
-
+    */
 
 
     /*void DigTasks::trencherToggle(const std_msgs::Bool msg)
@@ -64,7 +52,7 @@ class DigTasks
 
 
 
-    void setexcvDrvCurrent(const std_msgs::Float32 msg, float excvDrvCurrent)
+    void setExcvDrvCurrent(std_msgs::Float32 msg, float excvDrvCurrent)
     {
         //Set conveyor belt speed
         excvDrvCurrent = msg.data;
@@ -83,12 +71,21 @@ int main(int argc, char **argv)
     ros::Publisher ConveyorSpeedPub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
     ros::Publisher TrencherEnablePub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
     ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Bool>("ExcvConveyorDrvPwr", 100);
+<<<<<<< HEAD
     ros::Publisher NavTaskPub = n.advertise<geometry_msgs::PoseStamped>("NavTaskData", 100);
 	//ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
 
     std_msgs::Bool ExcvTrencherEnableMsg;
     std_msgs::Bool ExcvConveyorEnableMsg;
     geometry_msgs::PoseStamped Position; //PoseStamped msg for NavTask
+=======
+	ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
+
+    std_msgs::Bool ExcvTrencherEnableMsg;
+    std_msgs::Bool ExcvConveyorEnableMsg;
+    std_msgs::Float32 excvLinActPosMsg;
+
+>>>>>>> 4cad30e9303176cfc8695e10a7a20a72a48c50d4
     
     // data for NavTask function
     double xPt = 5;
@@ -104,6 +101,7 @@ int main(int argc, char **argv)
     {
         ros::spinOnce();
         loop_rate.sleep();
+<<<<<<< HEAD
         //digTasks.startExcv(ExcvTrencherEnableMsg);
         //digTasks.stopExcv(ExcvTrencherEnableMsg);
         //digTasks.startConveyor(ExcvConveyorEnableMsg);
@@ -111,13 +109,21 @@ int main(int argc, char **argv)
         digTasks.NavTask(xPt, zPt, yRot, time, duration, Position);
         TrencherEnablePub.publish(ExcvTrencherEnableMsg);
         NavTaskPub.publish(Position);
+=======
+        digTasks.extLinAct(excvLinActPosMsg);
+        digTasks.startConveyor(ExcvConveyorEnableMsg);
+        digTasks.stopConveyor(ExcvConveyorEnableMsg);
+        conveyorTogglePub.publish(ExcvConveyorEnableMsg);
+>>>>>>> 4cad30e9303176cfc8695e10a7a20a72a48c50d4
     }
     
     return 0;
 }
 
+
+/*
 // fully extends linear actuator
-bool DigTasks::extLinAct()
+bool extLinAct(std_msgs::Float32 &msg)
 {
     bool extending = true;
     excvLinearActuatorPos = GlobalVariables::ExcvMaxPotReading;
@@ -129,34 +135,8 @@ bool DigTasks::extLinAct()
 
     return extending;
 }
+*/
 
-
-// excavates
-bool DigTasks::startExcv(std_msgs::Bool &msg)
-{
-    //This function is meant to begin the trencher of dig to excavate.
-    //For conveyor functionalities, refer to the conveyor naming convention (NOT Trencher!!!)
-    
-    // Topic: ExcvTrencherToggle
-    // Message: ExcvTrencherEnableMsg
-    
-    msg.data = true;
-
-    return false;  
-} 
-
-// stop excavating
-bool DigTasks::stopExcv(std_msgs::Bool &msg)
-{
-    // This function stops the trencher to stop excavating.
-    
-    // Topic: ExcvTrencherToggle
-    // Message: ExcvTrencherEnableMsg
-    
-    msg.data = false;
-
-    return false;
-}
 
 bool DigTasks::startConveyor(std_msgs::Bool &msg)
 {
