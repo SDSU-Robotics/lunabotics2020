@@ -283,7 +283,6 @@ int main (int argc, char **argv)
 	std_msgs::Float32 excavator_pos_msg;
 	std_msgs::Float32 excavator_pitch_msg;
 	std_msgs::Float32 trencherPitchValue_msg;
-
 		
 	while (ros::ok()) // runs while ros is running
 	{
@@ -294,7 +293,6 @@ int main (int argc, char **argv)
 		//listener.ResetTrencherPitch();
         listener.getJoyVals(buttons, axes);
 
-		
 		listener.toggleDrvSpeed(buttons[TrencherDriveDecrease], buttons[TrencherDriveIncrease], currentButton4, currentButton5, excavator_pwr_msg);
 		listener.toggleConveyor(buttons[ConveyorToggle], currentButton1, on1, conveyor_pwr_msg);
 		listener.toggleBoolean(buttons[TrencherToggle], currentButtonTrencher, onTrencher, trencher_toggle_msg);

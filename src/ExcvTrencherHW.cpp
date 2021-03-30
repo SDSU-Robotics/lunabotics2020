@@ -7,9 +7,13 @@
 #include "std_msgs/Bool.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
+#include "ctre/phoenix/motorcontrol/SensorCollection.h"
 #include "DeviceIDs.h"
 #include <time.h>
 #include <iostream>
+#include <string>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 using namespace ctre::phoenix;
@@ -26,7 +30,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor value ****
 ****************************************************************************/
 
-#define targetCurrent 9.0
+//#define targetCurrent 4.75
+//#define targetPos -1608 // -2208
 
 class Listener
 {
@@ -35,8 +40,9 @@ class Listener
         void setPitchSpeed(const std_msgs::Float32 pitchspeed); // Pitch speed
 		void setDriveSpeed(); //Drive speed 
 		void getDriveSpeed(const std_msgs::Float32 drivespeed);
-		void setPosition();
-		void setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg);
+		//void setPosition();
+		void setPosition(int angPos);
+		//void setpitchTalon.GetSensorCollection().GetQuadratureVelocity()DrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg);
 		void trencherToggle(const std_msgs::Bool toggle);
 		void trencherDriveToggle(const std_msgs::Bool toggle);
 		double getActualCurrent();
@@ -51,9 +57,22 @@ class Listener
 		bool PIDEnable;
 		bool DrivePIDEnable;
 
-		float P = 0.04;
-		float I = 0.01;
+		int targetPos = -1308;
+		int variablePos = -1308;
+		int maxDepth = -2000;
+
+		/*
+		float P = 0.05;
+		float I = 0.0001;
 		float D = 0.01;
+		*/
+		float P = 0.01;
+		float I = 0.005;
+		float D = 0.001;
+
+		float etLast = 0;
+		int i = 0;
+		int n = 0;
 };
 
 int main (int argc, char **argv)
@@ -77,6 +96,9 @@ int main (int argc, char **argv)
 	std_msgs::Float32 drive_current_msg;
 	std_msgs::Float32 l_speed_msg;
 	std_msgs::Float32 r_speed_msg;
+	
+	
+
 
 	Listener listener;
 
@@ -87,21 +109,31 @@ int main (int argc, char **argv)
 	ros::Subscriber trencherToggleSub = n.subscribe("ExcvTrencherToggle", 100, &Listener::trencherToggle, &listener);
 	ros::Subscriber trencherDriveToggleSub = n.subscribe("ExcvTrencherDriveToggle", 100, &Listener::trencherDriveToggle, &listener);
 
+
+	int angPos;
+
 	while (ros::ok()) // while ros is running
 	{
 		if(listener.DrivePIDEnable == true)
 		{
-			listener.setDrivePID(l_speed_msg, r_speed_msg);
+			//listener.setDrivePID(l_speed_msg, r_speed_msg);
 			l_speed_pub.publish(l_speed_msg); // left speed
 			r_speed_pub.publish(r_speed_msg); // right speed
 		}
 		else{
+
 			if(listener.PIDEnable == true)
 			{
-				listener.setPosition();
+				angPos = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
+				//cout << angPos << endl;
+
+      			listener.setPosition(angPos);
+								
 			}
 			else
 			{
+				
+
 				listener.setDriveSpeed();
 				listener.pitchTalon.Set(ControlMode::PercentOutput, listener.pitchSpeed);
 
@@ -119,11 +151,21 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void Listener::setPosition()
+void Listener::setPosition(int angPos)
 {
+	using namespace std::this_thread;
+	using namespace std::chrono;
+
+	
+
+	
 	float driveOut;
-	float eT = targetCurrent - driveTalon.GetOutputCurrent();
-	float etLast = 0;
+	//float eT = targetCurrent - driveTalon.GetOutputCurrent();
+	float eT = targetPos - angPos;
+
+	int currentPos;
+	int newPos;
+	int motorSpeed = 0;
 
 	ros::Time timeCurrent;
 	ros::Time timeLast = timeCurrent;
@@ -141,24 +183,71 @@ void Listener::setPosition()
 
 	driveOut = P*eT + IC + dC;
 	//driveOut = P*eT + I*(eT*dT);
-
+	
+	/*
 	if(driveOut > 0.0)
 		driveOut = 0.0;
 	else if(driveOut < -0.3)
 		driveOut = -0.3;
+	*/
 
-	cout<<driveOut << "\t" << driveTalon.GetOutputCurrent() << endl;
+if(angPos > targetPos/2)
+{
+	if(driveOut > 0.75)
+		driveOut = 0.75;
+	else if(driveOut < -0.75)
+		driveOut = -0.75;
+
+}
+else
+{
+	if(driveOut > 0.375)
+		driveOut = 0.375;
+	else if(driveOut < -0.375)
+		driveOut = -0.375;
+
+	//motorSpeed = pitchTalon.GetSensorCollection().GetQuadratureVelocity();
+	cout << pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+	
+	if(motorSpeed == 0)
+	{
+		targetPos = variablePos; 
+
+		if(targetPos != maxDepth)
+		{
+		//sleep_for(seconds(5));
+		variablePos -= 1;
+		}
+	}
+
+}	
+
+	/*
+	if(eT < 0)
+		driveOut=0;
+	*/
+	
+
+	//cout<<driveOut << "\t" << driveTalon.GetOutputCurrent() << endl;
+	
 
 	//Set motor to newly mapped position
-	driveTalon.Set(ControlMode::PercentOutput, 1);
+	//driveTalon.Set(ControlMode::PercentOutput, 0.75);
 	pitchTalon.Set(ControlMode::PercentOutput, driveOut);
-
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 
 	etLast = eT;
+	//lastPos = pitchTalon.GetSensorCollection().GetQuadraturePosition();
+
+	//sleep_for(seconds(5));
+	//if(angPos == pitchTalon.GetSensorCollection().GetQuadraturePosition())
+	//{
+	//	cout << "working" << endl;
+	//}
 }
 
+/*
 void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg)
 {
 	float driveOut;
@@ -187,7 +276,7 @@ void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & 
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
-
+*/
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
 {
 	pitchSpeed = pitchspeed.data;
