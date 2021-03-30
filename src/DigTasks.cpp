@@ -5,7 +5,12 @@
 #include "std_msgs/Bool.h"
 #include <string>
 #include <iostream>
+#include "geometry_msgs/PoseStamped.h"
+#include <std_msgs/Float64.h>
+#include "std_msgs/Header.h"
 using namespace std;
+
+#define NAVIGATION_FRAME "frame"
 
 class DigTasks
 {
@@ -31,11 +36,13 @@ class DigTasks
         bool stopExcv(std_msgs::Bool &msg); //stop excavating
         bool startConveyor(std_msgs::Bool &msg);
         bool stopConveyor(std_msgs::Bool &msg);
+        bool NavTask(double xPt, double zPt, double yRot, int time, int duration, geometry_msgs::PoseStamped &Position);
         //void trencherToggle(const std_msgs::Bool msg);
         //void toggleConveyorOn(const std_msgs::Bool msg);
         float excvLinearActuatorPos = 0;
         float excvDrvCurrent = 0;
         float ExcvConveyorDrvPwr = 0;
+        void timercallback(const ros::TimerEvent&);
         
         //bool toggleConveyorMsg = false;
 };
@@ -76,22 +83,34 @@ int main(int argc, char **argv)
     ros::Publisher ConveyorSpeedPub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
     ros::Publisher TrencherEnablePub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
     ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Bool>("ExcvConveyorDrvPwr", 100);
+    ros::Publisher NavTaskPub = n.advertise<geometry_msgs::PoseStamped>("NavTaskData", 100);
 	//ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
 
     std_msgs::Bool ExcvTrencherEnableMsg;
     std_msgs::Bool ExcvConveyorEnableMsg;
+    geometry_msgs::PoseStamped Position; //PoseStamped msg for NavTask
     
-    string s = "";
+    // data for NavTask function
+    double xPt = 5;
+    double zPt = 6;
+    double yRot = 7;
+    int time;
+    int duration;
+    string s = "hello";
+
+    ros::Timer timer = n.createTimer(ros::Duration(1), timercallback);
 
     while (ros::ok())
     {
         ros::spinOnce();
         loop_rate.sleep();
-        digTasks.startExcv(ExcvTrencherEnableMsg);
-        digTasks.stopExcv(ExcvTrencherEnableMsg);
-        digTasks.startConveyor(ExcvConveyorEnableMsg);
-        digTasks.stopConveyor(ExcvConveyorEnableMsg);
+        //digTasks.startExcv(ExcvTrencherEnableMsg);
+        //digTasks.stopExcv(ExcvTrencherEnableMsg);
+        //digTasks.startConveyor(ExcvConveyorEnableMsg);
+        //digTasks.stopConveyor(ExcvConveyorEnableMsg);
+        digTasks.NavTask(xPt, zPt, yRot, time, duration, Position);
         TrencherEnablePub.publish(ExcvTrencherEnableMsg);
+        NavTaskPub.publish(Position);
     }
     
     return 0;
@@ -163,7 +182,25 @@ bool DigTasks::stopConveyor(std_msgs::Bool &msg)
     return false;
 }
 
-/*
+bool DigTasks::NavTask(double xPt, double zPt, double yRot, int time, int duration, geometry_msgs::PoseStamped &Position)
+{
+    Position.header.stamp.sec = time;
+    Position.header.stamp.nsec = duration;
+    Position.header.frame_id = NAVIGATION_FRAME;
+
+    
+    Position.pose.position.x = xPt;
+    Position.pose.position.y = 0;
+    Position.pose.position.z = zPt;
+    Position.pose.orientation.x = 0;
+    Position.pose.orientation.y = yRot;
+    Position.pose.orientation.w = 0;
+    Position.pose.orientation.z = 0;
+    
+    return false;
+}
+
+/*  
 bool DigTasks::prime()
 {
     //lift lin act to vertical
