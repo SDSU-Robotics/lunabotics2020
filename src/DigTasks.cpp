@@ -15,24 +15,20 @@ using namespace std;
 class DigTasks
 {
     public:
-        void setExcvLinearActuatorVar(std_msgs::Float32 &msg);
-        void setExcvDrvCurrent(std_msgs::Float32 msg, float excvDrvCurrent);
+        //void setExcvLinearActuatorVar(std_msgs::Float32 &msg);
+        //void setExcvDrvCurrent(std_msgs::Float32 msg, float excvDrvCurrent);
+        bool extLinAct(std_msgs::Float32 &msg);
         bool startExcv(std_msgs::Bool &msg); //lower linear actuator and apply motor current for torque while conveyor belt is activated
         bool stopExcv(std_msgs::Bool &msg); //stop above defined process
         bool startConveyor(std_msgs::Bool &msg);
         bool stopConveyor(std_msgs::Bool &msg);
-<<<<<<< HEAD
         bool NavTask(double xPt, double zPt, double yRot, int time, int duration, geometry_msgs::PoseStamped &Position);
+        bool Pause();
         //void trencherToggle(const std_msgs::Bool msg);
         //void toggleConveyorOn(const std_msgs::Bool msg);
         float excvLinearActuatorPos = 0;
         float excvDrvCurrent = 0;
-        float ExcvConveyorDrvPwr = 0;
-        void timercallback(const ros::TimerEvent&);
-=======
-        bool extLinAct(std_msgs::Float32 &msg);
->>>>>>> 4cad30e9303176cfc8695e10a7a20a72a48c50d4
-        
+        float ExcvConveyorDrvPwr = 0;  
 };
 
     /*
@@ -58,34 +54,30 @@ class DigTasks
         excvDrvCurrent = msg.data;
     }
 
-
-
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "DigTasks");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
+    
     DigTasks digTasks;
-	ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
+	
+    ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
     ros::Publisher ConveyorSpeedPub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
     ros::Publisher TrencherEnablePub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
     ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Bool>("ExcvConveyorDrvPwr", 100);
-<<<<<<< HEAD
     ros::Publisher NavTaskPub = n.advertise<geometry_msgs::PoseStamped>("NavTaskData", 100);
+    ros::Publisher PausePub = n.advertise<std_msgs::Bool>("PausePublisher", 100);
 	//ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
+
+    //ros::Timer Pause = n.createTimer(ros::Duration(5), timerCallback, bool oneshot = true);
 
     std_msgs::Bool ExcvTrencherEnableMsg;
     std_msgs::Bool ExcvConveyorEnableMsg;
     geometry_msgs::PoseStamped Position; //PoseStamped msg for NavTask
-=======
-	ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
+	//ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
 
-    std_msgs::Bool ExcvTrencherEnableMsg;
-    std_msgs::Bool ExcvConveyorEnableMsg;
     std_msgs::Float32 excvLinActPosMsg;
-
->>>>>>> 4cad30e9303176cfc8695e10a7a20a72a48c50d4
     
     // data for NavTask function
     double xPt = 5;
@@ -95,13 +87,12 @@ int main(int argc, char **argv)
     int duration;
     string s = "hello";
 
-    ros::Timer timer = n.createTimer(ros::Duration(1), timercallback);
+    //ros::Timer timer = n.createTimer(ros::Duration(1), timercallback);
 
     while (ros::ok())
     {
         ros::spinOnce();
         loop_rate.sleep();
-<<<<<<< HEAD
         //digTasks.startExcv(ExcvTrencherEnableMsg);
         //digTasks.stopExcv(ExcvTrencherEnableMsg);
         //digTasks.startConveyor(ExcvConveyorEnableMsg);
@@ -109,12 +100,9 @@ int main(int argc, char **argv)
         digTasks.NavTask(xPt, zPt, yRot, time, duration, Position);
         TrencherEnablePub.publish(ExcvTrencherEnableMsg);
         NavTaskPub.publish(Position);
-=======
         digTasks.extLinAct(excvLinActPosMsg);
-        digTasks.startConveyor(ExcvConveyorEnableMsg);
-        digTasks.stopConveyor(ExcvConveyorEnableMsg);
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);
->>>>>>> 4cad30e9303176cfc8695e10a7a20a72a48c50d4
+        //digTasks.Pause();
     }
     
     return 0;
@@ -136,6 +124,17 @@ bool extLinAct(std_msgs::Float32 &msg)
     return extending;
 }
 */
+
+bool DigTasks::extLinAct(std_msgs::Float32 &msg)
+{
+    //Topic: ExcvTrencherPos
+    //Message: ExcvLinActPosMsg
+
+    //set message to 1
+    msg.data = 1;
+
+    return false;
+}
 
 
 bool DigTasks::startConveyor(std_msgs::Bool &msg)
@@ -167,7 +166,6 @@ bool DigTasks::NavTask(double xPt, double zPt, double yRot, int time, int durati
     Position.header.stamp.sec = time;
     Position.header.stamp.nsec = duration;
     Position.header.frame_id = NAVIGATION_FRAME;
-
     
     Position.pose.position.x = xPt;
     Position.pose.position.y = 0;
@@ -177,6 +175,15 @@ bool DigTasks::NavTask(double xPt, double zPt, double yRot, int time, int durati
     Position.pose.orientation.w = 0;
     Position.pose.orientation.z = 0;
     
+    return false;
+}
+
+bool DigTasks::Pause()
+{
+    // ros::Duration(x).sleep(); sleeps for x seconds
+    ros::Duration(5).sleep(); 
+    ROS_INFO("paused for 5 seconds");
+
     return false;
 }
 
