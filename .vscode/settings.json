@@ -4,5 +4,6 @@
     ],
     "files.associations": {
         "system_error": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

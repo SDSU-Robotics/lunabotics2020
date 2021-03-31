@@ -27,6 +27,13 @@ catkin_package()
 
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
+# NON EXECUTABLES (Classes. Not ROS Nodes, no main function)
+add_library(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
+add_library(TaskManager ${PROJECT_SOURCE_DIR}/src/TaskManager.cpp)
+add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
+
+
+# EXECUTABLES (ROS nodes, main function)
 add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(SLS ${PROJECT_SOURCE_DIR}/src/SLS.cpp)
@@ -39,6 +46,7 @@ add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
 add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
 add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuatorHW.cpp)
+add_executable(NewNode ${PROJECT_SOURCE_DIR}/src/NewNode.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
@@ -52,8 +60,13 @@ target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(NewNode ${catkin_LIBRARIES} Threads::Threads)
+
+#Tasking, Task Includes
+target_link_libraries(NewNode Task TaskManager TaskTypes ${catkin_LIBRARIES})
 
 # Phoenix includes
+message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
 
 	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_Phoenix.a)
@@ -86,7 +99,7 @@ if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 /
 	target_link_libraries(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatform_socketcan.a)
 	target_link_libraries(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
 
-else()
+else() # x86
 
 	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_Phoenix.a)
 	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCCI.a)
