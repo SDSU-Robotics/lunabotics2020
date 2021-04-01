@@ -29,15 +29,15 @@ bool TaskManager::cycle()
         // call Initialize
         if(isFirstTime)
         {
-            //currentTask = getTask(taskListElement);
-            currentTask.initialize();
+            currentTask = getTask(taskListElement);
+            currentTask->initialize();
             isFirstTime = false;
         }
         
         // If current task is done
         if(!isTaskRunning)
         {
-            currentTask.onFinish();
+            currentTask->onFinish();
             taskListElement++;
 
             // Check if all tasks are done
@@ -56,11 +56,11 @@ bool TaskManager::cycle()
             // ADD NEW TASK FUNCTION TYPES HERE
             switch(currentTask.taskType)
             {
-                case Task::BASIC: isTaskRunning = getTask(taskListElement)->basic();
+                case Task::BASIC: isTaskRunning = currentTask->basic();
                 break;
-                case Task::NAVIGATION: isTaskRunning = currentTask.navigation();
+                case Task::NAVIGATION: isTaskRunning = currentTask->navigation();
                 break;
-                default: isTaskRunning = currentTask.basic(); 
+                default: isTaskRunning = currentTask->basic(); 
             }
         }
     }
