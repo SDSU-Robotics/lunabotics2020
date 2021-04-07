@@ -5,85 +5,76 @@
 #include "std_msgs/Bool.h"
 #include <string>
 #include <iostream>
+#include "geometry_msgs/PoseStamped.h"
+#include <std_msgs/Float64.h>
+#include "std_msgs/Header.h"
 using namespace std;
+
+#define NAVIGATION_FRAME "frame"
 
 class DigTasks
 {
     public:
-        //void setExcvLinearActuatorVar(std_msgs::Float32 msg);
-        bool startExcv(std_msgs::Bool &msg); //lower linear actuator and apply motor current for torque while conveyor belt is activated
-        bool stopExcv(std_msgs::Bool &msg); //stop above defined process
+        bool extLinAct(std_msgs::Float32 &msg);
         bool startConveyor(std_msgs::Float32 &msg);
         bool stopConveyor(std_msgs::Float32 &msg);
-        bool extLinAct(std_msgs::Float32 &msg);
+        bool NavTask(double xPt, double zPt, double yRot, int time, int duration, geometry_msgs::PoseStamped &Position);
+        bool Pause();
 
-        //float excvLinearActuatorCurrent;
+        float excvLinearActuatorPos = 0;
+        float excvDrvCurrent = 0;
+        float ExcvConveyorDrvPwr = 0;  
 };
-
-    /*
-    void DigTasks::setExcvLinearActuatorVar(std_msgs::Float32 msg)
-    {
-
-	    // Set linear actuator position
-	    excvLinearActuatorCurrent = msg.data;
-
-    }*/
-    
-
-    /*this is used for autonomous raising/lowering
-    void DigTasks::trencherToggle(const std_msgs::Bool msg)
-    {
-        PIDEnable = true;
-    }*/ 
-  
-
-
 
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "DigTasks");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
-
+    
     DigTasks digTasks;
-
-	ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
-    //ros::Publisher TrencherEnablePub = n.advertise<std_msgs::Float32>("ExcvTrencherToggle", 100);
-    ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
-    
 	
-    //ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", ExcvTrencherPos
-    std_msgs::Float32 ExcvConveyorEnableMsg;
-    std_msgs::Float32 ExcvLinActPosMsg;
+    ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
+    ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
+    ros::Publisher NavTaskPub = n.advertise<geometry_msgs::PoseStamped>("NavTaskData", 100);
+    ros::Publisher PausePub = n.advertise<std_msgs::Bool>("PausePublisher", 100);
+	
 
+    //ros::Timer Pause = n.createTimer(ros::Duration(5), timerCallback, bool oneshot = true);
+
+    std_msgs::Float32 ExcvConveyorEnableMsg;
+    geometry_msgs::PoseStamped Position; //PoseStamped msg for NavTask
+	//ros::Subscriber ExcvLinearActuatorPosSub = n.subscribe("ExcvExtendCurrent", 1000, &DigTasks::setExcvLinearActuatorVar, &digTasks);
+    std_msgs::Float32 excvLinActPosMsg;
     
-    string s = "";
+    // data for NavTask function
+    double xPt = 5;
+    double zPt = 6;
+    double yRot = 7;
+    int time;
+    int duration;
+    string s = "hello";
+
+    //ros::Timer timer = n.createTimer(ros::Duration(1), timercallback);
 
     while (ros::ok())
     {
         ros::spinOnce();
         loop_rate.sleep();
 
-        digTasks.extLinAct(ExcvLinActPosMsg);
         digTasks.startConveyor(ExcvConveyorEnableMsg);
         digTasks.stopConveyor(ExcvConveyorEnableMsg);
+        digTasks.extLinAct(excvLinActPosMsg);
+        digTasks.NavTask(xPt, zPt, yRot, time, duration, Position);
+        //digTasks.Pause();
 
+        NavTaskPub.publish(Position);
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);
-        ExcvLinearActuatorPosPub.publish(ExcvLinActPosMsg);
+
     }
     
     return 0;
 }
-
-/*
-Finished Tasks:
-        digTasks.startConveyor(ExcvConveyorEnableMsg);
-        digTasks.stopConveyor(ExcvConveyorEnableMsg);
-        digTasks.extLinAct(ExcvLinActPosMsg);
-
-Unfinished Tasks:
-
-*/
 
 
 
@@ -91,24 +82,12 @@ Unfinished Tasks:
 bool DigTasks::extLinAct(std_msgs::Float32 &msg)
 {
     //Topic: ExcvTrencherPos
-    //Message: 
+    //Message: ExcvLinActPosMsg
 
     //set message to 1
     msg.data = 1;
 
     return false;
-
-    
-    
-    /*bool extending = true;
-    excvLinearActuatorCurrent = GlobalVariables::ExcvMaxPotReading;
-
-    if (excvLinearActuatorCurrent == GlobalVariables::ExcvMaxPotReading)
-    {
-        extending = false;
-    }
-
-    return extending;*/
 }
 
 
@@ -137,54 +116,28 @@ bool DigTasks::stopConveyor(std_msgs::Float32 &msg)
     return false;
 }
 
-/*
-bool DigTasks::prime()
+bool DigTasks::NavTask(double xPt, double zPt, double yRot, int time, int duration, geometry_msgs::PoseStamped &Position)
 {
-    //lift lin act to vertical
-    bool lifting = true;
-
-}
-
-/*
-// drives to excavation zone
-bool DigTasks::drvExcvZone()
-{
-
-}
-
-
-//excavates while slowly moving forward after switch is flipped
-bool DigTasks::slowAndSteady()
-{
+    Position.header.stamp.sec = time;
+    Position.header.stamp.nsec = duration;
+    Position.header.frame_id = NAVIGATION_FRAME;
     
+    Position.pose.position.x = xPt;
+    Position.pose.position.y = 0;
+    Position.pose.position.z = zPt;
+    Position.pose.orientation.x = 0;
+    Position.pose.orientation.y = yRot;
+    Position.pose.orientation.w = 0;
+    Position.pose.orientation.z = 0;
+    
+    return false;
 }
 
-// tells robot to relocate because robot has reached a wall/obstacle
-bool DigTasks::relocate()
+bool DigTasks::Pause()
 {
+    // ros::Duration(x).sleep(); sleeps for x seconds
+    ros::Duration(5).sleep(); 
+    ROS_INFO("paused for 5 seconds");
 
+    return false;
 }
-
-// reverses robot out of spot
-bool DigTasks::reverse()
-{
-    //if (relocate)
-    {
-
-    }
-}
-
-// lifts the linear actuator out of the ground to relocate
-bool DigTasks::liftLinAct()
-{
-    //if (relocate)
-    {
-        PotReading = x;
-    }
-}
-
-// moves robot to a new spot to start digging again
-bool DigTasks::newZone()
-{
-
-}*/

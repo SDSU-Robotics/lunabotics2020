@@ -19,6 +19,8 @@
         bool stopDrv(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool turnLeft(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+        bool startMatTrans(std_msgs::Float32 &msg);
+        bool stopMatTrans(std_msgs::Float32 &msg);
 
 
 };
@@ -36,12 +38,16 @@ int main(int argc, char **argv)
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
     ros::Publisher ExtendLinearActuatorExtendPwrPub = n.advertise<std_msgs::UInt16>("TPortExtendPwr", 100);
     ros::Publisher DugConveyorTogglePub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
+    ros::Publisher MatTransPub = n.advertise<std_msgs::Float32>("MatTransfer", 100);
+
 
     std_msgs::Float32 DugConveyorEnableMsg;
     std_msgs::UInt16 ExtLinActMsg;
     std_msgs::UInt16 ExtFlagsMsg;
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
+    std_msgs::Float32 StartMatTransMsg;
+
 
     while (ros::ok())
     {
@@ -56,39 +62,21 @@ int main(int argc, char **argv)
         dugTasks.stopDrv(r_speed_msg, l_speed_msg);
         dugTasks.turnLeft(r_speed_msg, l_speed_msg);
         dugTasks.turnRight(r_speed_msg, l_speed_msg);
+        dugTasks.startMatTrans(StartMatTransMsg);
+        dugTasks.stopMatTrans(StartMatTransMsg);
+
         l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
         DugConveyorTogglePub.publish(DugConveyorEnableMsg);
         ExtendLinearActuatorExtendPwrPub.publish(ExtLinActMsg);
+        MatTransPub.publish(StartMatTransMsg);
     }
     
     return 0;
 }
 
-/*
-
-Finished tasks:
-
-        dugTasks.startConveyor(DugConveyorEnableMsg); 
-        dugTasks.stopConveyor(DugConveyorEnableMsg);
-        dugTasks.extLinAct(ExtLinActMsg);
-        dugTasks.drvForward(r_speed_msg, l_speed_msg);
-        dugTasks.drvBackward(r_speed_msg, l_speed_msg);
-        dugTasks.stopDrv(r_speed_msg, l_speed_msg);
-        dugTasks.turnLeft(r_speed_msg, l_speed_msg);
-        dugTasks.turnRight(r_speed_msg, l_speed_msg);
-
-Unfinished tasks:
-        dugTasks.extFlags(ExtFlagsMsg);
-
-*/
-
-
-//prepare flags and lin act
 bool DugTasks::extLinAct(std_msgs::UInt16 &msg)
 {
-    // Topic: TPortExtendPwr
-    // Message: ExtLinActMsg
     
     //set msg to 1
     msg.data = 1;
@@ -197,34 +185,21 @@ bool DugTasks::turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg)
 
     return false;
 }
-/*
-//drive to beginning of current trench being excavated
-bool DugTasks::drvTrench()
-{
 
+bool DugTasks::startMatTrans(std_msgs::Float32 &msg)
+{
+    //Topic: MatTransfer
+    //Message: StartMatTransMsg
+    msg.data = 1;
+
+    return false;
 }
 
-//drive straight until docked with Dig and flipped gravel switch
-bool DugTasks::collectGravel()
+bool DugTasks::stopMatTrans(std_msgs::Float32 &msg)
 {
+    //Topic: MatTransfer
+    //Message: StopMatTransMsg
+    msg.data = 0;
 
+    return false;
 }
-
-//reverse over trench and traverse to collector
-bool DugTasks::drvCollector()
-{
-
-}
-
-//align with collector and dock collector
-bool DugTasks::alignCollector()
-{
-
-}
-
-//activate belt to transfer gravel to collector
-bool DugTasks::dumpGravel()
-{
-
-}
-*/
