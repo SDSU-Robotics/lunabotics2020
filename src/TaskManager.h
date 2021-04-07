@@ -3,12 +3,23 @@
 
 #include <list>
 #include "Task.h"
+#include "TaskLoop.h"
+
+struct TaskStruct
+{
+    Task* task;
+    TaskLoop taskLoop;
+
+    bool isLoop;
+};
 
 class TaskManager
 {
     public:
         void addTask(Task &T);
-        Task* getTask(int element);
+        void addTask(TaskLoop Tl);
+
+        TaskStruct getTask(int element);
         bool cycle();
 
     private:
@@ -17,7 +28,7 @@ class TaskManager
         bool isFirstTime = true;
         bool done = false;
         Task* currentTask;
-        std::list<Task*> TaskList;
+        std::list<TaskStruct> TaskList;
 };
 
 #endif

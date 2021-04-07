@@ -1,17 +1,32 @@
 #include "TaskManager.h"
 #include "Task.h"
 #include "ros/ros.h"
+#include "TaskLoop.h"
+#include <iostream>
 
 using namespace std;
 
-void TaskManager::addTask(Task &t)
+void TaskManager::addTask(Task &T)
 {
     // add to list
-    TaskList.push_back(&t);
+    TaskStruct ts;
+    ts.task = &T;
+    ts.isLoop = false;
+    TaskList.push_back(ts);
     return;
 }
 
-Task* TaskManager::getTask(int element)
+void TaskManager::addTask(TaskLoop TL)
+{
+    // add to list
+    TaskStruct ts;
+    ts.taskLoop = TL;
+    ts.isLoop = true;
+    TaskList.push_back(ts);
+    return;
+}
+
+TaskStruct TaskManager::getTask(int element)
 {
     // get a pointer to the first element
     auto position = TaskList.begin();
@@ -29,7 +44,17 @@ bool TaskManager::cycle()
         // call Initialize
         if(isFirstTime)
         {
-            currentTask = getTask(taskListElement);
+            if(getTask(taskListElement).isLoop)
+            {
+                // Gets the next task from the loop list
+                currentTask = getTask(taskListElement).taskLoop.getNextTask();
+            }
+            else
+            {   
+                // get next taks from manager list
+                currentTask = getTask(taskListElement).task;
+            }
+
             currentTask->initialize();
             isFirstTime = false;
         }
@@ -38,8 +63,20 @@ bool TaskManager::cycle()
         if(!isTaskRunning)
         {
             currentTask->onFinish();
-            taskListElement++;
 
+            if(getTask(taskListElement).isLoop &&
+                getTask(taskListElement).taskLoop.exit)
+            {
+                taskListElement++;
+
+            }
+            else if(!getTask(taskListElement).isLoop)
+            {
+                taskListElement++;
+
+            }
+
+            //THESE LINES BELOW ARE DUPLICATE, FIX?
             // Check if all tasks are done
             if(taskListElement >= TaskList.size())
             {
@@ -49,6 +86,23 @@ bool TaskManager::cycle()
 
             isTaskRunning = true;
             isFirstTime = true;
+        }
+        else if(getTask(taskListElement).isLoop &&
+                getTask(taskListElement).taskLoop.exit)
+        {
+            taskListElement++;
+
+            //THESE LINES BELOW ARE DUPLICATE, FIX?
+            // Check if all tasks are done, Exits Manager if true
+            if(taskListElement >= TaskList.size())
+            {
+                done = true;
+                ROS_INFO("Task Manager Done");
+            }
+
+            isTaskRunning = true;
+            isFirstTime = true;
+
         }
         else
         {
