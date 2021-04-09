@@ -114,8 +114,8 @@ int main (int argc, char **argv)
 	{
         listener.getJoyVals(buttons, axes);
 		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
-		listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, on, extend_pwr, extend_pub);
-		listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, on, flag_pwr, flag_pub);
+		listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr, extend_pub);
+		listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr, flag_pub);
 
 		
 		l_speed_msg.data = axes[1]; // left Y
