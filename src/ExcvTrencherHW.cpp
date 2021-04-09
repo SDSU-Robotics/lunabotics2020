@@ -15,11 +15,13 @@
 #include <chrono>
 #include <thread>
 
+
 using namespace std;
 using namespace ctre::phoenix;
 using namespace ctre::phoenix::platform;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
+
 
 /****************************************************************************
 ****     This node subscribes to the motor values set in                 ****
@@ -31,7 +33,6 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****************************************************************************/
 
 //#define targetCurrent 4.75
-//#define targetPos -1608 // -2208
 
 class Listener
 {
@@ -48,6 +49,7 @@ class Listener
 		double getActualCurrent();
 		double getPercentOutput();
 		int linearActuator();
+
 		// motor controls using Victors
         TalonSRX pitchTalon = {DeviceIDs::ExcvPitchTal};
 		TalonSRX driveTalon = {DeviceIDs::ExcvDriveTal};
@@ -57,22 +59,26 @@ class Listener
 		bool PIDEnable;
 		bool DrivePIDEnable;
 
-		int targetPos = -1308;
-		int variablePos = -1308;
-		int maxDepth = -2000;
+		int targetPos = -1600;
+		int targetCurrent = 9;
+		int maxDepth = -2400;
+		int decrementPos = 0.1;
+
+		float movingArray[5000];
+		int i=0;
 
 		/*
 		float P = 0.05;
 		float I = 0.0001;
 		float D = 0.01;
 		*/
-		float P = 0.01;
-		float I = 0.005;
-		float D = 0.001;
+		float P = 0.0015;
+		float I = 0.0056;
+		float D = 0.01;
 
 		float etLast = 0;
-		int i = 0;
-		int n = 0;
+		
+		
 };
 
 int main (int argc, char **argv)
@@ -97,9 +103,6 @@ int main (int argc, char **argv)
 	std_msgs::Float32 l_speed_msg;
 	std_msgs::Float32 r_speed_msg;
 	
-	
-
-
 	Listener listener;
 
 	//ExcvConveyorPitchPwr
@@ -127,12 +130,12 @@ int main (int argc, char **argv)
 				angPos = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
 				//cout << angPos << endl;
 
-      			listener.setPosition(angPos);
-								
+				listener.setPosition(angPos);					
 			}
 			else
 			{
-				
+				//cout << listener.driveTalon.GetOutputCurrent() << endl;
+				//cout << angPos << endl;
 
 				listener.setDriveSpeed();
 				listener.pitchTalon.Set(ControlMode::PercentOutput, listener.pitchSpeed);
@@ -151,21 +154,20 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void Listener::setPosition(int angPos)
-{
-	using namespace std::this_thread;
-	using namespace std::chrono;
+/*void originalFn(){
+	float eT = targetCurrent - driveTalon.GetOutputCurrent();
 
-	
-
-	
 	float driveOut;
-	//float eT = targetCurrent - driveTalon.GetOutputCurrent();
 	float eT = targetPos - angPos;
 
 	int currentPos;
 	int newPos;
 	int motorSpeed = 0;
+
+	int driveCurrent;
+	int currentSum = 0;
+	int averageCurrent;
+	
 
 	ros::Time timeCurrent;
 	ros::Time timeLast = timeCurrent;
@@ -173,25 +175,57 @@ void Listener::setPosition(int angPos)
 	ros::Duration timeDiff = timeCurrent - timeLast;
 
 	double dT = timeDiff.toSec();
-	double IC = 0;
+	double IC;
 	IC += I*eT;
 
-	if(IC > 1000)IC = 1000;
-	if(IC < -1000)IC = -1000;
+	if(IC > 0.3)IC = 0.3;
+	if(IC < -0.3)IC = -0.3;
+
+
+	if(driveOut > 0.0)
+		driveOut = 0.0;
+	else if(driveOut < -0.3)
+		driveOut = -0.3;
+	
+
+}
+*/
+
+void Listener::setPosition(int angPos)
+{
+	//variables to store error between target and current positions + value for motor current
+	float driveOut;
+	float eT = targetPos - angPos;
+
+	//reading motor variables
+	int motorSpeed;
+	int excvMotorCurrent;
+
+	//store calculated current values
+	int currentSum = 0;
+	int avgCurrent = 0;
+
+	//calculate time between last error and current error
+	ros::Time timeCurrent;
+	ros::Time timeLast = timeCurrent;
+	timeCurrent = ros::Time::now();
+	ros::Duration timeDiff = timeCurrent - timeLast;
+
+	double dT = timeDiff.toSec();
+	double IC;
+	IC += I*eT;
+
+	if(IC > 0.3)IC = 0.3;
+	if(IC < -0.3)IC = -0.3;
 
 	double dC = D * (eT - etLast);
 
 	driveOut = P*eT + IC + dC;
 	//driveOut = P*eT + I*(eT*dT);
 	
-	/*
-	if(driveOut > 0.0)
-		driveOut = 0.0;
-	else if(driveOut < -0.3)
-		driveOut = -0.3;
-	*/
-
-if(angPos > targetPos/2)
+	
+/*
+if(angPos > -790)
 {
 	if(driveOut > 0.75)
 		driveOut = 0.75;
@@ -205,46 +239,69 @@ else
 		driveOut = 0.375;
 	else if(driveOut < -0.375)
 		driveOut = -0.375;
+*/
+	motorSpeed = pitchTalon.GetSensorCollection().GetQuadratureVelocity();
+	excvMotorCurrent = driveTalon.GetOutputCurrent();
 
-	//motorSpeed = pitchTalon.GetSensorCollection().GetQuadratureVelocity();
-	cout << pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+	//cout << pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+	//cout << driveOut << " " << angPos << " " <<  " " << driveTalon.GetOutputCurrent() << endl;
 	
-	if(motorSpeed == 0)
+	
+	//fill array with current values
+	for(;i<5000;i++)
 	{
-		targetPos = variablePos; 
-
-		if(targetPos != maxDepth)
-		{
-		//sleep_for(seconds(5));
-		variablePos -= 1;
-		}
+		movingArray[i] = excvMotorCurrent;
 	}
 
-}	
+	//happens after array initialization is finished
+	if(i == 5000)
+	{
+		//sort array to move forward
+		for(int k = 4999; k > 0; k--)
+		{
+			movingArray[k] = movingArray[k-1];
+		}
+	}
+	
+	//set position 0 to new value
+	movingArray[0] = excvMotorCurrent;
+	
+	//calculate sum of array
+	for(int x = 0; x < 5000; x++)
+	{
+		currentSum += movingArray[x];
+	}
 
+	avgCurrent = currentSum/5000;
+
+
+	if(motorSpeed == 0 && angPos < -760)
+	{
+		driveTalon.Set(ControlMode::PercentOutput, 0.75);
+
+		//decrementPosition according to current
+		if(avgCurrent <= targetCurrent)
+		{
+			//SMTH
+			if(targetPos > maxDepth)
+				targetPos -= decrementPos;
+		}
+	}
+	
+	cout << driveTalon.GetOutputCurrent() << " " << avgCurrent << endl;
+	currentSum = 0;
 	/*
 	if(eT < 0)
 		driveOut=0;
 	*/
-	
-
-	//cout<<driveOut << "\t" << driveTalon.GetOutputCurrent() << endl;
-	
 
 	//Set motor to newly mapped position
-	//driveTalon.Set(ControlMode::PercentOutput, 0.75);
 	pitchTalon.Set(ControlMode::PercentOutput, driveOut);
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 
 	etLast = eT;
-	//lastPos = pitchTalon.GetSensorCollection().GetQuadraturePosition();
 
-	//sleep_for(seconds(5));
-	//if(angPos == pitchTalon.GetSensorCollection().GetQuadraturePosition())
-	//{
-	//	cout << "working" << endl;
-	//}
 }
 
 /*

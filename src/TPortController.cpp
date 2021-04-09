@@ -29,7 +29,8 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
-	void toggleInt(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message);
+	//void toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message, ros::Publisher extend_pub);
+	//void toggleIntFlag(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message, ros::Publisher flag_pub);
 	void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 
 private:
@@ -113,8 +114,8 @@ int main (int argc, char **argv)
 	{
         listener.getJoyVals(buttons, axes);
 		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
-		listener.toggleInt(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr);
-		listener.toggleInt(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr);
+		//listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, on, extend_pwr, onExtend);
+		//listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, on, flag_pwr, onFlag);
 
 		/*
 		l_speed_msg.data = axes[1]; // left Y
@@ -126,8 +127,8 @@ int main (int argc, char **argv)
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
-		extend_pub.publish(extend_pwr);
-		flag_pub.publish(flag_pwr);
+		
+		
 		
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -162,7 +163,8 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	}
 }
 
-void Listener::toggleInt(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message)
+/*
+void Listener::toggleIntFlag(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message, ros::Publisher flag_pub)
 {
 	bool lastButton;
 	lastButton = currentButton;
@@ -172,6 +174,7 @@ void Listener::toggleInt(const bool keys, bool &currentButton, bool &on, std_msg
 	{
 		on = !on;
 		ROS_INFO("Extend button released");
+		flag_pub.publish(flag_pwr);
 	}
 		
 	if (on)
@@ -185,3 +188,28 @@ void Listener::toggleInt(const bool keys, bool &currentButton, bool &on, std_msg
 		message.data = 0;
 	}
 }
+
+void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message, ros::Publisher extend_pub)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		ROS_INFO("Extend button released");
+		extend_pub.publish(extend_pwr);
+	}
+		
+	if (on)
+	{
+		ROS_INFO("Extend button on");
+		message.data = 1;
+	}
+	else
+	{
+		ROS_INFO("Extend button off");
+		message.data = 0;
+	}
+}*/

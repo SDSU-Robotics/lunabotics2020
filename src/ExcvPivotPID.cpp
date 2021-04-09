@@ -25,11 +25,11 @@ using namespace ctre::phoenix::motorcontrol::can;
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
 
-#define MIN_QUAD_READING -2300
-#define MAX_QUAD_READING 2300
+#define MIN_QUAD_READING 0
+#define MAX_QUAD_READING -2400
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
-//		These will map to the above values respectively
+//		These will map tThreads::Threadso the above values respectively
 #define MIN_LINEAR_INPUT 0.0
 #define MAX_LINEAR_INPUT 1.0
 
@@ -92,11 +92,11 @@ void Listener::setPosition(const std_msgs::Float32 msg)
 	float pos = msg.data;
 
 	//Safeguarding addressing values that are larger or smaller than the defined input min/max
-	if (pos < MIN_LINEAR_INPUT)	pos = MIN_LINEAR_INPUT;
-	if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
+	//if (pos < MIN_LINEAR_INPUT)	pos = MIN_LINEAR_INPUT;
+	//if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
 
 	//Linearly maps pos between MIN_POT_READING and MAX_POT_READING
-	pos = LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_QUAD_READING, MAX_LINEAR_INPUT, MAX_QUAD_READING);
+	pos = pos*-1;//LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_QUAD_READING, MAX_LINEAR_INPUT, MAX_QUAD_READING);
 
 	//Set motor to newly mapped position
 	_motor.Set(ControlMode::Position, pos);
@@ -128,9 +128,9 @@ Listener::Listener()
 	motorProfile.primaryPID.selectedFeedbackCoefficient = 1.0f;//0.25f;// 0.328293f;
 
 	//PID Constants
-	motorProfile.slot0.kP                       = 10.0f; //0.01f; //Propotional Constant.  Controls the speed of error correction.
-	motorProfile.slot0.kI                       = 0.01f; //Integral Constant.     Controls the steady-state error correction.
-	motorProfile.slot0.kD                       = 0.0f; //Derivative Constant.   Controls error oscillation.
+	motorProfile.slot0.kP                       = 0.01f; //0.01f; //Propotional Constant.  Controls the speed of error correction.
+	motorProfile.slot0.kI                       = 0.005f; //Integral Constant.     Controls the steady-state error correction.
+	motorProfile.slot0.kD                       = 0.001f; //Derivative Constant.   Controls error oscillation.
 	motorProfile.slot0.kF                       = 0.0f; //Feed Forward Constant. (IDK what this does)
 	motorProfile.slot0.integralZone             = 100000;   //Maximum value for the integral error accumulator. Automatically cleared when exceeded.
 	motorProfile.slot0.maxIntegralAccumulator   = 10000;   //Maximum value for the integral error accumulator. (IDK what this does)
