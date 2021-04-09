@@ -30,12 +30,13 @@ Servo flag2;
 
 void servo_cb( const std_msgs::UInt16& cmd_msg){
   servo.write(cmd_msg.data); //set servo angle, should be from 0-180
-  digitalWrite(13, HIGH-digitalRead(13));  //toggle led  
+    //toggle led  
 }
 
 void flag_cb( const std_msgs::UInt16& msg){
   flag1.write(msg.data); //set servo angle, should be from 0-180  
   flag2.write(msg.data);
+  digitalWrite(13, HIGH-digitalRead(13));
 }
 
 
