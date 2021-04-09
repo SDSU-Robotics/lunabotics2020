@@ -2,6 +2,7 @@
 #define _TASK_H
 
 #include "geometry_msgs/PoseStamped.h"
+#include "std_msgs/Float32.h"
 using namespace std;            
 
 class Task
@@ -9,7 +10,8 @@ class Task
     public:
         //member functions()
         Task();
-        Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position);
+        Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position);
+        Task(std_msgs::Float32 &msg);
        
         virtual bool initialize();
         virtual bool onFinish();
@@ -23,13 +25,18 @@ class Task
         };
         TaskType taskType = BASIC;
     
-    private:
+    
         // Data Members
 
         // Navigation Data
         double xPos;
         double zPos;
         double yRot;
+        int time;
+        int duration;
         geometry_msgs::PoseStamped *posMsg;
+
+        // Float32 msg
+        std_msgs::Float32 *f32Msg;
 };
 #endif

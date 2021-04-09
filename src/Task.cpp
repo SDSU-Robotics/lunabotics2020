@@ -12,7 +12,7 @@ Task::Task()
 {
 }
 
-Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position)
+Task::Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position)
 {
     taskType = NAVIGATION;
 
@@ -22,6 +22,11 @@ Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &
     zPos = _zPos;
     yRot = _yRot;
     posMsg = &position;
+}
+
+Task::Task(std_msgs::Float32 &msg)
+{
+    f32Msg = &msg;
 }
 
 bool Task::initialize()
