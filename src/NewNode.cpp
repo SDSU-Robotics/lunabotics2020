@@ -83,6 +83,27 @@ class StopConveyor : public Task
 };
 
 
+class Pause : public Task
+{
+    public: 
+        Pause(std_msgs::Bool &msg) : Task(msg) 
+        {
+
+        }
+
+    bool basic() override
+    {
+    //Topic: PausePublisher
+    //Message: PauseMsg
+
+    //set message to True
+    boolMsg->data = true;
+
+    return false;
+    }
+
+};
+
 
 int main(int argc, char **argv)
 {
@@ -93,14 +114,19 @@ int main(int argc, char **argv)
     //Publishers
     ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
     ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
+    ros::Publisher PausePub = n.advertise<std_msgs::Bool>("PausePublisher", 100);
+
 
     //Message Declarations
     std_msgs::Float32 excvLinActPosMsg;
     std_msgs::Float32 ExcvConveyorEnableMsg;
+    std_msgs::Bool PauseMsg;
+
 
     //Message initializations
     excvLinActPosMsg.data = 0;
     ExcvConveyorEnableMsg.data = 0;
+    PauseMsg.data = false;
 
 
     //TaskManager class instance
@@ -123,6 +149,7 @@ int main(int argc, char **argv)
 
         ExcvLinearActuatorPosPub.publish(excvLinActPosMsg);
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);
+        PausePub.publish(PauseMsg);
 
         ros::spinOnce();
         loop_rate.sleep();
