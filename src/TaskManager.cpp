@@ -22,7 +22,7 @@ void TaskManager::addTask(TaskLoop TL)
     TaskStruct ts;
     ts.taskLoop = TL;
     ts.isLoop = true;
-    TaskList.push_back(ts);
+    TaskList.push_back(&ts);
     return;
 }
 
