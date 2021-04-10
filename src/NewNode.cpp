@@ -55,11 +55,8 @@ int main(int argc, char **argv)
 
     NewTask t1;
     NewTask1 t2;
-    TaskLoop tl1;
-    tl1.addTask(t1);
-    tl1.addTask(t2);
+    
     TaskManager tm;
-    tm.addTask(tl1);
     //tm.addTask(t1);
     //tm.addTask(t2);
     

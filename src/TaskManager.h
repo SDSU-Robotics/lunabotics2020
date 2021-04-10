@@ -18,7 +18,7 @@ class TaskManager
     public:
         void addTask(Task &T);
         void addTask(TaskLoop Tl);
-        TaskStruct* getTask(int element);
+        Task* getTask(int element);
 
         bool cycle();
 
@@ -28,7 +28,7 @@ class TaskManager
         bool isFirstTime = true;
         bool done = false;
         Task* currentTask;
-        std::list<TaskStruct*> TaskList;
+        std::list<Task*> TaskList;
 };
 
 #endif
