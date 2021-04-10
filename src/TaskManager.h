@@ -18,8 +18,8 @@ class TaskManager
     public:
         void addTask(Task &T);
         void addTask(TaskLoop Tl);
+        TaskStruct* getTask(int element);
 
-        TaskStruct getTask(int element);
         bool cycle();
 
     private:
