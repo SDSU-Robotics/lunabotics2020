@@ -54,7 +54,7 @@ bool TaskManager::cycle()
         {
             // determine Task Type and run correct task
             // ADD NEW TASK FUNCTION TYPES HERE
-            switch(currentTask.taskType)
+            switch(currentTask->taskType)
             {
                 case Task::BASIC: isTaskRunning = currentTask->basic();
                 break;

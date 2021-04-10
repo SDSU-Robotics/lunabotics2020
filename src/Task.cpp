@@ -24,6 +24,16 @@ Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &
     posMsg = &position;
 }
 
+Task::Task(std_msgs::UInt16 &msg)
+{
+    uint16 = &msg;
+}
+
+Task::Task(std_msgs::Float32 &msg)
+{
+    float32 = &msg;
+}
+
 bool Task::initialize()
 {
     return false;
@@ -41,3 +51,16 @@ bool Task::navigation()
 {
     return false;
 }
+
+void Task::callback()
+{
+    ROS_INFO("called");
+}
+
+bool Task::timer()
+{
+    //ros::Timer timer = nh.createTimer(ros::Duration(5), callback);
+    // ros::Duration(x) = x seconds
+    return false;
+}
+

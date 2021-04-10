@@ -2,18 +2,8 @@
 #include "Task.h"
 #include "TaskManager.h"
 #include <list>
+#include "std_msgs/UInt16.h"
 
-bool func()
-{
-    ROS_INFO("FUNCTION RAN");
-    return true;
-}
-
-bool func1()
-{
-    ROS_INFO("FUNCTION 1 RAN");
-    return true;
-}
 
 class NewTask : public Task
 {
@@ -21,6 +11,106 @@ class NewTask : public Task
     bool basic() override
     {
         ROS_INFO("New Task");
+
+        return false;
+    }
+
+    void callback() override
+    {
+        
+    }
+};
+
+class ExtLinAct : public Task
+{
+    public:
+    ExtLinAct(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }   
+
+    bool basic() override
+    {
+        // Topic: TPortExtendPos
+        // Message: extend_pwr
+
+        uint16 -> data = 150;
+
+        return false;
+    }
+};
+
+class RetractLinAct : public Task
+{
+    public:
+    RetractLinAct(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }   
+
+    bool basic() override
+    {
+        // Topic: TPortExtendPos
+        // Message: extend_pwr
+
+        uint16 -> data = 45;
+
+        return false;
+    }
+};
+
+class ExtFlags : public Task
+{
+    public:
+    ExtFlags(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        // Topic: TPortFlagPos
+        // Message: flag_pwr
+
+        uint16 -> data = 140;
+
+        return false;
+    }
+};
+
+class StartConveyor : public Task
+{
+    public:
+    StartConveyor(std_msgs::Float32 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        // Topic: TPortConveyorDrvCurrent
+        // Message: conveyor_pwr
+        
+        float32 -> data = 1;
+
+        return false;
+    }
+};
+
+class StopConveyor : public Task
+{
+    public:
+    StopConveyor(std_msgs::Float32 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        // Topic: TPortConveyorDrvCurrent
+        // Message: conveyor_pwr
+        
+        float32 -> data = 0;
 
         return false;
     }
@@ -32,16 +122,44 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
 
-    NewTask t1;
-    NewTask t2;
+    // Publishers
+	ros::Publisher extend_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+    ros::Publisher flag_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
+    ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
+    
+    // Messages
+	std_msgs::UInt16 extend_pwr;
+    std_msgs::UInt16 flag_pwr;
+    std_msgs::Float32 conveyor_pwr;
+
+    // Message initialization
+    extend_pwr.data = 0;
+    flag_pwr.data = 0;
+    conveyor_pwr.data = 0;
+
+    // Class instances
+    ExtLinAct extLinAct(extend_pwr);
+    RetractLinAct retractLinAct(extend_pwr);
+    ExtFlags extFlags(flag_pwr);
+    StartConveyor startConveyor(conveyor_pwr);
+    StopConveyor stopConveyor(conveyor_pwr);
+
+    // adding task object to task manager
+    // runs in the order listed
     TaskManager tm;
-    tm.addTask(t1);
-    tm.addTask(t2);
-    t1.basic();
+    tm.addTask(extLinAct);
+    tm.addTask(retractLinAct);
+    tm.addTask(extFlags);
+    tm.addTask(startConveyor);
+    tm.addTask(stopConveyor);
     
     while (ros::ok())
     {
         tm.cycle();
+
+        extend_pub.publish(extend_pwr);
+        flag_pub.publish(flag_pwr);
+        conveyor_current_pub.publish(conveyor_pwr);
 
         ros::spinOnce();
         loop_rate.sleep();
