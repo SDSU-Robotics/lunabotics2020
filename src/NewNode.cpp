@@ -105,6 +105,29 @@ class Pause : public Task
 };
 
 
+class EnableTrencherPID : public Task
+{
+    public: 
+        EnableTrencherPID(std_msgs::Bool &msg) : Task(msg) 
+        {
+
+        }
+
+    bool basic() override
+    {
+    //Topic: ExcvTrencherToggle
+    //Message: EnableTrencherPIDMsg
+
+    //set message to 1
+    f32Msg->data = true;
+
+    return false;
+    }
+
+};
+
+
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "NewNode");
@@ -115,18 +138,20 @@ int main(int argc, char **argv)
     ros::Publisher ExcvLinearActuatorPosPub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
     ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
     ros::Publisher PausePub = n.advertise<std_msgs::Bool>("PausePublisher", 100);
-
+	ros::Publisher EnableTrencherPIDPub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
 
     //Message Declarations
     std_msgs::Float32 excvLinActPosMsg;
     std_msgs::Float32 ExcvConveyorEnableMsg;
     std_msgs::Bool PauseMsg;
+    std_msgs::Bool EnableTrencherPIDMsg;
 
 
     //Message initializations
     excvLinActPosMsg.data = 0;
     ExcvConveyorEnableMsg.data = 0;
     PauseMsg.data = false;
+    EnableTrencherPIDMsg.data = false;
 
 
     //TaskManager class instance
@@ -137,10 +162,14 @@ int main(int argc, char **argv)
     ExtLinAct extLinAct(excvLinActPosMsg);
     StartConveyor startConveyor(ExcvConveyorEnableMsg);
     StopConveyor stopConveyor(ExcvConveyorEnableMsg);
+    EnableTrencherPID enableTrencherPID(EnableTrencherPIDMsg);
 
 
     //adding task object to task manager (will run in order added)
     tm.addTask(extLinAct);
+    tm.addTask(startConveyor);
+    tm.addTask(stopConveyor);
+    tm.addTask(enableTrencherPID);
 
 
     while (ros::ok())
@@ -150,6 +179,8 @@ int main(int argc, char **argv)
         ExcvLinearActuatorPosPub.publish(excvLinActPosMsg);
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);
         PausePub.publish(PauseMsg);
+        EnableTrencherPIDPub.publish(EnableTrencherPIDMsg);
+
 
         ros::spinOnce();
         loop_rate.sleep();
