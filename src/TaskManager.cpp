@@ -12,7 +12,7 @@ void TaskManager::addTask(Task &T)
     TaskStruct ts;
     ts.task = &T;
     ts.isLoop = false;
-    TaskList.push_back(ts);
+    TaskList.push_back(*ts);
     return;
 }
 
@@ -22,11 +22,11 @@ void TaskManager::addTask(TaskLoop TL)
     TaskStruct ts;
     ts.taskLoop = TL;
     ts.isLoop = true;
-    TaskList.push_back(ts);
+    TaskList.push_back(*ts);
     return;
 }
 
-TaskStruct TaskManager::getTask(int element)
+*TaskStruct *TaskManager::getTask(int element)
 {
     // get a pointer to the first element
     auto position = TaskList.begin();
@@ -73,7 +73,6 @@ bool TaskManager::cycle()
             else if(!getTask(taskListElement).isLoop)
             {
                 taskListElement++;
-
             }
 
             //THESE LINES BELOW ARE DUPLICATE, FIX?
