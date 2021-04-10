@@ -88,8 +88,8 @@ int main(int argc, char **argv)
     //ros::Subscriber flagSpeedSub = n.subscribe("TPortFlag", 100, &Listener::setFlagSpeed, &listener);
     ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);
 
-    ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
-    ros::Publisher flagPos_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
+    //ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+    //ros::Publisher flagPos_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
 
     std_msgs::UInt16 extend_pos;	
