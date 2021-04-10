@@ -28,14 +28,18 @@ Servo servo;
 Servo flag1;
 Servo flag2;
 
+int extendPos;
+int flag1Pos;
+int flag2Pos;
+
 void servo_cb( const std_msgs::UInt16& cmd_msg){
-  servo.write(cmd_msg.data); //set servo angle, should be from 0-180
+  extendPos = cmd_msg.data; //set servo angle, should be from 0-180
     //toggle led  
 }
 
 void flag_cb( const std_msgs::UInt16& msg){
-  flag1.write(msg.data); //set servo angle, should be from 0-180  
-  flag2.write(msg.data);
+  flag1Pos = msg.data; //set servo angle, should be from 0-180  
+  flag2Pos = msg.data;
   digitalWrite(13, HIGH-digitalRead(13));
 }
 
@@ -61,5 +65,8 @@ void setup(){
 
 void loop(){
   nh.spinOnce();
+  servo.write(extendPos); //set servo angle, should be from 0-180
+  flag1.write(flag1Pos); //set servo angle, should be from 0-180  
+  flag2.write(flag2Pos);
   //delay(1);
 }
