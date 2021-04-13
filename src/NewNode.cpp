@@ -57,8 +57,8 @@ int main(int argc, char **argv)
     NewTask1 t2;
     
     TaskManager tm;
-    //tm.addTask(t1);
-    //tm.addTask(t2);
+    tm.addTask(t1);
+    tm.addTask(t2);
     
     while (ros::ok())
     {
