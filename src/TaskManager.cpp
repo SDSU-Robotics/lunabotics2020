@@ -46,7 +46,7 @@ bool TaskManager::cycle()
 
             //THESE LINES BELOW ARE DUPLICATE, FIX?
             // Check if all tasks are done
-            if(taskListElement >= TaskList.size())
+            if(taskListElement >= TaskList.size()-1)
             {
                 done = true;
                 ROS_INFO("Task Manager Done");
