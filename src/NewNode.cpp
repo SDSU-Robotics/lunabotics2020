@@ -116,6 +116,40 @@ class StopConveyor : public Task
     }
 };
 
+class StartToDig : public Task
+{
+    public:
+    StartToDig(std_msgs::Bool &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        // Topic: 
+        // Message: to_dig
+
+        boolean -> data = 1;
+    }
+};
+
+class StartToSieve : public Task
+{
+    public:
+    StartToSieve(std_msgs::Bool &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        // Topic: 
+        // Message: to_sieve
+
+        boolean -> data = 1;
+    }
+};
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "NewNode");
@@ -126,16 +160,22 @@ int main(int argc, char **argv)
 	ros::Publisher extend_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
     ros::Publisher flag_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
-    
+    ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("message", 100);
+    ros::Publisher sieve_path_sub = n.advertise<std_msgs::Bool>("message", 100);
+
     // Messages
 	std_msgs::UInt16 extend_pwr;
     std_msgs::UInt16 flag_pwr;
     std_msgs::Float32 conveyor_pwr;
+    std_msgs::Bool to_dig;
+    std_msgs::Bool to_sieve;
 
     // Message initialization
     extend_pwr.data = 0;
     flag_pwr.data = 0;
     conveyor_pwr.data = 0;
+    to_dig.data = 0;
+    to_sieve.data = 0;
 
     // Class instances
     ExtLinAct extLinAct(extend_pwr);
@@ -143,6 +183,8 @@ int main(int argc, char **argv)
     ExtFlags extFlags(flag_pwr);
     StartConveyor startConveyor(conveyor_pwr);
     StopConveyor stopConveyor(conveyor_pwr);
+    StartToDig startToDig(to_dig);
+    StartToSieve startToSieve(to_sieve);
 
     // adding task object to task manager
     // runs in the order listed
@@ -152,6 +194,8 @@ int main(int argc, char **argv)
     tm.addTask(extFlags);
     tm.addTask(startConveyor);
     tm.addTask(stopConveyor);
+    tm.addTask(startToDig);
+    tm.addTask(startToSieve);
     
     while (ros::ok())
     {

@@ -34,6 +34,11 @@ Task::Task(std_msgs::Float32 &msg)
     float32 = &msg;
 }
 
+Task::Task(std_msgs::Bool &msg)
+{
+    boolean = &msg;
+}
+
 bool Task::initialize()
 {
     return false;
