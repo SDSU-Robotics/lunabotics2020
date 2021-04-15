@@ -19,6 +19,7 @@ class TaskManager
         void addTask(Task &T);
         void addTask(TaskLoop Tl);
         Task* getTask(int element);
+        void recallFunc(int taskListElement, bool done);
 
         bool cycle();
 
@@ -27,6 +28,7 @@ class TaskManager
         bool isTaskRunning = true;
         bool isFirstTime = true;
         bool done = false;
+        bool isDone = false;
         Task* currentTask;
         std::list<Task*> TaskList;
 };

@@ -3,6 +3,7 @@
 #include "ros/ros.h"
 #include "TaskLoop.h"
 #include <iostream>
+#include "JoyMap.h"
 
 using namespace std;
 
@@ -10,6 +11,12 @@ void TaskManager::addTask(Task &T)
 {
     // add to list
     TaskList.push_back(&T);
+    return;
+}
+void TaskManager::recallFunc(int taskListElement, bool done)
+{
+    taskListElement = 0;
+    done = false;
     return;
 }
 
@@ -27,6 +34,8 @@ Task* TaskManager::getTask(int element)
 
 bool TaskManager::cycle()
 {
+    listener.toggleBoolean(buttons[SemiAutonomyToggle], recallFunc);
+}
     if(!done)
     {
         // call Initialize
@@ -70,6 +79,9 @@ bool TaskManager::cycle()
                 default: isTaskRunning = currentTask->basic(); 
             }
         }
+
+
+
     }
 }
 

@@ -64,6 +64,7 @@ int main(int argc, char **argv)
     {
         tm.cycle();
         //TaskLoop::exitLoop();
+        
 
         ros::spinOnce();
         loop_rate.sleep();
