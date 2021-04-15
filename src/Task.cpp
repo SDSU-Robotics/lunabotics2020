@@ -60,12 +60,7 @@ bool Task::navigation()
 void Task::callback()
 {
     ROS_INFO("called");
+    boolean -> data = 0;
 }
 
-bool Task::timer()
-{
-    //ros::Timer timer = nh.createTimer(ros::Duration(5), callback);
-    // ros::Duration(x) = x seconds
-    return false;
-}
 

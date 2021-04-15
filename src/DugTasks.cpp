@@ -14,11 +14,11 @@
         bool stopConveyor(std_msgs::Float32 &msg);
         bool extLinAct(std_msgs::UInt16 &msg);
         bool extFlags(std_msgs::UInt16 &msg);
-        bool drvForward(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
-        bool drvBackward(std_msgs::Float32 &Rmsg, std_msgs::Float32 &LMsg);
-        bool stopDrv(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
-        bool turnLeft(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
-        bool turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+        //bool drvForward(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+        //bool drvBackward(std_msgs::Float32 &Rmsg, std_msgs::Float32 &LMsg);
+        //bool stopDrv(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+        //bool turnLeft(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+        //bool turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool startMatTrans(std_msgs::Float32 &msg);
         bool stopMatTrans(std_msgs::Float32 &msg);
 
