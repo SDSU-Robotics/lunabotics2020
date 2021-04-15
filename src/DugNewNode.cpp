@@ -150,6 +150,21 @@ class StartToSieve : public Task
     }
 };
 
+class Wait : public Task
+{
+    public:
+    Wait(std_msgs::Bool &msg) : Task(msg)
+    {
+
+    }
+    bool initialize() override
+    {
+        ros::Timer ros::NodeHandle::createTimer(ros::Duration(5), task::&callback, bool oneshot = true);
+    }
+
+     
+};
+
 
 
 int main(int argc, char **argv)

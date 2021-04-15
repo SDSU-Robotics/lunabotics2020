@@ -46,7 +46,7 @@ add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
 add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
 add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuatorHW.cpp)
-add_executable(NewNode ${PROJECT_SOURCE_DIR}/src/NewNode.cpp)
+add_executable(DugNewNode ${PROJECT_SOURCE_DIR}/src/DugNewNode.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
@@ -60,10 +60,10 @@ target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
-target_link_libraries(NewNode ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(DugNewNode ${catkin_LIBRARIES} Threads::Threads)
 
 #Tasking, Task Includes
-target_link_libraries(NewNode Task TaskManager ${catkin_LIBRARIES})
+target_link_libraries(DugNewNode Task TaskManager ${catkin_LIBRARIES})
 
 # Phoenix includes
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture
