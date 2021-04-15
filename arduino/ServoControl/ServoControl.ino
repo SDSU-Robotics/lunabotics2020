@@ -29,8 +29,8 @@ Servo flag1;
 Servo flag2;
 
 int extendPos;
-int flag1Pos;
-int flag2Pos;
+int flag1Pos = 0;
+int flag2Pos = 0;
 
 void servo_cb( const std_msgs::UInt16& cmd_msg){
   extendPos = cmd_msg.data; //set servo angle, should be from 0-180
@@ -66,7 +66,16 @@ void setup(){
 void loop(){
   nh.spinOnce();
   servo.write(extendPos); //set servo angle, should be from 0-180
-  flag1.write(flag1Pos); //set servo angle, should be from 0-180  
-  flag2.write(flag2Pos);
+  if(flag1Pos > 90)
+  {
+    flag1.write(0); //set servo angle, should be from 0-180  
+    flag2.write(70);
+  }
+  else
+  {
+    flag1.write(180);
+    flag2.write(160);  
+  }
+    
   //delay(1);
 }
