@@ -34,6 +34,11 @@ Task::Task(std_msgs::Bool &msg)
     boolMsg = &msg;
 }
 
+Task::Task(std_msgs::UInt16 &msg)
+{
+    uint16 = &msg;
+}
+
 bool Task::initialize()
 {
     return false;

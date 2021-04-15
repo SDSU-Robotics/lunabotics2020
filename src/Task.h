@@ -3,6 +3,7 @@
 
 #include "geometry_msgs/PoseStamped.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt16.h"
 #include "std_msgs/Bool.h"
 using namespace std;            
 
@@ -14,6 +15,7 @@ class Task
         Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position);
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
+        Task(std_msgs::UInt16 &msg);
        
         virtual bool initialize();
         virtual bool onFinish();
@@ -43,5 +45,8 @@ class Task
 
         // Bool msg
         std_msgs::Bool *boolMsg;
+
+        // UInt16 msg
+        std_msgs::UInt16 *uint16;
 };
 #endif

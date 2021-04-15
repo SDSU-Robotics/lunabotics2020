@@ -108,10 +108,10 @@ class Pause : public Task
 class EnableTrencherPID : public Task
 {
     public: 
-        EnableTrencherPID(std_msgs::Bool &msg) : Task(msg) 
-        {
+    EnableTrencherPID(std_msgs::Bool &msg) : Task(msg) 
+    {
 
-        }
+    }
 
     bool basic() override
     {
@@ -126,7 +126,43 @@ class EnableTrencherPID : public Task
 
 };
 
+class HopperServoOn : public Task
+{
+    public:
+    HopperServoOn(std_msgs::UInt16 &msg) : Task(msg)
+    {
 
+    }
+
+    bool basic() override
+    {
+        //Topic: excvDoorServo
+        //Message: excv_door
+
+        uint16 -> data = 5;
+
+        return false;
+    }
+};
+
+class HopperServoOff : public Task
+{
+    public:
+    HopperServoOff(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        //Topic: excvDoorServo
+        //Message: excv_door
+
+        uint16 -> data = 100;
+
+        return false;
+    }
+};
 
 int main(int argc, char **argv)
 {
@@ -139,12 +175,14 @@ int main(int argc, char **argv)
     ros::Publisher conveyorTogglePub = n.advertise<std_msgs::Float32>("ExcvConveyorDrvPwr", 100);
     ros::Publisher PausePub = n.advertise<std_msgs::Bool>("PausePublisher", 100);
 	ros::Publisher EnableTrencherPIDPub = n.advertise<std_msgs::Bool>("ExcvTrencherToggle", 100);
+    ros::Publisher HopperServoPub = n.advertise<std_msgs::UInt16>("excvDoorServo", 100);
 
     //Message Declarations
     std_msgs::Float32 excvLinActPosMsg;
     std_msgs::Float32 ExcvConveyorEnableMsg;
     std_msgs::Bool PauseMsg;
     std_msgs::Bool EnableTrencherPIDMsg;
+    std_msgs::UInt16 excv_door;
 
 
     //Message initializations
@@ -163,6 +201,8 @@ int main(int argc, char **argv)
     StartConveyor startConveyor(ExcvConveyorEnableMsg);
     StopConveyor stopConveyor(ExcvConveyorEnableMsg);
     EnableTrencherPID enableTrencherPID(EnableTrencherPIDMsg);
+    HopperServoOn hopperServoOn(excv_door);
+    HopperServoOff hopperServoOff(excv_door);
 
 
     //adding task object to task manager (will run in order added)
@@ -170,6 +210,8 @@ int main(int argc, char **argv)
     tm.addTask(startConveyor);
     tm.addTask(stopConveyor);
     tm.addTask(enableTrencherPID);
+    tm.addTask(hopperServoOn);
+    tm.addTask(hopperServoOff);
 
 
     while (ros::ok())
@@ -180,6 +222,7 @@ int main(int argc, char **argv)
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);
         PausePub.publish(PauseMsg);
         EnableTrencherPIDPub.publish(EnableTrencherPIDMsg);
+        HopperServoPub.publish(excv_door);
 
 
         ros::spinOnce();
