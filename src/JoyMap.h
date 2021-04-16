@@ -6,6 +6,7 @@ namespace JoyMap
     //TPort - axes
 	static const int TPortForwardAxis = 1;
 	static const int TPortTurnAxis = 4;
+    static const int SaveOdomData = 6;
 
     //Excv - axes
     static const int ExcvLeftAxis = 1;

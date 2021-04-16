@@ -4,6 +4,7 @@
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Int8.h"
+#include "std_msgs/Bool.h"
 #include <sensor_msgs/Joy.h>
 #include "JoyMap.h"
 
@@ -30,11 +31,12 @@ public:
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message);
 	void toggleInt(const bool keys, bool &currentButton, bool &on, std_msgs::Int8 &message);
+	void toggleSaveOdomData(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
 	void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 
 private:
     bool _buttons[12] = { 0 };
-	double _axes[6] = { 0 };
+	double _axes[7] = { 0 };
 };
 
 
@@ -43,7 +45,7 @@ void Listener::joyListener(const sensor_msgs::Joy::ConstPtr& Joy)
 	for (int i = 0 ; i < 12; i++)
 		_buttons[i] = Joy->buttons[i];
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
         _axes[i] = Joy->axes[i];
 }
 
@@ -52,7 +54,7 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 12; i++)
         buttons[i] = _buttons[i];
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
         axes[i] = _axes[i];
 }
 void Listener::whileHeld(bool button, std_msgs::Int8 & msg, double value)
@@ -78,11 +80,12 @@ int main (int argc, char **argv)
 	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
 	
 	bool buttons[12];
-	double axes[6];
+	double axes[7];
 	
 	//axes
 	int ForwardAxis = {JoyMap::TPortForwardAxis};
     int TurnAxis = {JoyMap::TPortTurnAxis};
+	int SaveData = {JoyMap::SaveOdomData};
 
 	//buttons
 	int ConveyorToggle = {JoyMap::TPortConveyorToggle};
@@ -94,11 +97,19 @@ int main (int argc, char **argv)
 	bool currentButtonExtend = false;
 	bool onExtend = false;
 
+	bool odomButton = false;
+	bool onOdomButton = false;
+
+	double axisValue = 0;
+
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
 	ros::Publisher conveyor_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
 	ros::Publisher extend_pub = n.advertise<std_msgs::Int8>("TPortExtendPwr", 100);
-	
+	ros::Publisher save_data_pub = n.advertise<std_msgs::Bool>("SaveData", 100);
+	ros::Publisher trencher_drive_toggle_pub = n.advertise<std_msgs::Bool>("ExcvTrencherDriveToggle", 100);
+
+	std_msgs::Bool save_data_msg;
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
 	std_msgs::Float32 conveyor_pwr;
@@ -109,17 +120,26 @@ int main (int argc, char **argv)
         listener.getJoyVals(buttons, axes);
 		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
 		listener.toggleInt(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr);
-		
+
+		axisValue = axes[SaveData] == -1? 1 : 0;
+
+		listener.toggleSaveOdomData(axisValue, odomButton, onOdomButton, save_data_msg);
+
 		/*
 		l_speed_msg.data = axes[1]; // left Y
 		r_speed_msg.data = axes[3]; // right Y
 		*/
+		
 		l_speed_msg.data = pow(axes[ForwardAxis], 3.0) * DRIVE_SCALE; // left Y
 		r_speed_msg.data = pow(axes[TurnAxis], 3.0) * DRIVE_SCALE; // right Y
+
+		//if dpad right is pressed, return true...else return false
+		
 
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
+		save_data_pub.publish(save_data_msg);
 
 		extend_pub.publish(extend_pwr);
 		
@@ -178,4 +198,31 @@ void Listener::toggleInt(const bool keys, bool &currentButton, bool &on, std_msg
 		ROS_INFO("Extend button off");
 		message.data = 0;
 	}
+}
+
+void Listener::toggleSaveOdomData(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		ROS_INFO("Extend button released");
+	}
+		
+	if (on)
+	{
+		ROS_INFO("Odom save button on");
+		message.data = 1;
+	}
+	else
+	{
+		ROS_INFO("Odom save button off");
+		message.data = 0;
+	}
+
+	
+
 }
