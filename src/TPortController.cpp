@@ -201,7 +201,7 @@ void Listener::toggleSaveOdomData(const bool keys, bool &currentButton, bool &on
 	if (lastButton && !currentButton)
 	{
 		on = !on;
-		ROS_INFO("Extend button released");
+		ROS_INFO("Odom save button released");
 	}
 		
 	if (on)
