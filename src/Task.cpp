@@ -39,6 +39,12 @@ Task::Task(std_msgs::Bool &msg)
     boolean = &msg;
 }
 
+Task::Task(std_msgs::Bool &msg, std_msgs::Float32 &f32msg)
+{
+    boolean = &msg;
+    float32 = &f32msg;
+}
+
 bool Task::initialize()
 {
     return false;
@@ -57,10 +63,5 @@ bool Task::navigation()
     return false;
 }
 
-void Task::callback()
-{
-    ROS_INFO("called");
-    boolean -> data = 0;
-}
 
 

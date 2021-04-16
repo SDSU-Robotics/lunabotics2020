@@ -3,6 +3,9 @@
 #include "TaskManager.h"
 #include <list>
 #include "std_msgs/UInt16.h"
+#include <ros/timer.h>
+#include <time.h>
+#include "Callback.h"
 
 
 class NewTask : public Task
@@ -15,10 +18,10 @@ class NewTask : public Task
         return false;
     }
 
-    void callback() override
-    {
+    //void callback(const ros::TimerEvent&) override
+    //{
         
-    }
+    //}
 };
 
 class ExtLinAct : public Task
@@ -153,13 +156,15 @@ class StartToSieve : public Task
 class Wait : public Task
 {
     public:
-    Wait(std_msgs::Bool &msg) : Task(msg)
+    Wait(std_msgs::Bool &msg, std_msgs::Float32 &f32msg) : Task(msg)
     {
 
     }
     bool initialize() override
     {
-        ros::Timer ros::NodeHandle::createTimer(ros::Duration(5), task::&callback, bool oneshot = true);
+        ros::NodeHandle n;
+        //ros::Timer ros::NodeHandle::createTimer(ros::Duration(5), &task::callback, bool oneshot = true);
+        ros::Timer timer = n.createTimer(ros::Duration(5), &Callback::callback, &callback, true);
     }
 
      
@@ -179,6 +184,8 @@ int main(int argc, char **argv)
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
     ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("message", 100);
     ros::Publisher sieve_path_sub = n.advertise<std_msgs::Bool>("message", 100);
+    ros::Publisher timer_bool_pub = n.advertise<std_msgs::Bool>("message", 100);
+    ros::Publisher timer_float_pub = n.advertise<std_msgs::Float32>("message", 100);
 
     // Messages
 	std_msgs::UInt16 extend_pwr;
@@ -186,6 +193,8 @@ int main(int argc, char **argv)
     std_msgs::Float32 conveyor_pwr;
     std_msgs::Bool to_dig;
     std_msgs::Bool to_sieve;
+    std_msgs::Float32 timer_float;
+    std_msgs::Bool timer_bool;
 
     // Message initialization
     extend_pwr.data = 0;
@@ -202,6 +211,7 @@ int main(int argc, char **argv)
     StopConveyor stopConveyor(conveyor_pwr);
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
+    Wait wait(timer_bool, timer_float);
 
     // adding task object to task manager
     // runs in the order listed
@@ -213,6 +223,7 @@ int main(int argc, char **argv)
     tm.addTask(stopConveyor);
     tm.addTask(startToDig);
     tm.addTask(startToSieve);
+    tm.addTask(wait);
     
     while (ros::ok())
     {
@@ -221,6 +232,8 @@ int main(int argc, char **argv)
         extend_pub.publish(extend_pwr);
         flag_pub.publish(flag_pwr);
         conveyor_current_pub.publish(conveyor_pwr);
+        timer_bool_pub.publish(timer_bool);
+        timer_float_pub.publish(timer_float);
 
         ros::spinOnce();
         loop_rate.sleep();

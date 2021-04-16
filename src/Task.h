@@ -5,6 +5,8 @@
 #include "std_msgs/UInt16.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Bool.h"
+#include <ros/timer.h>
+#include "Callback.h"
 using namespace std;            
 
 class Task
@@ -16,14 +18,16 @@ class Task
         Task(std_msgs::UInt16 &msg);
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
+        Task(std_msgs::Bool &msg, std_msgs::Float32 &f32msg);
 
         virtual bool initialize();
         virtual bool onFinish();
         virtual bool basic();
         virtual bool navigation();
-        virtual void callback();
-        virtual bool timer();
 
+        Callback callback;
+        
+    
         std_msgs::UInt16 *uint16;
         std_msgs::Float32 *float32;
         std_msgs::Bool *boolean;
