@@ -100,7 +100,7 @@ int main (int argc, char **argv)
 	bool odomButton = false;
 	bool onOdomButton = false;
 
-	double axisValue = 0;
+	bool odomButtonValue = false;
 
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
@@ -121,20 +121,14 @@ int main (int argc, char **argv)
 		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
 		listener.toggleInt(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr);
 
-		axisValue = axes[SaveData] == -1? 1 : 0;
+		//gets d-pad axis value as 1 or 0.
+		odomButtonValue = axes[SaveData] == -1? 1 : 0;
+		//toggle message using odomButtonValue
+		listener.toggleSaveOdomData(odomButtonValue, odomButton, onOdomButton, save_data_msg);
 
-		listener.toggleSaveOdomData(axisValue, odomButton, onOdomButton, save_data_msg);
-
-		/*
-		l_speed_msg.data = axes[1]; // left Y
-		r_speed_msg.data = axes[3]; // right Y
-		*/
 		
 		l_speed_msg.data = pow(axes[ForwardAxis], 3.0) * DRIVE_SCALE; // left Y
 		r_speed_msg.data = pow(axes[TurnAxis], 3.0) * DRIVE_SCALE; // right Y
-
-		//if dpad right is pressed, return true...else return false
-		
 
 		l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
@@ -149,8 +143,6 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-
-//bool pressButton(bool button, Float32)
 
 void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Float32 &message)
 {
