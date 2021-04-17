@@ -1,6 +1,7 @@
 #include "ctre/Phoenix.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Bool.h"
 #include "std_msgs/Int8.h"
 #include "std_msgs/UInt16.h"
 #include "ctre/phoenix/platform/Platform.h"
@@ -30,10 +31,9 @@ class Listener
 {
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
-        void setFlagSpeed(const std_msgs::Int8 msg);
-        void setDriveSpeed(const std_msgs::Float32 drivespeed);
-        //void setExtendPos(std_msgs::UInt16 &extend_pos);
-        //void setFlagPos(std_msgs::UInt16 &flag_pos);
+
+        void setDriveSpeed(const std_msgs::Bool drivespeed);
+        void setExtendPos(std_msgs::UInt16 &extend_pos);
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
 
     private:
@@ -105,24 +105,9 @@ int main(int argc, char **argv)
 
     return 0;
 }
-/*
-void Listener::setExtendSpeed(const std_msgs::Int8 msg)
-{
-	// limit values
-	extendVal = msg.data;
-    setExtendPos(extend_pos);
-    extendPos_pub.publish(extend_pos);
-}
 
-void Listener::setFlagSpeed(const std_msgs::Int8 msg)
-{
-	// limit values
-	flagVal = msg.data;
-    setFlagPos(flag_pos);
-    flagPos_pub.publish(flag_pos);
-}
-*/
-void Listener::setDriveSpeed(const std_msgs::Float32 msg)
+void Listener::setDriveSpeed(const std_msgs::Bool msg)
+
 {
     TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
 

@@ -27,6 +27,13 @@ catkin_package()
 
 include_directories (src include ${catkin_INCLUDE_DIRS})
 
+# NON EXECUTABLES (Classes. Not ROS Nodes, no main function)
+add_library(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
+add_library(TaskManager ${PROJECT_SOURCE_DIR}/src/TaskManager.cpp)
+add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
+
+
+# EXECUTABLES (ROS nodes, main function)
 add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
 add_executable(Odometry ${PROJECT_SOURCE_DIR}/src/Odometry.cpp)
@@ -39,6 +46,8 @@ add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
 add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
 add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuatorHW.cpp)
+add_executable(NewNode ${PROJECT_SOURCE_DIR}/src/NewNode.cpp)
+add_executable(DugOdometry ${PROJECT_SOURCE_DIR}/src/DugOdometry.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
@@ -52,10 +61,23 @@ target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(NewNode ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(DugOdometry ${catkin_LIBRARIES} Threads::Threads)
+
+#Tasking, Task Includes
+target_link_libraries(NewNode Task TaskManager TaskTypes ${catkin_LIBRARIES})
 
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") #Display Architecure
 # Phoenix includes
-if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "aarch64-linux-gnu") # Jetson TK1 / Pi
+
+message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture
+if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
+
+	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_Phoenix.a)
+	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCCI.a)
+	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCanutils.a)
+
 
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
