@@ -44,11 +44,11 @@
 	<node pkg="lunabotics2020" type="FlagLocalization" name="FlagLocalization"></node>
 	
 	  <!-- Elevation mapping node -->
-  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
-    <rosparam command="load" file="$(find lunabotics2020)/config/robot.yaml" />
-    <rosparam command="load" file="$(find lunabotics2020)/config/postprocessor_pipeline.yaml" />
-	<rosparam command="load" file="$(find lunabotics2020)/config/simple_demo_map.yaml" />
-  </node>
+    <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+    	<rosparam command="load" file="$(find lunabotics2020)/config/robot.yaml" />
+    	<rosparam command="load" file="$(find lunabotics2020)/config/postprocessor_pipeline.yaml" />
+		<rosparam command="load" file="$(find lunabotics2020)/config/simple_demo_map.yaml" />
+    </node>
 	
 	<node pkg="lunabotics2020" type="Odometry" name="Odometry"></node>
 
