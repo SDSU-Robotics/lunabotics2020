@@ -3,6 +3,7 @@
 #include "TaskingVariables.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "ros/ros.h"
+#include <ros/timer.h>
 
 using namespace std;
 
@@ -37,19 +38,25 @@ Task::Task(std_msgs::Bool &msg)
 
 Task::Task(bool otherbool, float otherfloat)
 {
+    ROS_INFO("Task::Task(bool otherbool, float otherfloat) running");
     cbool = otherbool;
     cfloat = otherfloat;
+    n = new ros::NodeHandle;    
+    //task = new Task(cbool, cfloat);
+
     cout << cbool << " " << cfloat << endl;   
 }
 
 Task::Task()
 {
-    task = new Task(cbool, cfloat);
+    ROS_INFO("Task::Task running");
+
+    ROS_INFO("new ros::NodeHandle done");
 }
 
 void Task::callback(const ros::TimerEvent&)
 {
-    ROS_INFO("called");
+    ROS_INFO("callback called");
     boolean -> data = false;
 }
 

@@ -162,9 +162,9 @@ class Wait : public Task
     }
     bool initialize() override
     {
-        ros::NodeHandle n;
-        //ros::Timer ros::NodeHandle::createTimer(ros::Duration(5), &task::callback, bool oneshot = true);
-        ros::Timer timer = n.createTimer(ros::Duration(cfloat), &Task::callback, task, true);
+        ROS_INFO("bool initialize() override called");
+        timer = n->createTimer(ros::Duration(cfloat), &Task::callback, task, true);
+        ROS_INFO("Timer made");
     } 
     
     bool basic() override
@@ -178,13 +178,13 @@ class Print : public Task
     public:
     bool basic() override
     {
-        ROS_INFO("this works");
+        ROS_INFO("Print called");
     }
 };
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "NewNode");
+    ros::init(argc, argv, "DugNewNode");
     ros::NodeHandle n;
     ros::Rate loop_rate(100);
 
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
     StopConveyor stopConveyor(conveyor_pwr);
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
-    Wait wait(true, 5);
+    Wait wait(true, 2);
     Print print;
 
     // adding task object to task manager
@@ -232,6 +232,7 @@ int main(int argc, char **argv)
     tm.addTask(stopConveyor);
     tm.addTask(startToDig);
     tm.addTask(startToSieve);*/
+    
     tm.addTask(print);
     tm.addTask(wait);
     tm.addTask(print);

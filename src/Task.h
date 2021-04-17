@@ -27,6 +27,8 @@ class Task
         virtual void callback(const ros::TimerEvent&);
 
         Task *task;
+        ros::Timer timer;
+        ros::NodeHandle *n;
         
         std_msgs::UInt16 *uint16;
         std_msgs::Float32 *float32;
