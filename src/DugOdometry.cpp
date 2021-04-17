@@ -12,6 +12,12 @@ class DugOdometry
         void getLSpeed(const std_msgs::Float32 lspeed);
         void getRSpeed(const std_msgs::Float32 rspeed);
         void setSaveData(const std_msgs::Bool saving);
+        void setDigData(const std_msgs::Bool saving);
+        void setCollectData(const std_msgs::Bool saving);
+        void dig(DugOdometry dugOdometry);
+        void collect(DugOdometry dugOdometry);
+
+
         void save();
         void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
         void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
@@ -23,9 +29,10 @@ class DugOdometry
         //local variables initialize
         float lSpeed = 0;
         float rSpeed = 0;
+        
         bool saveData = 0;
-
-
+        bool saveDigData = 0;
+        bool saveCollectData = 0;
 };
 
 
@@ -43,7 +50,11 @@ int main (int argc, char **argv)
 
     ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &DugOdometry::getLSpeed, &dugOdometry);
 	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &DugOdometry::getRSpeed, &dugOdometry);
-    ros::Subscriber save_data_msg_sub = n.subscribe("SaveData", 100, &DugOdometry::setSaveData, &dugOdometry);
+    ros::Subscriber save_data_msg_sub = n.subscribe("SaveOdomData", 100, &DugOdometry::setSaveData, &dugOdometry);
+    ros::Subscriber digData_msg_sub = n.subscribe("DigData", 100, &DugOdometry::setDigData, &dugOdometry);
+    ros::Subscriber collectorData_msg_sub = n.subscribe("CollectData", 100, &DugOdometry::setCollectData, &dugOdometry);
+
+
 
     while (ros::ok()) // runs while ros is running
 	{
@@ -86,7 +97,16 @@ void DugOdometry::setSaveData(const std_msgs::Bool saving)
     saveData = saving.data;
 
 }
+void DugOdometry::setDigData(const std_msgs::Bool saving)
+{
+    saveDigData = saving.data;
 
+}
+void DugOdometry::setCollectData(const std_msgs::Bool saving)
+{
+    saveCollectData = saving.data;
+
+}
 
 void DugOdometry::save()
 {
@@ -96,6 +116,22 @@ void DugOdometry::save()
         RSpeedList.push_back(rSpeed);
     }
    
+}
+
+void DugOdometry::dig(DugOdometry dugOdometry)
+{
+    if(saveDigData == 1)
+    {
+        void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
+    }
+}
+
+void DugOdometry::collect(DugOdometry dugOdometry)
+{
+    if(saveCollectData == 1)
+    {
+        void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
+    }
 }
 
 void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub)
