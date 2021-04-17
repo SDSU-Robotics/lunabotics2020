@@ -31,18 +31,20 @@ class Listener
 {
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
+
         void setDriveSpeed(const std_msgs::Bool drivespeed);
         void setExtendPos(std_msgs::UInt16 &extend_pos);
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
 
     private:
         int extendVal = 0;
+        int flagVal = 0;
 
 };
-
+/*
 void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
 {
-    int maxPos = 140;
+    int maxPos = 150;
     int minPos = 45;
 
     if(extendVal == 1)
@@ -55,6 +57,21 @@ void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
     }
 }
 
+void Listener::setFlagPos(std_msgs::UInt16 &flag_pos)
+{
+    int maxPos = 140;
+    int minPos = 45;
+
+    if(flagVal == 1)
+    {
+        flag_pos.data = maxPos;
+    }
+    else if(flagVal == 0)
+    {
+        flag_pos.data = minPos;
+    }
+}
+*/
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "TPortConveyorHW");
@@ -67,19 +84,20 @@ int main(int argc, char **argv)
 
     Listener listener;
 
-    ros::Subscriber extendSpeedSub = n.subscribe("TPortExtendPwr", 100, &Listener::setExtendSpeed, &listener);
+    //ros::Subscriber extendSpeedSub = n.subscribe("TPortExtendPwr", 100, &Listener::setExtendSpeed, &listener);
+    //ros::Subscriber flagSpeedSub = n.subscribe("TPortFlag", 100, &Listener::setFlagSpeed, &listener);
     ros::Subscriber driveSpeedSub = n.subscribe("TPortConveyorDrvPwr", 100, &Listener::setDriveSpeed, &listener);
 
-    ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+    //ros::Publisher extendPos_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
+    //ros::Publisher flagPos_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
 
     std_msgs::UInt16 extend_pos;	
+    std_msgs::UInt16 flag_pos;	
 
     while (ros::ok())
-    {
-        listener.setExtendPos(extend_pos);
+    {   
         
-        extendPos_pub.publish(extend_pos);
 
         ros::spinOnce();
         loop_rate.sleep();
@@ -88,15 +106,8 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void Listener::setExtendSpeed(const std_msgs::Int8 msg)
-{
-	// limit values
-	extendVal = msg.data;
-}
-
-
-
 void Listener::setDriveSpeed(const std_msgs::Bool msg)
+
 {
     TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
 

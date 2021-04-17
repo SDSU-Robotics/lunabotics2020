@@ -17,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 	sensor_msgs
 	laser_geometry
 	tf2
-	tf2_ros
+	tf2_ros	
 	geometry_msgs
 	tf
 	nav_msgs
@@ -36,8 +36,8 @@ add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
 # EXECUTABLES (ROS nodes, main function)
 add_executable(FlagLocalization ${PROJECT_SOURCE_DIR}/src/FlagLocalization.cpp)
 add_executable(DriveController ${PROJECT_SOURCE_DIR}/src/DriveController.cpp)
-add_executable(SLS ${PROJECT_SOURCE_DIR}/src/SLS.cpp)
 add_executable(Odometry ${PROJECT_SOURCE_DIR}/src/Odometry.cpp)
+add_executable(ExcvPivotPID ${PROJECT_SOURCE_DIR}/src/ExcvPivotPID.cpp)
 add_executable(ExcvDriveBaseHW ${PROJECT_SOURCE_DIR}/src/ExcvDriveBaseHW.cpp)
 add_executable(ExcvController ${PROJECT_SOURCE_DIR}/src/ExcvController.cpp)
 add_executable(ExcvTrencherHW ${PROJECT_SOURCE_DIR}/src/ExcvTrencherHW.cpp)
@@ -51,8 +51,8 @@ add_executable(DugOdometry ${PROJECT_SOURCE_DIR}/src/DugOdometry.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
-target_link_libraries(SLS ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(Odometry ${catkin_LIBRARIES})
+target_link_libraries(ExcvPivotPID ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvTrencherHW ${catkin_LIBRARIES} Threads::Threads)
@@ -67,7 +67,9 @@ target_link_libraries(DugOdometry ${catkin_LIBRARIES} Threads::Threads)
 #Tasking, Task Includes
 target_link_libraries(NewNode Task TaskManager TaskTypes ${catkin_LIBRARIES})
 
+message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") #Display Architecure
 # Phoenix includes
+
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
 
@@ -75,6 +77,7 @@ if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 /
 	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCCI.a)
 	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixPlatformLinuxSocketCan.a)
 	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/raspberry/libCTRE_PhoenixCanutils.a)
+
 
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
@@ -101,12 +104,16 @@ if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 /
 	target_link_libraries(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatform_socketcan.a)
 	target_link_libraries(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
 
-else() # x86
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatform_socketcan.a)
+	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
 
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_Phoenix.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCCI.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
-	target_link_libraries(SLS /home/$ENV{USERNAME}/catkin_ws/src/lunabotics2020/lib/x86-64/libCTRE_PhoenixCanutils.a)
+	#target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_Phoenix.a)
+	#target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
+	#target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixPlatform_socketcan.a)
+	#target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
+else()
 
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
 	target_link_libraries(ExcvConveyorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
@@ -138,4 +145,9 @@ else() # x86
 	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
 	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
 	target_link_libraries(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
+
+	target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
+	target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
+	target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+	target_link_libraries(ExcvPivotPID ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
 endif()

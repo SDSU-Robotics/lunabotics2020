@@ -1,0 +1,4 @@
+plugins: []
+publish_frequency: 1.0
+footprint: [[ 0.24,  0.22], [-0.24,  0.22], [-0.24, -0.22], [ 0.24, -0.22]]
+laser_scan_sensor: {sensor_frame: beacon_frame, data_type: LaserScan, topic: /beacon_scan_filtered, marking: true, clearing: true}

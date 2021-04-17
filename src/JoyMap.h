@@ -18,6 +18,7 @@ namespace JoyMap
     //TPort - buttons
     static const int TPortConveyorToggle = 0;
     static const int TPortToggleExtension = 7;
+    static const int TPortToggleFlags = 6;
 
     //Excv - buttons
     static const int ExcvConveyorToggle = 0;

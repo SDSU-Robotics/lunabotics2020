@@ -26,7 +26,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvTrencherDrvPwr - trencher motor value ****
 ****************************************************************************/
 
-#define targetCurrent 2.5
+#define targetCurrent 4
 
 class Listener
 {
@@ -49,7 +49,7 @@ class Listener
 
 		float P = 0.1;
 		float I = 0.01;
-		
+		float D = 0;
 };
 
 int main (int argc, char **argv)
@@ -104,6 +104,7 @@ void Listener::setPosition()
 {
 	float driveOut;
 	float eT = targetCurrent - driveTalon.GetOutputCurrent();
+	float etLast = 0;
 
 	ros::Time timeCurrent;
 	ros::Time timeLast = timeCurrent;
@@ -112,7 +113,9 @@ void Listener::setPosition()
 
 	double dT = timeDiff.toSec();
 
-	driveOut = P*eT + I*(eT*dT);
+	double dC = D * (eT - etLast)/dT;
+
+	driveOut = P*eT + I*(eT*dT) + dC;
 
 	if(driveOut > 0.05)
 		driveOut = 0.05;
@@ -126,6 +129,8 @@ void Listener::setPosition()
 
 
 	ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
+
+	etLast = eT;
 }
 
 void Listener::setPitchSpeed(const std_msgs::Float32 pitchspeed)
