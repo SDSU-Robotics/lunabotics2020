@@ -67,9 +67,6 @@ target_link_libraries(DugOdometry ${catkin_LIBRARIES} Threads::Threads)
 #Tasking, Task Includes
 target_link_libraries(NewNode Task TaskManager TaskTypes ${catkin_LIBRARIES})
 
-message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") #Display Architecure
-# Phoenix includes
-
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
 
