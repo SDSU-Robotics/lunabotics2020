@@ -110,15 +110,11 @@ void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publis
     else
         size = RSpeedList.size();
 
-    for(int l = 0; l <= size; l++)
+    for(int i = 0; i <= size; i++)
     {
-        lspeedmsg.data = getListElement(LSpeedList, l);
+        lspeedmsg.data = getListElement(LSpeedList, i);
+        rspeedmsg.data = getListElement(RSpeedList, i);
         lSpeedPub.publish(lspeedmsg);
-    }
-
-        for(int r = 0; r <= size; r++)
-    {
-        rspeedmsg.data = getListElement(RSpeedList, r);
         rSpeedPub.publish(rspeedmsg);
     }
 
@@ -137,16 +133,11 @@ void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::
         size = RSpeedList.size();
 
 
-    for(int l = size; l >= 1; l--)
+    for(int i = size; i >= 1; i--)
     {
-        lspeedmsg.data = getListElement(LSpeedList, l) * -1;
+        lspeedmsg.data = getListElement(LSpeedList, i) * -1;
+        rspeedmsg.data = getListElement(RSpeedList, i) * -1;
         lSpeedPub.publish(lspeedmsg);
-    }
-
-
-    for(int r = size; r >= 1; r--)
-    {
-        rspeedmsg.data = getListElement(RSpeedList, r) * -1;
         rSpeedPub.publish(rspeedmsg);
     }
 
