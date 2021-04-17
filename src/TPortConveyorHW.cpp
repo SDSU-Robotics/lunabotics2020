@@ -1,6 +1,7 @@
 #include "ctre/Phoenix.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Bool.h"
 #include "std_msgs/Int8.h"
 #include "std_msgs/UInt16.h"
 #include "ctre/phoenix/platform/Platform.h"
@@ -30,7 +31,7 @@ class Listener
 {
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
-        void setDriveSpeed(const std_msgs::Float32 drivespeed);
+        void setDriveSpeed(const std_msgs::Bool drivespeed);
         void setExtendPos(std_msgs::UInt16 &extend_pos);
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
 
@@ -95,7 +96,7 @@ void Listener::setExtendSpeed(const std_msgs::Int8 msg)
 
 
 
-void Listener::setDriveSpeed(const std_msgs::Float32 msg)
+void Listener::setDriveSpeed(const std_msgs::Bool msg)
 {
     TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
 
