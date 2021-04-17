@@ -8,10 +8,6 @@ using namespace std;
 
 //Navigation Variables
 
-Task::Task()
-{
-}
-
 Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position)
 {
     taskType = NAVIGATION;
@@ -39,10 +35,22 @@ Task::Task(std_msgs::Bool &msg)
     boolean = &msg;
 }
 
-Task::Task(std_msgs::Bool &msg, std_msgs::Float32 &f32msg)
+Task::Task(bool otherbool, float otherfloat)
 {
-    boolean = &msg;
-    float32 = &f32msg;
+    cbool = otherbool;
+    cfloat = otherfloat;
+    cout << cbool << " " << cfloat << endl;   
+}
+
+Task::Task()
+{
+    task = new Task(cbool, cfloat);
+}
+
+void Task::callback(const ros::TimerEvent&)
+{
+    ROS_INFO("called");
+    boolean -> data = false;
 }
 
 bool Task::initialize()

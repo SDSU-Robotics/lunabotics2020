@@ -11,7 +11,6 @@ using namespace std;
 class Callback
 {
     public:
-    virtual void callback(const ros::TimerEvent&);
 };
 
 #endif

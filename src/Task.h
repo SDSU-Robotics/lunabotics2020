@@ -13,24 +13,26 @@ class Task
 {
     public:
         //member functions()
-        Task();
         Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position);
         Task(std_msgs::UInt16 &msg);
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
-        Task(std_msgs::Bool &msg, std_msgs::Float32 &f32msg);
+        Task(bool otherbool, float otherfloat);
+        Task();
 
         virtual bool initialize();
         virtual bool onFinish();
         virtual bool basic();
         virtual bool navigation();
+        virtual void callback(const ros::TimerEvent&);
 
-        Callback callback;
+        Task *task;
         
-    
         std_msgs::UInt16 *uint16;
         std_msgs::Float32 *float32;
         std_msgs::Bool *boolean;
+        bool cbool;
+        float cfloat;
         
         enum TaskType
         {
