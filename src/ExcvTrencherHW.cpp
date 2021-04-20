@@ -59,7 +59,7 @@ class Listener
 
 		float TrencherDrvPwr;
 		float pitchSpeed;
-		bool PIDEnable;
+		bool PIDEnable = false;
 		bool DrivePIDEnable;
 
 		int targetPos = -1800;
@@ -121,14 +121,14 @@ int main (int argc, char **argv)
 			
 			listener.setDrivePID(l_speed_msg, r_speed_msg);
 			
-			l_speed_pub.publish(l_speed_msg); // left speed
-			r_speed_pub.publish(r_speed_msg); // right speed
+			//l_speed_pub.publish(l_speed_msg); // left speed
+			//r_speed_pub.publish(r_speed_msg); // right speed
 
 		}
 		else
 		{
 			//cout << listener.driveTalon.GetOutputCurrent() << endl;
-			//cout << angPos << endl;
+			cout << listener.pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
 
 			listener.setDriveSpeed();
 			listener.pitchTalon.Set(ControlMode::PercentOutput, listener.pitchSpeed);
@@ -202,7 +202,7 @@ void Listener::decrementPosition(const ros::TimerEvent& event)
 		}
 	}
 
-	cout << targetPos << " " << excvMotorCurrent << " " << avgCurrent << endl;
+	cout << targetPos << " " << pitchTalon.GetSensorCollection().GetQuadraturePosition() << " " << excvMotorCurrent << " " << avgCurrent << endl;
 
 }
 
@@ -215,9 +215,9 @@ void Listener::setPosition()
 	float driveOut;
 	float eT = targetPos - angPos;
 
-	float P = angPos > -760 ? 0.0015 : 0.0015;
-	float I = angPos > -760 ? 0.0056 : 0.0056;
-	float D = angPos > -760 ? 0.036 : 0.036; //0.001
+	float P = angPos > -760 ? 0.001 : 0.002;
+	float I = angPos > -760 ? 0.0015 : 0.036;
+	float D = angPos > -760 ? 0.036 : 0.002; //0.001
 
 	double IC;
 	IC += I*eT;
@@ -265,7 +265,7 @@ void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & 
 	int wheelPos = wheelTalon.GetSensorCollection().GetQuadraturePosition();
 
 	float driveOut;
-	float eT = angPos > -760 ? 0 - wheelPos : targetCurrent - excvMotorCurrent;
+	float eT = angPos > -1900 ? 0 - wheelPos : targetCurrent - excvMotorCurrent;
 
 	float P = 0.0015;
 	float I = 0.0056;
