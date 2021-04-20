@@ -34,8 +34,6 @@ Task* TaskManager::getTask(int element)
 
 bool TaskManager::cycle()
 {
-    listener.toggleBoolean(buttons[SemiAutonomyToggle], recallFunc);
-}
     if(!done)
     {
         // call Initialize
@@ -79,9 +77,6 @@ bool TaskManager::cycle()
                 default: isTaskRunning = currentTask->basic(); 
             }
         }
-
-
-
     }
 }
 
