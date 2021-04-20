@@ -3,14 +3,11 @@
 #include "TaskingVariables.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "ros/ros.h"
+#include <ros/timer.h>
 
 using namespace std;
 
 //Navigation Variables
-
-Task::Task()
-{
-}
 
 Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position)
 {
@@ -22,6 +19,45 @@ Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &
     zPos = _zPos;
     yRot = _yRot;
     posMsg = &position;
+}
+
+Task::Task(std_msgs::UInt16 &msg)
+{
+    uint16 = &msg;
+}
+
+Task::Task(std_msgs::Float32 &msg)
+{
+    float32 = &msg;
+}
+
+Task::Task(std_msgs::Bool &msg)
+{
+    boolean = &msg;
+}
+
+Task::Task(bool otherbool, float otherfloat, Task &t)
+{
+    ROS_INFO("Task::Task(bool otherbool, float otherfloat) running");
+    cbool = otherbool;
+    cfloat = otherfloat;
+    n = new ros::NodeHandle;    
+    task = &t;
+
+    cout << cbool << " " << cfloat << endl;   
+}
+
+Task::Task()
+{
+    ROS_INFO("Task::Task running");
+
+    ROS_INFO("new ros::NodeHandle done");
+}
+
+void Task::callback(const ros::TimerEvent&)
+{
+    ROS_INFO("callback called");
+    cbool = false;
 }
 
 bool Task::initialize()
@@ -41,3 +77,6 @@ bool Task::navigation()
 {
     return false;
 }
+
+
+

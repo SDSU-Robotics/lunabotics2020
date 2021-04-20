@@ -39,6 +39,7 @@ bool TaskManager::cycle()
         // call Initialize
         if(isFirstTime)
         {
+
              // get next taks from manager list
             currentTask = getTask(taskListElement);
 
