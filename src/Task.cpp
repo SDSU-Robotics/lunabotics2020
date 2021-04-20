@@ -36,13 +36,13 @@ Task::Task(std_msgs::Bool &msg)
     boolean = &msg;
 }
 
-Task::Task(bool otherbool, float otherfloat)
+Task::Task(bool otherbool, float otherfloat, Task &t)
 {
     ROS_INFO("Task::Task(bool otherbool, float otherfloat) running");
     cbool = otherbool;
     cfloat = otherfloat;
     n = new ros::NodeHandle;    
-    //task = new Task(cbool, cfloat);
+    task = &t;
 
     cout << cbool << " " << cfloat << endl;   
 }
@@ -57,7 +57,7 @@ Task::Task()
 void Task::callback(const ros::TimerEvent&)
 {
     ROS_INFO("callback called");
-    boolean -> data = false;
+    cbool = false;
 }
 
 bool Task::initialize()

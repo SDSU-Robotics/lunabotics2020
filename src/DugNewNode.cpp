@@ -156,14 +156,15 @@ class StartToSieve : public Task
 class Wait : public Task
 {
     public:
-    Wait(bool waitbool, float waitfloat) : Task(waitbool, waitfloat)
+    Wait(bool waitbool, float waitfloat, Task &t) : Task(waitbool, waitfloat, t)
     {
 
     }
     bool initialize() override
     {
         ROS_INFO("bool initialize() override called");
-        timer = n->createTimer(ros::Duration(cfloat), &Task::callback, task, true);
+       // timer = n->createTimer(ros::Duration(cfloat), &Task::callback, &this, true);
+        timer = n->createTimer(ros::Duration(cfloat), this->callback, true);
         ROS_INFO("Timer made");
     } 
     
@@ -212,6 +213,7 @@ int main(int argc, char **argv)
     
 
     // Class instances
+    Task timerCall;
     ExtLinAct extLinAct(extend_pwr);
     RetractLinAct retractLinAct(extend_pwr);
     ExtFlags extFlags(flag_pwr);
@@ -219,7 +221,7 @@ int main(int argc, char **argv)
     StopConveyor stopConveyor(conveyor_pwr);
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
-    Wait wait(true, 2);
+    Wait wait(true, 2, timerCall);
     Print print;
 
     // adding task object to task manager

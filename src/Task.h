@@ -17,7 +17,7 @@ class Task
         Task(std_msgs::UInt16 &msg);
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
-        Task(bool otherbool, float otherfloat);
+        Task(bool otherbool, float otherfloat, Task &t);
         Task();
 
         virtual bool initialize();
