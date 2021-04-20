@@ -3,7 +3,10 @@
         "/opt/ros/melodic/lib/python2.7/dist-packages"
     ],
     "files.associations": {
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "functional": "cpp",
+        "memory": "cpp",
+        "sstream": "cpp"
     },
     "cmake.configureOnOpen": false
 }
