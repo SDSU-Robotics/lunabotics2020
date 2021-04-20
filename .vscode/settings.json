@@ -4,7 +4,9 @@
     ],
     "files.associations": {
         "system_error": "cpp",
-        "ostream": "cpp"
+        "functional": "cpp",
+        "memory": "cpp",
+        "sstream": "cpp"
     },
     "cmake.configureOnOpen": false
 }
