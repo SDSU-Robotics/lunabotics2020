@@ -29,6 +29,7 @@ class TaskManager
         bool isFirstTime = true;
         bool done = false;
         bool isDone = false;
+
         Task* currentTask;
         std::list<Task*> TaskList;
 };
