@@ -24,8 +24,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 //Subscribe to the actualPosition topic and manually extend and retract the linear actuator
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
-#define MIN_POT_READING -215
-#define MAX_POT_READING -680
+#define MIN_POT_READING -177
+#define MAX_POT_READING -600
 
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
