@@ -14,11 +14,13 @@
         bool stopConveyor(std_msgs::Float32 &msg);
         bool extLinAct(std_msgs::UInt16 &msg);
         bool extFlags(std_msgs::UInt16 &msg);
+
         bool drvForward(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool drvBackward(std_msgs::Float32 &Rmsg, std_msgs::Float32 &LMsg);
         bool stopDrv(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool turnLeft(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
         bool turnRight(std_msgs::Float32 &RMsg, std_msgs::Float32 &LMsg);
+
         bool startMatTrans(std_msgs::Float32 &msg);
         bool stopMatTrans(std_msgs::Float32 &msg);
 
@@ -37,6 +39,7 @@ int main(int argc, char **argv)
     ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
     ros::Publisher ExtendLinearActuatorExtendPwrPub = n.advertise<std_msgs::UInt16>("TPortExtendPwr", 100);
+
     ros::Publisher DugConveyorTogglePub = n.advertise<std_msgs::Float32>("TPortConveyorDrvPwr", 100);
     ros::Publisher MatTransPub = n.advertise<std_msgs::Float32>("MatTransfer", 100);
 
@@ -68,7 +71,9 @@ int main(int argc, char **argv)
         l_speed_pub.publish(l_speed_msg);
 		r_speed_pub.publish(r_speed_msg);
         DugConveyorTogglePub.publish(DugConveyorEnableMsg);
+
         ExtendLinearActuatorExtendPwrPub.publish(ExtLinActMsg);
+
         MatTransPub.publish(StartMatTransMsg);
     }
     

@@ -6,6 +6,7 @@
 
 class NewTask : public Task
 {
+
     public:
     bool basic() override
     {
@@ -136,10 +137,12 @@ class HopperServoOn : public Task
 
     bool basic() override
     {
+
         //Topic: excvDoorServo
         //Message: excv_door
 
         uint16 -> data = 5;
+
 
         return false;
     }
@@ -160,6 +163,12 @@ class HopperServoOff : public Task
 
         uint16 -> data = 100;
 
+
+    bool basic() override
+    {
+        ROS_INFO("Task1 RAN");
+        ros::Duration(0.01).sleep();
+       
         return false;
     }
 };
@@ -214,9 +223,12 @@ int main(int argc, char **argv)
     tm.addTask(hopperServoOff);
 
 
+
     while (ros::ok())
     {
         tm.cycle();
+        //TaskLoop::exitLoop();
+        
 
         ExcvLinearActuatorPosPub.publish(excvLinActPosMsg);
         conveyorTogglePub.publish(ExcvConveyorEnableMsg);

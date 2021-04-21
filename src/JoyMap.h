@@ -16,6 +16,7 @@ namespace JoyMap
     //TPort - buttons
     static const int TPortConveyorToggle = 0;
     static const int TPortToggleExtension = 7;
+    static const int TPortToggleFlags = 6;
 
     //Excv - buttons
     static const int ExcvConveyorToggle = 0;
@@ -24,6 +25,9 @@ namespace JoyMap
     static const int ExcvTrencherDriveDecrease = 4;
     static const int ExcvTrencherDriveIncrease = 5;
     static const int ExcvTrencherExtend = 7;
+
+    //Start semi Autonomy
+    static const int SemiAutonomyToggle = 0;
 };
 
 #endif
