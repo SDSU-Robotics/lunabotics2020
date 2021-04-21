@@ -9,7 +9,12 @@ using namespace std;
 
 //Navigation Variables
 
-Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position)
+Task::Task()
+{
+}
+
+Task::Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position)
+
 {
     taskType = NAVIGATION;
 
@@ -20,6 +25,7 @@ Task::Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &
     yRot = _yRot;
     posMsg = &position;
 }
+
 
 Task::Task(std_msgs::UInt16 &msg)
 {
@@ -33,7 +39,13 @@ Task::Task(std_msgs::Float32 &msg)
 
 Task::Task(std_msgs::Bool &msg)
 {
-    boolean = &msg;
+
+    boolMsg = &msg;
+}
+
+Task::Task(std_msgs::UInt16 &msg)
+{
+    uint16 = &msg;
 }
 
 Task::Task(bool otherbool, float otherfloat)
@@ -57,6 +69,7 @@ void Task::callback(const ros::TimerEvent&)
 {
     ROS_INFO("callback called");
     cbool = false;
+
 }
 
 bool Task::initialize()
