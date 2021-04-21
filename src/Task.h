@@ -15,7 +15,7 @@ class Task
     public:
         //member functions()
 
-        Task(double _xPos, double _zPos,double _yRot, geometry_msgs::PoseStamped &position);
+        Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position);
         Task(std_msgs::UInt16 &msg);
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
@@ -55,7 +55,7 @@ class Task
         int time;
         int duration;
         geometry_msgs::PoseStamped *posMsg;
-
+/*
         // Float32 msg
         std_msgs::Float32 *f32Msg;
 
@@ -63,6 +63,7 @@ class Task
         std_msgs::Bool *boolMsg;
 
         // UInt16 msg
-        std_msgs::UInt16 *uint16;
+        std_msgs::UInt16 *uint16Msg;
+        */
 };
 #endif

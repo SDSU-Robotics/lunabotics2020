@@ -14,7 +14,6 @@ Task::Task()
 }
 
 Task::Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position)
-
 {
     taskType = NAVIGATION;
 
@@ -26,12 +25,6 @@ Task::Task(double _xPos, double _zPos, double _yRot, int time, int duration, geo
     posMsg = &position;
 }
 
-
-Task::Task(std_msgs::UInt16 &msg)
-{
-    uint16 = &msg;
-}
-
 Task::Task(std_msgs::Float32 &msg)
 {
     float32 = &msg;
@@ -40,7 +33,7 @@ Task::Task(std_msgs::Float32 &msg)
 Task::Task(std_msgs::Bool &msg)
 {
 
-    boolMsg = &msg;
+    boolean = &msg;
 }
 
 Task::Task(std_msgs::UInt16 &msg)
@@ -56,13 +49,6 @@ Task::Task(bool otherbool, float otherfloat)
     n = new ros::NodeHandle;    
 
     cout << cbool << " " << cfloat << endl;   
-}
-
-Task::Task()
-{
-    ROS_INFO("Task::Task running");
-
-    ROS_INFO("new ros::NodeHandle done");
 }
 
 void Task::callback(const ros::TimerEvent&)

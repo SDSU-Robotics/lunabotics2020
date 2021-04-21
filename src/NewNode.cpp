@@ -98,7 +98,7 @@ class Pause : public Task
     //Message: PauseMsg
 
     //set message to True
-    boolMsg->data = true;
+    boolean->data = true;
 
     return false;
     }
