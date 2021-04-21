@@ -4,6 +4,7 @@
 #include "ctre/phoenix/CANifierControlFrame.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Int32.h"
 #include "std_msgs/Bool.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
@@ -98,12 +99,14 @@ int main (int argc, char **argv)
 	ros::Publisher drive_current_pub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
+	ros::Publisher angPos_pub = n.advertise<std_msgs::Int32>("ExcvPitchPos", 100);
 
 	// sets the message type to the message variable
 	std_msgs::Float32 pitch_current_msg;
 	std_msgs::Float32 drive_current_msg;
 	std_msgs::Float32 l_speed_msg;
 	std_msgs::Float32 r_speed_msg;
+	std_msgs::Int32 angPos_msg;
 	
 	Listener listener;
 
@@ -120,8 +123,12 @@ int main (int argc, char **argv)
 	{
 		if(listener.PIDEnable == true)
 		{		
+			
 			listener.setPosition();
 			
+			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
+			angPos_pub.publish(angPos_msg);
+
 			listener.setDrivePID(l_speed_msg, r_speed_msg);
 			
 			l_speed_pub.publish(l_speed_msg); // left speed
@@ -131,7 +138,9 @@ int main (int argc, char **argv)
 		else
 		{
 			//cout << listener.driveTalon.GetOutputCurrent() << endl;
-			cout << listener.pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+			//cout << listener.pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
+			angPos_pub.publish(angPos_msg);
 
 			listener.setDriveSpeed();
 			listener.pitchTalon.Set(ControlMode::PercentOutput, listener.pitchSpeed);
