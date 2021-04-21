@@ -36,13 +36,12 @@ Task::Task(std_msgs::Bool &msg)
     boolean = &msg;
 }
 
-Task::Task(bool otherbool, float otherfloat, Task &t)
+Task::Task(bool otherbool, float otherfloat)
 {
     ROS_INFO("Task::Task(bool otherbool, float otherfloat) running");
     cbool = otherbool;
     cfloat = otherfloat;
     n = new ros::NodeHandle;    
-    task = &t;
 
     cout << cbool << " " << cfloat << endl;   
 }
