@@ -165,6 +165,7 @@ class Wait : public Task
         ROS_INFO("bool initialize() override called");
        // timer = n->createTimer(ros::Duration(cfloat), &Task::callback, &this, true);
         timer = n->createTimer(ros::Duration(cfloat), boost::bind(&Task::callback, this, _1), true);
+
         ROS_INFO("Timer made");
     } 
     
@@ -234,8 +235,14 @@ int main(int argc, char **argv)
     tm.addTask(startToDig);
     tm.addTask(startToSieve);*/
     
+   // tm.addTask(ToDig);
+   // tm.addTask(DigServo);
+   // tm.addTask(ToBin)
+    tm.addTask( extLinAct);
+    tm.addTask(startConveyor);
     tm.addTask(print);
     tm.addTask(wait);
+    tm.addTask(stopConveyor);
     tm.addTask(print);
     
     while (ros::ok())

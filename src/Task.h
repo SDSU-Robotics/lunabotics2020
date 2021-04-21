@@ -45,7 +45,7 @@ class Task
     
     private:
         // Data Members
-
+        
         // Navigation Data
         double xPos;
         double zPos;
