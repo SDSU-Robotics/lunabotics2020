@@ -282,8 +282,8 @@ int main(int argc, char **argv)
     
     tm.addTask(StartToDig);
     tm.addTask(HopperServoOn);
-    //tm.addTask(tobin)
-    tm.addTask( extLinAct);
+    tm.addTask(StartToSieve);
+    tm.addTask(extLinAct);
     tm.addTask(startConveyor);
     tm.addTask(print);
     tm.addTask(wait);
