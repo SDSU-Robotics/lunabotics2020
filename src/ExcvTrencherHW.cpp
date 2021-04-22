@@ -65,7 +65,7 @@ class Listener
 		bool PIDEnable = false;
 		bool DrivePIDEnable;
 
-		int targetPos = -1800;
+		int targetPos = -1600;
 		int wheelTargetPos = 0;
 		int targetCurrent = 3;
 		int maxDepth = -2400;
