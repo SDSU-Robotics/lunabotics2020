@@ -173,6 +173,51 @@ class Wait : public Task
         return cbool;
     }
 };
+class HopperServoOn : public Task
+{
+    public:
+    HopperServoOn(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+
+        //Topic: excvDoorServo
+        //Message: excv_door
+
+        uint16 -> data = 5;
+
+
+        return false;
+    }
+};
+
+class HopperServoOff : public Task
+{
+    public:
+    HopperServoOff(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        //Topic: excvDoorServo
+        //Message: excv_door
+
+        uint16 -> data = 100;
+
+
+    bool basic() override
+    {
+        ROS_INFO("Task1 RAN");
+        ros::Duration(0.01).sleep();
+       
+        return false;
+    }
+};
 
 class Print : public Task
 {
@@ -235,9 +280,9 @@ int main(int argc, char **argv)
     tm.addTask(startToDig);
     tm.addTask(startToSieve);*/
     
-   // tm.addTask(ToDig);
-   // tm.addTask(DigServo);
-   // tm.addTask(ToBin)
+    tm.addTask(StartToDig);
+    tm.addTask(HopperServoOn);
+    //tm.addTask(tobin)
     tm.addTask( extLinAct);
     tm.addTask(startConveyor);
     tm.addTask(print);
