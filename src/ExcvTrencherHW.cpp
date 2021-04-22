@@ -65,7 +65,7 @@ class Listener
 		bool PIDEnable = false;
 		bool DrivePIDEnable;
 
-		int targetPos = -1600;
+		int targetPos = -1000;
 		int wheelTargetPos = 0;
 		int targetCurrent = 3;
 		int maxDepth = -2400;
@@ -117,7 +117,7 @@ int main (int argc, char **argv)
 	ros::Subscriber trencherToggleSub = n.subscribe("ExcvTrencherToggle", 100, &Listener::trencherToggle, &listener);
 	ros::Subscriber trencherDriveToggleSub = n.subscribe("ExcvTrencherDriveToggle", 100, &Listener::trencherDriveToggle, &listener);
 
-	ros::Timer timer = n.createTimer(ros::Duration(0.25), &Listener::decrementPosition, &listener);
+	ros::Timer timer = n.createTimer(ros::Duration(0.35), &Listener::decrementPosition, &listener);
 
 	while (ros::ok()) // while ros is running
 	{
@@ -234,7 +234,7 @@ void Listener::setPosition()
 	float eT = targetPos - angPos;
 
 	float P = angPos > -760 ? 0.001 : 0.002;
-	float I = angPos > -760 ? 0.008 : 0.036;
+	float I = angPos > -760 ? 0.004 : 0.008;
 	float D = angPos > -760 ? 0.036 : 0.002; //0.001
 
 	double IC;
