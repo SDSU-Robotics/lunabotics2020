@@ -6,7 +6,26 @@
 #include <ros/timer.h>
 #include <time.h>
 #include "Callback.h"
+#include "tf2_ros/transform_listener.h"
+#include "geometry_msgs/TransformStamped.h"
 
+//LISTENER-------------------------------------------------------
+
+class Listener
+{
+    public:
+        geometry_msgs::TransformStamped transformStamped;
+
+        void adjust();
+
+};
+
+void Listener::adjust()
+{
+    if(transformStamped.transform.rotation.y);
+}
+
+//LISTENER-------------------------------------------------------
 
 class NewTask : public Task
 {
@@ -245,14 +264,30 @@ int main(int argc, char **argv)
     tm.addTask(stopConveyor);
     tm.addTask(print);
     
+    Listener listener;
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tfListener(tfBuffer);
+
     while (ros::ok())
     {
         tm.cycle();
 
+        // Get transform tree
+        try
+        {
+            listener.transformStamped = tfBuffer.lookupTransform("map", "back_cam", ros::Time(0));
+        }
+        catch (tf2::TransformException &ex)
+        {
+            ROS_WARN("%s", ex.what());
+            ros::Duration(1.0).sleep();
+            continue;
+        }
+
+        listener.transformStamped.transform.rotation.y;
         extend_pub.publish(extend_pwr);
         flag_pub.publish(flag_pwr);
         conveyor_current_pub.publish(conveyor_pwr);
-       
 
         ros::spinOnce();
         loop_rate.sleep();
