@@ -9,24 +9,6 @@
 #include "tf2_ros/transform_listener.h"
 #include "geometry_msgs/TransformStamped.h"
 
-//LISTENER-------------------------------------------------------
-
-class Listener
-{
-    public:
-        geometry_msgs::TransformStamped transformStamped;
-
-        void adjust();
-
-};
-
-void Listener::adjust()
-{
-    if(transformStamped.transform.rotation.y);
-}
-
-//LISTENER-------------------------------------------------------
-
 class NewTask : public Task
 {
     public:
@@ -203,6 +185,17 @@ class Print : public Task
     }
 };
 
+class DigOrientation : public Task
+{
+    public:
+        DigOrientation(geometry_msgs::TransformStamped tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, &f1, &f2);
+
+        bool basic() override
+        {
+
+        }
+};
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "DugNewNode");
@@ -223,6 +216,9 @@ int main(int argc, char **argv)
     std_msgs::Float32 conveyor_pwr;
     std_msgs::Bool to_dig;
     std_msgs::Bool to_sieve;
+    std_msgs::Float32 lSpeed;
+    std_msgs::Float32 rSpeed;
+    geometry_msgs::TransformStamped dugTf;
 
     // Message initialization
     extend_pwr.data = 0;
@@ -242,6 +238,7 @@ int main(int argc, char **argv)
     StartToSieve startToSieve(to_sieve);
     Wait wait(true, 5);
     Print print;
+    DigOrientation digAdjust(dugTf, lSpeed, rSpeed);
 
     // adding task object to task manager
     // runs in the order listed
@@ -257,14 +254,13 @@ int main(int argc, char **argv)
    // tm.addTask(ToDig);
    // tm.addTask(DigServo);
    // tm.addTask(ToBin)
-    tm.addTask( extLinAct);
+    tm.addTask(extLinAct);
     tm.addTask(startConveyor);
     tm.addTask(print);
     tm.addTask(wait);
     tm.addTask(stopConveyor);
     tm.addTask(print);
     
-    Listener listener;
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
 
@@ -275,16 +271,15 @@ int main(int argc, char **argv)
         // Get transform tree
         try
         {
-            listener.transformStamped = tfBuffer.lookupTransform("map", "back_cam", ros::Time(0));
+            dugTf = tfBuffer.lookupTransform("map", "back_cam", ros::Time(0));
         }
         catch (tf2::TransformException &ex)
         {
             ROS_WARN("%s", ex.what());
-            ros::Duration(1.0).sleep();
+            //ros::Duration(1.0).sleep();
             continue;
         }
 
-        listener.transformStamped.transform.rotation.y;
         extend_pub.publish(extend_pwr);
         flag_pub.publish(flag_pwr);
         conveyor_current_pub.publish(conveyor_pwr);

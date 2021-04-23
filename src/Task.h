@@ -2,7 +2,7 @@
 #define _TASK_H
 
 #include "geometry_msgs/PoseStamped.h"
-
+#include "geometry_msgs/TransformStamped.h"
 #include "std_msgs/UInt16.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Bool.h"
@@ -20,6 +20,7 @@ class Task
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
         Task(bool otherbool, float otherfloat);
+        Task(geometry_msgs::TransformStamped tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2);
         Task();
 
         virtual bool initialize();
@@ -34,7 +35,9 @@ class Task
         
         std_msgs::UInt16 *uint16;
         std_msgs::Float32 *float32;
+        std_msgs::Float32 *float32_2;
         std_msgs::Bool *boolean;
+        geometry_msgs::TransformStamped transformStamped;
         bool cbool;
         float cfloat;
         
@@ -55,15 +58,5 @@ class Task
         int time;
         int duration;
         geometry_msgs::PoseStamped *posMsg;
-/*
-        // Float32 msg
-        std_msgs::Float32 *f32Msg;
-
-        // Bool msg
-        std_msgs::Bool *boolMsg;
-
-        // UInt16 msg
-        std_msgs::UInt16 *uint16Msg;
-        */
 };
 #endif

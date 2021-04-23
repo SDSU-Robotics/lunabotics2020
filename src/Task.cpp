@@ -51,6 +51,13 @@ Task::Task(bool otherbool, float otherfloat)
     cout << cbool << " " << cfloat << endl;   
 }
 
+Task::Task(geometry_msgs::TransformStamped tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2)
+{
+    transformStamped = tf;
+    float32 = &f1;
+    float32_2 = &f2;
+}
+
 void Task::callback(const ros::TimerEvent&)
 {
     ROS_INFO("callback called");
