@@ -31,11 +31,16 @@ public:
 	void joyListener(const sensor_msgs::Joy::ConstPtr& Joy);
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
+	void updateEnableSpeedCollect(const std_msgs::Bool &message);
+	void updateEnableSpeedDig(const std_msgs::Bool &message);
 	//void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 	
+	bool enableSpeedPubDig = true;
+	bool enableSpeedPubCollect = true;
 
 	void toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher extend_pub);
 	void toggleIntFlag(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher flag_pub);
+	
 
 private:
     bool _buttons[12] = { 0 };
@@ -60,6 +65,21 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
     for (int i = 0; i < 8; i++)
         axes[i] = _axes[i];
 }
+
+void Listener::updateEnableSpeedCollect(const std_msgs::Bool &message)
+{
+    if(message.data)
+		enableSpeedPubCollect = false;
+	else
+		enableSpeedPubCollect = true;
+}
+void Listener::updateEnableSpeedDig(const std_msgs::Bool &message)
+{
+    if(message.data)
+		enableSpeedPubDig = false;
+	else
+		enableSpeedPubDig = true;
+}
 /*
 void Listener::whileHeld(bool button, std_msgs::UInt16 & msg, double value)
 {
@@ -82,7 +102,9 @@ int main (int argc, char **argv)
 	Listener listener;
 
 	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
-	
+	ros::Subscriber digSub = n.subscribe("DigData", 100, &Listener::updateEnableSpeedDig, &listener);
+	ros::Subscriber collectSub = n.subscribe("CollectData", 100, &Listener::updateEnableSpeedCollect, &listener);
+
 	bool buttons[12];
 	double axes[8];
 	
@@ -165,9 +187,12 @@ int main (int argc, char **argv)
 
 		l_speed_msg.data = pow(axes[ForwardAxis], 3.0) * DRIVE_SCALE; // left Y
 		r_speed_msg.data = pow(axes[TurnAxis], 3.0) * DRIVE_SCALE; // right Y
-
-		l_speed_pub.publish(l_speed_msg);
-		r_speed_pub.publish(r_speed_msg);
+		
+		if(listener.enableSpeedPubDig && listener.enableSpeedPubCollect)
+		{
+			l_speed_pub.publish(l_speed_msg);
+			r_speed_pub.publish(r_speed_msg);
+		}
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
 
 		save_odomData_pub.publish(save_odomData_msg);

@@ -4,6 +4,7 @@
 #include "ctre/phoenix/CANifierControlFrame.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Int32.h"
 #include "std_msgs/Bool.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
@@ -55,14 +56,17 @@ class Listener
 		// motor controls using Victors
         TalonSRX pitchTalon = {DeviceIDs::ExcvPitchTal};
 		TalonSRX driveTalon = {DeviceIDs::ExcvDriveTal};
-		TalonSRX wheelTalon = {DeviceIDs::ExcvDrvLTal};
+		TalonSRX wheelLTalon = {DeviceIDs::ExcvDrvLTal};
+		TalonSRX wheelRTalon = {DeviceIDs::ExcvDrvRTal};
+
 
 		float TrencherDrvPwr;
 		float pitchSpeed;
-		bool PIDEnable;
+		bool PIDEnable = false;
 		bool DrivePIDEnable;
 
-		int targetPos = -1800;
+		int targetPos = -1000;
+		int wheelTargetPos = 0;
 		int targetCurrent = 3;
 		int maxDepth = -2400;
 		int decrementPos = 1;
@@ -95,12 +99,14 @@ int main (int argc, char **argv)
 	ros::Publisher drive_current_pub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
+	ros::Publisher angPos_pub = n.advertise<std_msgs::Int32>("ExcvPitchPos", 100);
 
 	// sets the message type to the message variable
 	std_msgs::Float32 pitch_current_msg;
 	std_msgs::Float32 drive_current_msg;
 	std_msgs::Float32 l_speed_msg;
 	std_msgs::Float32 r_speed_msg;
+	std_msgs::Int32 angPos_msg;
 	
 	Listener listener;
 
@@ -111,14 +117,18 @@ int main (int argc, char **argv)
 	ros::Subscriber trencherToggleSub = n.subscribe("ExcvTrencherToggle", 100, &Listener::trencherToggle, &listener);
 	ros::Subscriber trencherDriveToggleSub = n.subscribe("ExcvTrencherDriveToggle", 100, &Listener::trencherDriveToggle, &listener);
 
-	ros::Timer timer = n.createTimer(ros::Duration(0.25), &Listener::decrementPosition, &listener);
+	ros::Timer timer = n.createTimer(ros::Duration(0.35), &Listener::decrementPosition, &listener);
 
 	while (ros::ok()) // while ros is running
 	{
 		if(listener.PIDEnable == true)
 		{		
+			
 			listener.setPosition();
 			
+			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
+			angPos_pub.publish(angPos_msg);
+
 			listener.setDrivePID(l_speed_msg, r_speed_msg);
 			
 			l_speed_pub.publish(l_speed_msg); // left speed
@@ -128,7 +138,9 @@ int main (int argc, char **argv)
 		else
 		{
 			//cout << listener.driveTalon.GetOutputCurrent() << endl;
-			//cout << angPos << endl;
+			//cout << listener.pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
+			angPos_pub.publish(angPos_msg);
 
 			listener.setDriveSpeed();
 			listener.pitchTalon.Set(ControlMode::PercentOutput, listener.pitchSpeed);
@@ -198,11 +210,17 @@ void Listener::decrementPosition(const ros::TimerEvent& event)
 		if(avgCurrent <= targetCurrent)
 		{
 			if(targetPos > maxDepth)
+			{
 				targetPos -= decrementPos;
+				if(angPos < -1900)
+					wheelTargetPos += 1;
+			}
+				
 		}
+
 	}
 
-	cout << targetPos << " " << excvMotorCurrent << " " << avgCurrent << endl;
+	cout << targetPos << " " << angPos << " " << excvMotorCurrent << " " << avgCurrent << " " << wheelTargetPos << " " << wheelLTalon.GetSensorCollection().GetQuadraturePosition() << wheelRTalon.GetSensorCollection().GetQuadraturePosition() << endl;
 
 }
 
@@ -215,9 +233,9 @@ void Listener::setPosition()
 	float driveOut;
 	float eT = targetPos - angPos;
 
-	float P = angPos > -760 ? 0.0015 : 0.0015;
-	float I = angPos > -760 ? 0.0056 : 0.0056;
-	float D = angPos > -760 ? 0.036 : 0.036; //0.001
+	float P = angPos > -760 ? 0.001 : 0.002;
+	float I = angPos > -760 ? 0.004 : 0.008;
+	float D = angPos > -760 ? 0.036 : 0.002; //0.001
 
 	double IC;
 	IC += I*eT;
@@ -262,14 +280,14 @@ void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & 
 	int angPos = pitchTalon.GetSensorCollection().GetQuadraturePosition();
 
 	float excvMotorCurrent = driveTalon.GetOutputCurrent();
-	int wheelPos = wheelTalon.GetSensorCollection().GetQuadraturePosition();
+	int wheelPos = wheelLTalon.GetSensorCollection().GetQuadraturePosition();
 
 	float driveOut;
-	float eT = angPos > -760 ? 0 - wheelPos : targetCurrent - excvMotorCurrent;
+	float eT = angPos > -1900 ? 0 - wheelPos : wheelTargetPos - wheelPos;
 
-	float P = 0.0015;
-	float I = 0.0056;
-	float D = 0.036;
+	float P = 0.003;
+	float I = 0.001;
+	float D = 0.0001;
 
 	double IC;
 	IC += I*eT;
@@ -281,10 +299,10 @@ void Listener::setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & 
 
 	driveOut = P*eT + IC + dC;
 
-	if(driveOut > 0.6)
-		driveOut = 0.6;
-	else if(driveOut < -0.6)
-		driveOut = -0.6;
+	if(driveOut > 0.8)
+		driveOut = 0.8;
+	else if(driveOut < -0.8)
+		driveOut = -0.8;
 
 	l_speed_msg.data = driveOut;
 	r_speed_msg.data = driveOut;
