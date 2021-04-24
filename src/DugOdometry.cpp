@@ -133,6 +133,7 @@ void DugOdometry::save()
     {
         LSpeedList.push_back(lSpeed);
         RSpeedList.push_back(rSpeed);
+        ros::Duration(1/100).sleep();
     }
    
 }
