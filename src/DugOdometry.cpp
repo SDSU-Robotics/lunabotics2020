@@ -156,6 +156,7 @@ void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList
         rspeedmsg.data = getListElement(RSpeedList, i);
         lSpeedPub.publish(lspeedmsg);
         rSpeedPub.publish(rspeedmsg);
+        ros::Duration(1/100).sleep();
     }
 
 }
