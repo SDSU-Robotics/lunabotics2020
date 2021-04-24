@@ -347,6 +347,6 @@ void Listener::callToCollect(const bool keys, bool &currentButton, bool &on, std
 	else
 	{
 		//ROS_INFO(" button off");
-		message.data = 0;
+		//message.data = 0;
 	}
 }
