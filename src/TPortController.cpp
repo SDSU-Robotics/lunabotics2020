@@ -316,7 +316,7 @@ void Listener::callToDig(const bool keys, bool &currentButton, bool &on, std_msg
 	else
 	{
 		//ROS_INFO(" button off");
-		message.data = 0;
+		//message.data = 0;
 	}
 }
 
