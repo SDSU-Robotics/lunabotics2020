@@ -57,7 +57,7 @@ Task::Task(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs:
 
 void Task::callback(const ros::TimerEvent&)
 {
-    ROS_INFO("callback called");
+    
     cbool = false;
 
 }
