@@ -53,7 +53,7 @@ Task::Task(bool otherbool, float otherfloat)
 
 void Task::callback(const ros::TimerEvent&)
 {
-    ROS_INFO("callback called");
+    
     cbool = false;
 
 }

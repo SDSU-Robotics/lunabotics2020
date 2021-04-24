@@ -162,7 +162,7 @@ class Wait : public Task
     }
     bool initialize() override
     {
-        ROS_INFO("bool initialize() override called");
+        //ROS_INFO("bool initialize() override called");
        // timer = n->createTimer(ros::Duration(cfloat), &Task::callback, &this, true);
         timer = n->createTimer(ros::Duration(cfloat), boost::bind(&Task::callback, this, _1), true);
 
@@ -171,7 +171,14 @@ class Wait : public Task
     
     bool basic() override
     {
+        
         return cbool;
+    }
+
+    void callback(const ros::TimerEvent&) override
+    {
+        ROS_INFO("callback called");
+        cbool = false;
     }
 };
 class HopperServoOn : public Task
@@ -209,14 +216,6 @@ class HopperServoOff : public Task
         //Message: excv_door
 
         uint16 -> data = 100;
-
-
-    bool basic() override
-    {
-        ROS_INFO("Task1 RAN");
-        ros::Duration(0.01).sleep();
-       
-        return false;
     }
 };
 
@@ -239,8 +238,8 @@ int main(int argc, char **argv)
 	ros::Publisher extend_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
     ros::Publisher flag_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
-    ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("message", 100);
-    ros::Publisher sieve_path_sub = n.advertise<std_msgs::Bool>("message", 100);
+    ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("DigData", 100);
+    ros::Publisher sieve_path_pub = n.advertise<std_msgs::Bool>("CollectData", 100);
     
 
     // Messages
@@ -249,6 +248,7 @@ int main(int argc, char **argv)
     std_msgs::Float32 conveyor_pwr;
     std_msgs::Bool to_dig;
     std_msgs::Bool to_sieve;
+    std_msgs::UInt16 OnOff; // used for HopperServoOn and HopperServoOff
 
     // Message initialization
     extend_pwr.data = 0;
@@ -256,6 +256,7 @@ int main(int argc, char **argv)
     conveyor_pwr.data = 0;
     to_dig.data = 0;
     to_sieve.data = 0;
+    OnOff.data == 0;
     
 
     // Class instances
@@ -266,29 +267,31 @@ int main(int argc, char **argv)
     StopConveyor stopConveyor(conveyor_pwr);
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
-    Wait wait(true, 5);
+    HopperServoOn hopperServoOn(OnOff);
+    HopperServoOff hopperServoOff(OnOff);
+    Wait wait5sec(true, 5);
+    Wait wait10sec(true, 10);
+    Wait wait15sec(true, 15);
     Print print;
 
     // adding task object to task manager
     // runs in the order listed
     TaskManager tm;
-    /*tm.addTask(extLinAct);
-    tm.addTask(retractLinAct);
-    tm.addTask(extFlags);
-    tm.addTask(startConveyor);
-    tm.addTask(stopConveyor);
+
+    //tm.addTask(extFlags);
     tm.addTask(startToDig);
-    tm.addTask(startToSieve);*/
-    
-    tm.addTask(StartToDig);
-    tm.addTask(HopperServoOn);
-    tm.addTask(StartToSieve);
+    // micro adjust 
+    tm.addTask(hopperServoOn);
+    tm.addTask(wait5sec);  // adjust time waiting as needed
+    tm.addTask(hopperServoOff);
+    // micro adjust 
+    tm.addTask(startToSieve);
     tm.addTask(extLinAct);
+    tm.addTask(wait10sec);  // adjust time waiting as needed
     tm.addTask(startConveyor);
-    tm.addTask(print);
-    tm.addTask(wait);
+    tm.addTask(wait15sec);  // adjust time waiting as needed
     tm.addTask(stopConveyor);
-    tm.addTask(print);
+    tm.addTask(retractLinAct);
     
     while (ros::ok())
     {
@@ -297,7 +300,8 @@ int main(int argc, char **argv)
         extend_pub.publish(extend_pwr);
         flag_pub.publish(flag_pwr);
         conveyor_current_pub.publish(conveyor_pwr);
-       
+        dig_path_pub.publish(to_dig);
+        sieve_path_pub.publish(to_sieve);
 
         ros::spinOnce();
         loop_rate.sleep();

@@ -28,7 +28,7 @@ class Task
         virtual bool navigation();
         virtual void callback(const ros::TimerEvent&);
 
-        Task *task;
+        //Task *task;
         ros::Timer timer;
         ros::NodeHandle *n;
         
