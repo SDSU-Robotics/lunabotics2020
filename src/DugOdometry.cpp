@@ -20,7 +20,7 @@ class DugOdometry
 
         void save();
         void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
-        void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
+        void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher savePub);
 
         //Lists receiving msg data
         std::list<float> LSpeedList;
@@ -33,6 +33,7 @@ class DugOdometry
         bool saveData = 0;
         bool saveDigData = 0;
         bool saveCollectData = 0;
+        std_msgs::Bool saveDigDataMsg;
 };
 
 
@@ -49,6 +50,7 @@ int main (int argc, char **argv)
 
     ros::Publisher lSpeedPub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
     ros::Publisher rSpeedPub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);   
+	ros::Publisher digData_pub = n.advertise<std_msgs::Bool>("DigData", 100);
 
     ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &DugOdometry::getLSpeed, &dugOdometry);
 	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &DugOdometry::getRSpeed, &dugOdometry);
@@ -70,7 +72,7 @@ int main (int argc, char **argv)
         //if(dugOdometry.saveData)
           //  dugOdometry.save();
         if(dugOdometry.saveDigData)
-            dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub);
+            dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, digData_pub);
         if(dugOdometry.saveCollectData)
             dugOdometry.toCollector(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub);
 
@@ -144,7 +146,7 @@ void DugOdometry::save()
 }
 
 
-void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub)
+void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher savePub)
 {
     std_msgs::Float32 lspeedmsg;
     std_msgs::Float32 rspeedmsg;
@@ -164,6 +166,10 @@ void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList
         rSpeedPub.publish(rspeedmsg);
         ros::Duration(1/100).sleep();
     }
+
+    saveDigData = false;
+    saveDigDataMsg.data = false;
+    savePub.publish(saveDigDataMsg);
 
 }
 
