@@ -67,8 +67,8 @@ int main (int argc, char **argv)
             dugOdometry.LSpeedList.clear();
             dugOdometry.RSpeedList.clear();
         }*/
-        if(dugOdometry.saveData)
-            dugOdometry.save();
+        //if(dugOdometry.saveData)
+          //  dugOdometry.save();
         if(dugOdometry.saveDigData)
             dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub);
         if(dugOdometry.saveCollectData)
@@ -96,17 +96,22 @@ float getListElement(std::list<float> l, int element)
 //set list values to msg data
 void DugOdometry::getLSpeed(const std_msgs::Float32 lspeed)
 {
-
-    lSpeed = lspeed.data;
+    if(saveData)
+    {
+        lSpeed = lspeed.data;
+        LSpeedList.push_back(lSpeed);
+    }
 
 }
 
 //set list values to msg data
 void DugOdometry::getRSpeed(const std_msgs::Float32 rspeed)
 {
-
-    rSpeed = rspeed.data;
-
+    if(saveData)
+    {
+        rSpeed = rspeed.data;
+        RSpeedList.push_back(rSpeed);
+    }
 }
 
 
@@ -133,25 +138,11 @@ void DugOdometry::save()
     {
         LSpeedList.push_back(lSpeed);
         RSpeedList.push_back(rSpeed);
+        ros::Duration(1/100).sleep();
     }
    
 }
 
-void DugOdometry::dig(DugOdometry dugOdometry)
-{
-    if(saveDigData == 1)
-    {
-       // void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
-    }
-}
-
-void DugOdometry::collect(DugOdometry dugOdometry)
-{
-    if(saveCollectData == 1)
-    {
-        //void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
-    }
-}
 
 void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub)
 {
@@ -171,6 +162,7 @@ void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList
         rspeedmsg.data = getListElement(RSpeedList, i);
         lSpeedPub.publish(lspeedmsg);
         rSpeedPub.publish(rspeedmsg);
+        ros::Duration(1/100).sleep();
     }
 
 }
