@@ -163,7 +163,7 @@ class Wait : public Task
     }
     bool initialize() override
     {
-        ROS_INFO("bool initialize() override called");
+        //ROS_INFO("bool initialize() override called");
        // timer = n->createTimer(ros::Duration(cfloat), &Task::callback, &this, true);
         timer = n->createTimer(ros::Duration(cfloat), boost::bind(&Task::callback, this, _1), true);
 
@@ -172,7 +172,51 @@ class Wait : public Task
     
     bool basic() override
     {
+        
         return cbool;
+    }
+
+    void callback(const ros::TimerEvent&) override
+    {
+        ROS_INFO("callback called");
+        cbool = false;
+    }
+};
+class HopperServoOn : public Task
+{
+    public:
+    HopperServoOn(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+
+        //Topic: excvDoorServo
+        //Message: excv_door
+
+        uint16 -> data = 5;
+
+
+        return false;
+    }
+};
+
+class HopperServoOff : public Task
+{
+    public:
+    HopperServoOff(std_msgs::UInt16 &msg) : Task(msg)
+    {
+
+    }
+
+    bool basic() override
+    {
+        //Topic: excvDoorServo
+        //Message: excv_door
+
+        uint16 -> data = 100;
     }
 };
 
@@ -188,7 +232,9 @@ class Print : public Task
 class DigOrientation : public Task
 {
     public:
-        DigOrientation(geometry_msgs::TransformStamped tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, &f1, &f2);
+        DigOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+        {
+        }
 
         bool basic() override
         {
@@ -246,9 +292,13 @@ int main(int argc, char **argv)
     std_msgs::Float32 conveyor_pwr;
     std_msgs::Bool to_dig;
     std_msgs::Bool to_sieve;
+
+    std_msgs::UInt16 OnOff; // used for HopperServoOn and HopperServoOff
+
     std_msgs::Float32 lSpeed;
     std_msgs::Float32 rSpeed;
     geometry_msgs::TransformStamped dugTf;
+
 
     // Message initialization
     extend_pwr.data = 0;
@@ -256,6 +306,7 @@ int main(int argc, char **argv)
     conveyor_pwr.data = 0;
     to_dig.data = 0;
     to_sieve.data = 0;
+    OnOff.data == 0;
     
 
     // Class instances
@@ -266,30 +317,37 @@ int main(int argc, char **argv)
     StopConveyor stopConveyor(conveyor_pwr);
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
-    Wait wait(true, 5);
+
+    HopperServoOn hopperServoOn(OnOff);
+    HopperServoOff hopperServoOff(OnOff);
+    Wait wait5sec(true, 5);
+    Wait wait10sec(true, 10);
+    Wait wait15sec(true, 15);
     Print print;
+
     DigOrientation digAdjust(dugTf, lSpeed, rSpeed);
+
 
     // adding task object to task manager
     // runs in the order listed
     TaskManager tm;
-    /*tm.addTask(extLinAct);
-    tm.addTask(retractLinAct);
-    tm.addTask(extFlags);
-    tm.addTask(startConveyor);
-    tm.addTask(stopConveyor);
+
+    //tm.addTask(extFlags);
     tm.addTask(startToDig);
-    tm.addTask(startToSieve);*/
-    
-   // tm.addTask(ToDig);
-   // tm.addTask(DigServo);
-   // tm.addTask(ToBin)
+
+    // micro adjust 
+    tm.addTask(hopperServoOn);
+    tm.addTask(wait5sec);  // adjust time waiting as needed
+    tm.addTask(hopperServoOff);
+    // micro adjust 
+    tm.addTask(startToSieve);
     tm.addTask(extLinAct);
+    tm.addTask(wait10sec);  // adjust time waiting as needed
     tm.addTask(startConveyor);
-    tm.addTask(print);
-    tm.addTask(wait);
+    tm.addTask(wait15sec);  // adjust time waiting as needed
     tm.addTask(stopConveyor);
-    tm.addTask(print);
+    tm.addTask(retractLinAct);
+
     
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
@@ -313,6 +371,9 @@ int main(int argc, char **argv)
         extend_pub.publish(extend_pwr);
         flag_pub.publish(flag_pwr);
         conveyor_current_pub.publish(conveyor_pwr);
+        dig_path_pub.publish(to_dig);
+        sieve_path_pub.publish(to_sieve);
+
 
         ros::spinOnce();
         loop_rate.sleep();

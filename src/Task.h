@@ -20,9 +20,7 @@ class Task
         Task(std_msgs::Float32 &msg);
         Task(std_msgs::Bool &msg);
         Task(bool otherbool, float otherfloat);
-        Task(geometry_msgs::TransformStamped tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2);
-        Task();
-        Task(geometry_msgs::TransformStamped &tfmsg, float &currentX, float &finalX, float &currentZ, float &finalZ);
+        Task(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2);
 
         virtual bool initialize();
         virtual bool onFinish();
@@ -30,7 +28,6 @@ class Task
         virtual bool navigation();
         virtual void callback(const ros::TimerEvent&);
 
-        Task *task;
         ros::Timer timer;
         ros::NodeHandle *n;
         
@@ -38,8 +35,7 @@ class Task
         std_msgs::Float32 *float32;
         std_msgs::Float32 *float32_2;
         std_msgs::Bool *boolean;
-        geometry_msgs::TransformStamped transformStamped;
-        geometry_msgs::TransformStamped *tfstamp;
+        geometry_msgs::TransformStamped *transformStamped;
         bool cbool;
         float cfloat;
         float *currentXPos;
