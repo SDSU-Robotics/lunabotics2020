@@ -67,8 +67,8 @@ int main (int argc, char **argv)
             dugOdometry.LSpeedList.clear();
             dugOdometry.RSpeedList.clear();
         }*/
-        if(dugOdometry.saveData)
-            dugOdometry.save();
+        //if(dugOdometry.saveData)
+          //  dugOdometry.save();
         if(dugOdometry.saveDigData)
             dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub);
         if(dugOdometry.saveCollectData)
@@ -96,17 +96,22 @@ float getListElement(std::list<float> l, int element)
 //set list values to msg data
 void DugOdometry::getLSpeed(const std_msgs::Float32 lspeed)
 {
-
-    lSpeed = lspeed.data;
+    if(saveData)
+    {
+        lSpeed = lspeed.data;
+        LSpeedList.push_back(lSpeed);
+    }
 
 }
 
 //set list values to msg data
 void DugOdometry::getRSpeed(const std_msgs::Float32 rspeed)
 {
-
-    rSpeed = rspeed.data;
-
+    if(saveData)
+    {
+        rSpeed = rspeed.data;
+        RSpeedList.push_back(rSpeed);
+    }
 }
 
 
