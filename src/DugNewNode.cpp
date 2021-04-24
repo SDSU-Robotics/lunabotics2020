@@ -234,12 +234,20 @@ class DigOrientation : public Task
     public:
     DigOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
     {
+        
     }
 
-        bool basic() override
-        {
-            
-        }
+    bool basic() override
+    {
+         if (0 >= transformStamped->transform.rotation.y)
+         {
+            //write publisher for lspeed and rspeed
+         }   
+         else 
+         {
+
+         }
+    }
 };
 
 class DriveForward : public Task
@@ -247,23 +255,15 @@ class DriveForward : public Task
     public:
     bool basic() override
     {
-        /*if (finalXPos <= currentXPos)
-        {
-            //stop x direction
-        }
-        else
-        {
-            //keep driving
-        }
 
-        if (finalZPos <= currentZPos)
+        if (0  >= transformStamped->transform.translation.x)
         {
             //stop z direction
         }
         else
         {
             //keep driving
-        }*/
+        }
     }
 };
 
