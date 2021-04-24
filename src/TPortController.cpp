@@ -33,7 +33,7 @@ public:
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
 	void updateEnableSpeedCollect(const std_msgs::Bool &message);
 	void updateEnableSpeedDig(const std_msgs::Bool &message);
-	void callToDig(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher digData_pub);
+	void callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub);
 	void callToCollect(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher collectData_pub);
 	//void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 	
@@ -183,11 +183,11 @@ int main (int argc, char **argv)
 
 		//toggle message using odomButtonValue
 		dpadDigValue = axes[SaveDigCollectData] == 1? 1 : 0;
-		listener.callToDig(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub);
+		listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub);
 		
 		//toggle message using odomButtonValue
 		dpadCollectValue = axes[SaveDigCollectData] == -1? 1 : 0;
-		listener.callToCollect(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub);
+		listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub);
 
 		listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr, extend_pub);
 		listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr, flag_pub);
@@ -289,7 +289,7 @@ void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, s
 	}
 }
 
-void Listener::callToDig(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher digData_pub)
+void Listener::callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub)
 {
 	bool lastButton;
 	lastButton = currentButton;
@@ -305,43 +305,13 @@ void Listener::callToDig(const bool keys, bool &currentButton, bool &on, std_msg
 	{
 		//ROS_INFO(" button on");
 		message.data = 1;
-		digData_pub.publish(message);
-
-		//ros::Duration(0.5).sleep();
-
-		//message.data = 0;
-		//digData_pub.publish(message);
-		on = !on;
-	}
-	else
-	{
-		//ROS_INFO(" button off");
-		//message.data = 0;
-	}
-}
-
-void Listener::callToCollect(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher collectData_pub)
-{
-	bool lastButton;
-	lastButton = currentButton;
-	currentButton = keys;
-
-	if (lastButton && !currentButton)
-	{
-		on = !on;
-		//ROS_INFO(" button released");
-	}
-		
-	if (on)
-	{
-		//ROS_INFO(" button on");
-		message.data = 1;
-		collectData_pub.publish(message);
-
+		pub.publish(message);
+/*
 		ros::Duration(0.5).sleep();
 
 		message.data = 0;
 		collectData_pub.publish(message);
+*/
 		on = !on;
 	}
 	else
