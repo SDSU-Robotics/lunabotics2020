@@ -137,21 +137,6 @@ void DugOdometry::save()
    
 }
 
-void DugOdometry::dig(DugOdometry dugOdometry)
-{
-    if(saveDigData == 1)
-    {
-       // void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
-    }
-}
-
-void DugOdometry::collect(DugOdometry dugOdometry)
-{
-    if(saveCollectData == 1)
-    {
-        //void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
-    }
-}
 
 void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub)
 {
