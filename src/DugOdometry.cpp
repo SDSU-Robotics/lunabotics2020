@@ -81,15 +81,10 @@ int main (int argc, char **argv)
         //if(dugOdometry.saveData)
           //  dugOdometry.save();
         if(dugOdometry.saveDigData)
-        {
             dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, DigPub);
-            ros::Duration(dugOdometry.timeTravel).sleep();
-        }
         if(dugOdometry.saveCollectData)
-        {
             dugOdometry.toCollector(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, CollectPub);
-            ros::Duration(dugOdometry.timeTravel).sleep();
-        }
+        
 
 		ros::spinOnce();
 		loop_rate.sleep();
