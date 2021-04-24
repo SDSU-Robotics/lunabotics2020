@@ -196,6 +196,36 @@ class DigOrientation : public Task
         }
 };
 
+class DriveForward : public Task
+{
+    public:
+    bool basic() override
+    {
+
+    }
+
+    DriveForward(geometry_msgs::TransformStamped &tf, float &currentXPos, float &finalXPos, float &currentZPos, float &finalZPos) : Task(&tfmsg, &currentX, &finalX, &currentZ, &finalZ)
+    {
+        if (finalXPos >= currentXPos)
+        {
+            //stop x direction
+        }
+        else
+        {
+            //keep driving
+        }
+
+        if (finalZPos>= currentZPos)
+        {
+            //stop z direction
+        }
+        else
+        {
+            //keep driving
+        }
+    }
+};
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "DugNewNode");
@@ -206,8 +236,8 @@ int main(int argc, char **argv)
 	ros::Publisher extend_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
     ros::Publisher flag_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
-    ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("message", 100);
-    ros::Publisher sieve_path_sub = n.advertise<std_msgs::Bool>("message", 100);
+    ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("DigData", 100);
+    ros::Publisher sieve_path_pub = n.advertise<std_msgs::Bool>("CollectData", 100);
     
 
     // Messages
