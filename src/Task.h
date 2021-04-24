@@ -32,16 +32,12 @@ class Task
         ros::NodeHandle *n;
         
         std_msgs::UInt16 *uint16;
-        std_msgs::Float32 *float32;
-        std_msgs::Float32 *float32_2;
+        std_msgs::Float32 *float32; // left
+        std_msgs::Float32 *float32_2; // right
         std_msgs::Bool *boolean;
         geometry_msgs::TransformStamped *transformStamped;
         bool cbool;
         float cfloat;
-        float *currentXPos;
-        float *finalXPos;
-        float *currentZPos;
-        float *finalZPos;
         
         enum TaskType
         {

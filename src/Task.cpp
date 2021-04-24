@@ -54,14 +54,6 @@ Task::Task(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs:
     float32_2 = &f2;
 }
 
-Task::Task(geometry_msgs::TransformStamped &tfmsg, float &currentX, float &finalX, float &currentZ, float &finalZ)
-{
-    tfstamp = &tfmsg;
-    currentXPos = &currentX;
-    finalXPos = &finalX;
-    currentZPos = &currentZ;
-    finalZPos = &finalZ;
-}
 
 void Task::callback(const ros::TimerEvent&)
 {

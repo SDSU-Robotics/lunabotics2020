@@ -232,13 +232,13 @@ class Print : public Task
 class DigOrientation : public Task
 {
     public:
-        DigOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
-        {
-        }
+    DigOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+    {
+    }
 
         bool basic() override
         {
-
+            
         }
 };
 
@@ -247,12 +247,7 @@ class DriveForward : public Task
     public:
     bool basic() override
     {
-
-    }
-
-    DriveForward(geometry_msgs::TransformStamped &tf, float &currentXPos, float &finalXPos, float &currentZPos, float &finalZPos) : Task(&tfmsg, &currentX, &finalX, &currentZ, &finalZ)
-    {
-        if (finalXPos >= currentXPos)
+        /*if (finalXPos <= currentXPos)
         {
             //stop x direction
         }
@@ -261,14 +256,14 @@ class DriveForward : public Task
             //keep driving
         }
 
-        if (finalZPos>= currentZPos)
+        if (finalZPos <= currentZPos)
         {
             //stop z direction
         }
         else
         {
             //keep driving
-        }
+        }*/
     }
 };
 
@@ -323,7 +318,7 @@ int main(int argc, char **argv)
     Wait wait5sec(true, 5);
     Wait wait10sec(true, 10);
     Wait wait15sec(true, 15);
-    Print print;
+
 
     DigOrientation digAdjust(dugTf, lSpeed, rSpeed);
 
