@@ -84,7 +84,6 @@ int main (int argc, char **argv)
             dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, DigPub);
         if(dugOdometry.saveCollectData)
             dugOdometry.toCollector(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, CollectPub);
-        
 
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -106,7 +105,7 @@ int getListSize(int size, std::list<float> LSpeedList, std::list<float> RSpeedLi
 
 float DugOdometry::getTimeTraveled(float timeTravel, int size)
 {
-    timeTravel = size * 100;      //finds time of odom travel using size of list times 1/frequency
+    timeTravel = size / 100;      //finds time of odom travel using size of list times frequency
 
     return timeTravel;
 }
