@@ -188,7 +188,9 @@ class Print : public Task
 class DigOrientation : public Task
 {
     public:
-        DigOrientation(geometry_msgs::TransformStamped tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, &f1, &f2);
+        DigOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+        {
+        }
 
         bool basic() override
         {
@@ -237,7 +239,6 @@ int main(int argc, char **argv)
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
     Wait wait(true, 5);
-    Print print;
     DigOrientation digAdjust(dugTf, lSpeed, rSpeed);
 
     // adding task object to task manager
@@ -256,10 +257,8 @@ int main(int argc, char **argv)
    // tm.addTask(ToBin)
     tm.addTask(extLinAct);
     tm.addTask(startConveyor);
-    tm.addTask(print);
     tm.addTask(wait);
     tm.addTask(stopConveyor);
-    tm.addTask(print);
     
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);

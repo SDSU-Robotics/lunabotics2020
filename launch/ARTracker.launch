@@ -20,7 +20,7 @@
     <remap from="camera_info"   to="/front_cam/camera_info" />
   </node>
 
-
+<!--
   <node name="back_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video4" />
     <param name="image_width" value="960" />
@@ -41,5 +41,5 @@
     <remap from="camera_image"  to="/back_cam/image_raw" />
     <remap from="camera_info"   to="/back_cam/camera_info" />
   </node>
-
+  -->
 </launch>
