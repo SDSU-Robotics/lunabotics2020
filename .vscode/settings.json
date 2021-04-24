@@ -4,10 +4,16 @@
     ],
     "files.associations": {
         "system_error": "cpp",
+
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
+
         "functional": "cpp",
         "memory": "cpp",
         "sstream": "cpp",
         "iostream": "cpp"
+
     },
     "cmake.configureOnOpen": false
 }
