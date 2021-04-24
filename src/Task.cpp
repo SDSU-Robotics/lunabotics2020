@@ -9,9 +9,6 @@ using namespace std;
 
 //Navigation Variables
 
-Task::Task()
-{
-}
 
 Task::Task(double _xPos, double _zPos, double _yRot, int time, int duration, geometry_msgs::PoseStamped &position)
 {
@@ -49,6 +46,13 @@ Task::Task(bool otherbool, float otherfloat)
     n = new ros::NodeHandle;    
 
     cout << cbool << " " << cfloat << endl;   
+}
+
+Task::Task(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2)
+{
+    transformStamped = &tf;
+    float32 = &f1;
+    float32_2 = &f2;
 }
 
 void Task::callback(const ros::TimerEvent&)
