@@ -70,17 +70,24 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
 
 void Listener::updateEnableSpeedCollect(const std_msgs::Bool &message)
 {
+	/*
     if(message.data)
 		enableSpeedPubCollect = false;
 	else
 		enableSpeedPubCollect = true;
+		*/
+
+	enableSpeedPubCollect = !message.data;
 }
 void Listener::updateEnableSpeedDig(const std_msgs::Bool &message)
 {
+	/*
     if(message.data)
 		enableSpeedPubDig = false;
 	else
 		enableSpeedPubDig = true;
+		*/
+	enableSpeedPubDig = !message.data;
 }
 /*
 void Listener::whileHeld(bool button, std_msgs::UInt16 & msg, double value)
@@ -300,10 +307,10 @@ void Listener::callToDig(const bool keys, bool &currentButton, bool &on, std_msg
 		message.data = 1;
 		digData_pub.publish(message);
 
-		ros::Duration(0.5).sleep();
+		//ros::Duration(0.5).sleep();
 
-		message.data = 0;
-		digData_pub.publish(message);
+		//message.data = 0;
+		//digData_pub.publish(message);
 		on = !on;
 	}
 	else
