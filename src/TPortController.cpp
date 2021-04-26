@@ -33,6 +33,7 @@ public:
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
 	void updateEnableSpeedCollect(const std_msgs::Bool &message);
 	void updateEnableSpeedDig(const std_msgs::Bool &message);
+	void callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPubDig, bool enableSpeedPubCollect);
 	//void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 	
 	bool enableSpeedPubDig = true;
@@ -68,17 +69,24 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
 
 void Listener::updateEnableSpeedCollect(const std_msgs::Bool &message)
 {
+	/*
     if(message.data)
 		enableSpeedPubCollect = false;
 	else
 		enableSpeedPubCollect = true;
+		*/
+
+	enableSpeedPubCollect = !message.data;
 }
 void Listener::updateEnableSpeedDig(const std_msgs::Bool &message)
 {
+	/*
     if(message.data)
 		enableSpeedPubDig = false;
 	else
 		enableSpeedPubDig = true;
+		*/
+	enableSpeedPubDig = !message.data;
 }
 /*
 void Listener::whileHeld(bool button, std_msgs::UInt16 & msg, double value)
@@ -174,11 +182,11 @@ int main (int argc, char **argv)
 
 		//toggle message using odomButtonValue
 		dpadDigValue = axes[SaveDigCollectData] == 1? 1 : 0;
-		listener.toggle(dpadDigValue, digButton, onDigButton, digData_msg);
+		listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub, listener.enableSpeedPubDig, listener.enableSpeedPubCollect);
 		
 		//toggle message using odomButtonValue
 		dpadCollectValue = axes[SaveDigCollectData] == -1? 1 : 0;
-		listener.toggle(dpadCollectValue, collectButton, onCollectButton, collectData_msg);
+		listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub, listener.enableSpeedPubDig, listener.enableSpeedPubDig);
 
 		listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr, extend_pub);
 		listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr, flag_pub);
@@ -196,8 +204,6 @@ int main (int argc, char **argv)
 		conveyor_pub.publish(conveyor_pwr); // conveyor power
 
 		save_odomData_pub.publish(save_odomData_msg);
-		digData_pub.publish(digData_msg);
-		collectData_pub.publish(collectData_msg);
 		
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -222,6 +228,7 @@ void Listener::toggle(const bool keys, bool &currentButton, bool &on, std_msgs::
 	{
 		//ROS_INFO(" button on");
 		message.data = 1;
+
 	}
 	else
 	{
@@ -278,5 +285,41 @@ void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, s
 	{
 		ROS_INFO("Extend button off");
 		message.data = 45;
+	}
+}
+
+void Listener::callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPubDig, bool enableSpeedPubCollect)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		//ROS_INFO(" button released");
+	}
+		
+	if (on)
+	{
+		//ROS_INFO(" button on");
+		message.data = 1;
+		pub.publish(message);
+/*
+		ros::Duration(0.5).sleep();
+
+		message.data = 0;
+		collectData_pub.publish(message);
+*/
+		if(enableSpeedPubCollect||enableSpeedPubDig)
+		{
+			on = !on;
+		}
+	}
+	
+	else
+	{
+		//ROS_INFO(" button off");
+		//message.data = 0;
 	}
 }
