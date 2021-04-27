@@ -43,7 +43,7 @@ class Listener
 		void getDriveSpeed(const std_msgs::Float32 drivespeed);
 		
 		void decrementPosition(const ros::TimerEvent& event);
-		void setPosition(std_msgs::Float32 &actuatorExtend_msg);
+		void setPosition();
 		void setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg);
 		
 		void trencherToggle(const std_msgs::Bool toggle);
@@ -66,8 +66,8 @@ class Listener
 		bool initialSetPos = true;
 		//bool DrivePIDEnable;
 
-		int initialTargetPos = -700;
-		int targetPos = -1200;
+		//int initialTargetPos = -700;
+		int targetPos = -1400;
 		int wheelTargetPos = 0;
 		int targetCurrent = 3;
 		int maxDepth = -2400;
@@ -127,12 +127,12 @@ int main (int argc, char **argv)
 		if(listener.PIDEnable == true)
 		{		
 			
-			listener.setPosition(actuatorExtend_msg);
+			listener.setPosition();
 			
 			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
 			angPos_pub.publish(angPos_msg);
 
-			actuatorExtend_pub.publish(actuatorExtend_msg);
+			//actuatorExtend_pub.publish(actuatorExtend_msg);
 
 			listener.setDrivePID(l_speed_msg, r_speed_msg);
 			
@@ -205,7 +205,7 @@ void Listener::decrementPosition(const ros::TimerEvent& event)
 
 	avgCurrent = currentSum/arrayL;
 
-	if(!initialSetPos && motorSpeed == 0 && angPos < -780)
+	if(motorSpeed == 0 && angPos < -780)
 	{
 		driveTalon.Set(ControlMode::PercentOutput, 0.75);
 
@@ -215,28 +215,27 @@ void Listener::decrementPosition(const ros::TimerEvent& event)
 			if(targetPos > maxDepth)
 			{
 				targetPos -= decrementPos;
-				if(angPos < -1900)
-					wheelTargetPos += 1;
+				//if(angPos < -1900)
+				//	wheelTargetPos += 1;
 			}
 				
 		}
 
 	}
 
-	//cout << targetPos << " " << angPos << " " << excvMotorCurrent << " " << avgCurrent << " " << wheelTargetPos << " " << wheelLTalon.GetSensorCollection().GetQuadraturePosition() << wheelRTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+	cout << targetPos << " " << angPos << " " << excvMotorCurrent << " " << avgCurrent << " " << wheelTargetPos << " " << wheelLTalon.GetSensorCollection().GetQuadraturePosition() << wheelRTalon.GetSensorCollection().GetQuadraturePosition() << endl;
 
 }
 
 
-void Listener::setPosition(std_msgs::Float32 &actuatorExtend_msg)
+void Listener::setPosition()
 {
 	int angPos = pitchTalon.GetSensorCollection().GetQuadraturePosition();
 	int motorSpeed = pitchTalon.GetSensorCollection().GetQuadratureVelocity();
 
 	//variables to store error between target and current positions + value for motor current
 	float driveOut;
-	float eT;
-
+/*
 	if(initialSetPos)
 		actuatorExtend_msg.data = 0;
 	
@@ -253,8 +252,8 @@ void Listener::setPosition(std_msgs::Float32 &actuatorExtend_msg)
 
 	if(initialSetPos)
 		eT = initialTargetPos - angPos;
-	else
-		eT = targetPos - angPos;
+	else*/
+	float eT = targetPos - angPos;
 
 	float P = angPos > -760 ? 0.001 : 0.002;
 	float I = angPos > -760 ? 0.004 : 0.008;

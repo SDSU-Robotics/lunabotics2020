@@ -23,7 +23,7 @@ using namespace std;
 ****          std_msgs/Int8 TportExtendPwr - extender true/false value   ****
 ****************************************************************************/
 
-#define DRIVE_SCALE 0.75
+#define DRIVE_SCALE 0.6
 
 class Listener
 {
@@ -279,7 +279,7 @@ void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, s
 	if (on)
 	{
 		ROS_INFO("Extend button on");
-		message.data = 150;
+		message.data = 145;
 	}
 	else
 	{

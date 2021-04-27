@@ -329,7 +329,7 @@ int main (int argc, char **argv)
 		conveyor_pwr_pub.publish(conveyor_pwr_msg); // conveyor power
 		excavator_pwr_pub.publish(excavator_pwr_msg); // excavator power
 		
-		if(trencher_toggle_msg.data == 0)
+		//if(trencher_toggle_msg.data == 0)
 			excavator_pos_pub.publish(excavator_pos_msg);
 		
 		excavator_pitch_pub.publish(excavator_pitch_msg);
