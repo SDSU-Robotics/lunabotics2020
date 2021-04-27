@@ -16,24 +16,30 @@ class DugOdometry
         void setCollectData(const std_msgs::Bool saving);
         void dig(DugOdometry dugOdometry);
         void collect(DugOdometry dugOdometry);
+        int getListSize(int size);
+        float getTimeTraveled(float timeTravel, int size);
 
 
         void save();
-        void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub);
-        void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher savePub);
+        void toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher CollectPub);
+        void toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher DigPub);
 
         //Lists receiving msg data
         std::list<float> LSpeedList;
         std::list<float> RSpeedList;      
 
-        //local variables initialize
+        //variables initialize
         float lSpeed = 0;
         float rSpeed = 0;
+        float timeTravel = 0;
+
+        int size = 0;
         
         bool saveData = 0;
         bool saveDigData = 0;
         bool saveCollectData = 0;
         std_msgs::Bool saveDigDataMsg;
+        std_msgs::Bool saveCollectDataMsg;
 };
 
 
@@ -50,7 +56,10 @@ int main (int argc, char **argv)
 
     ros::Publisher lSpeedPub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
     ros::Publisher rSpeedPub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);   
-	ros::Publisher digData_pub = n.advertise<std_msgs::Bool>("DigData", 100);
+	ros::Publisher DigPub = n.advertise<std_msgs::Bool>("DigData", 100);
+    ros::Publisher CollectPub = n.advertise<std_msgs::Bool>("CollectData", 100);
+
+    
 
     ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &DugOdometry::getLSpeed, &dugOdometry);
 	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &DugOdometry::getRSpeed, &dugOdometry);
@@ -72,9 +81,9 @@ int main (int argc, char **argv)
         //if(dugOdometry.saveData)
           //  dugOdometry.save();
         if(dugOdometry.saveDigData)
-            dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, digData_pub);
+            dugOdometry.toDig(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, DigPub);
         if(dugOdometry.saveCollectData)
-            dugOdometry.toCollector(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub);
+            dugOdometry.toCollector(dugOdometry.LSpeedList, dugOdometry.RSpeedList, lSpeedPub, rSpeedPub, CollectPub);
 
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -82,6 +91,23 @@ int main (int argc, char **argv)
         std::cout << saveDataLast << std::endl;
         std::cout << " " << dugOdometry.saveData << std::endl;
 	}
+}
+
+int getListSize(int size, std::list<float> LSpeedList, std::list<float> RSpeedList)
+{
+    if(LSpeedList.size() < RSpeedList.size())
+        size = LSpeedList.size();
+    else
+        size = RSpeedList.size();
+
+        return size;
+}
+
+float DugOdometry::getTimeTraveled(float timeTravel, int size)
+{
+    timeTravel = size / 100;      //finds time of odom travel using size of list times frequency
+
+    return timeTravel;
 }
 
 float getListElement(std::list<float> l, int element)
@@ -146,7 +172,7 @@ void DugOdometry::save()
 }
 
 
-void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher savePub)
+void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher DigPub)
 {
     std_msgs::Float32 lspeedmsg;
     std_msgs::Float32 rspeedmsg;
@@ -169,11 +195,11 @@ void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList
 
     saveDigData = false;
     saveDigDataMsg.data = false;
-    savePub.publish(saveDigDataMsg);
+    DigPub.publish(saveDigDataMsg);
 
 }
 
-void DugOdometry::toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub)
+void DugOdometry::toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher CollectPub)
 {
     std_msgs::Float32 lspeedmsg;
     std_msgs::Float32 rspeedmsg;
@@ -192,6 +218,10 @@ void DugOdometry::toCollector(std::list<float> LSpeedList, std::list<float> RSpe
         rspeedmsg.data = getListElement(RSpeedList, i) * -1;
         lSpeedPub.publish(lspeedmsg);
         rSpeedPub.publish(rspeedmsg);
+        ros::Duration(1/100).sleep();
     }
 
+    saveCollectData = false;
+    saveCollectDataMsg.data = false;
+    CollectPub.publish(saveCollectDataMsg);
 }
