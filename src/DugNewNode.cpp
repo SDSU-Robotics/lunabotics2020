@@ -8,6 +8,11 @@
 #include "Callback.h"
 #include "tf2_ros/transform_listener.h"
 #include "geometry_msgs/TransformStamped.h"
+#include <math.h>
+
+#define PI 3.14159265358979323846
+#define WIGGLEROOM 0.5
+#define TOLERANCE (PI/64)
 
 class NewTask : public Task
 {
@@ -239,14 +244,25 @@ class DigOrientation : public Task
 
     bool basic() override
     {
-         if (0 >= transformStamped->transform.rotation.y)
+         if (transformStamped->transform.rotation.y >= 
+         ((PI/2)-atan((transformStamped->transform.translation.z-WIGGLEROOM)/transformStamped->transform.translation.x))+TOLERANCE)
          {
             //write publisher for lspeed and rspeed
+            float32 -> data = 0.3;  // left
+            float32_2 -> data = 0.6;  // right
+            
          }   
-         else 
+         else if (transformStamped->transform.rotation.y <= 
+         ((PI/2)-atan((transformStamped->transform.translation.z-WIGGLEROOM)/transformStamped->transform.translation.x))-TOLERANCE)
          {
-
+            float32 -> data = 0.6;  // left
+            float32_2 -> data = 0.3;  // right
          }
+         else
+         {
+             return false;
+         }
+         return true;
     }
 };
 
@@ -256,14 +272,16 @@ class DriveForward : public Task
     bool basic() override
     {
 
-        if (0  >= transformStamped->transform.translation.x)
+        if (transformStamped->transform.translation.x >= 0.01)
         {
-            //stop z direction
+            float32 -> data = 0.5;  // left
+            float32_2 -> data = 0.5;  // right
         }
         else
         {
-            //keep driving
+            return false;
         }
+        return true;
     }
 };
 
@@ -329,7 +347,6 @@ int main(int argc, char **argv)
 
     //tm.addTask(extFlags);
     tm.addTask(startToDig);
-
     // micro adjust 
     tm.addTask(hopperServoOn);
     tm.addTask(wait5sec);  // adjust time waiting as needed
@@ -368,6 +385,8 @@ int main(int argc, char **argv)
         conveyor_current_pub.publish(conveyor_pwr);
         dig_path_pub.publish(to_dig);
         sieve_path_pub.publish(to_sieve);
+        //lSpeed.publish();
+        //rSpeed.publish();
 
 
         ros::spinOnce();
