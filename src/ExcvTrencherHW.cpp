@@ -43,11 +43,11 @@ class Listener
 		void getDriveSpeed(const std_msgs::Float32 drivespeed);
 		
 		void decrementPosition(const ros::TimerEvent& event);
-		void setPosition();
+		void setPosition(std_msgs::Float32 &actuatorExtend_msg);
 		void setDrivePID(std_msgs::Float32 & l_speed_msg, std_msgs::Float32 & r_speed_msg);
 		
 		void trencherToggle(const std_msgs::Bool toggle);
-		void trencherDriveToggle(const std_msgs::Bool toggle);
+		//void trencherDriveToggle(const std_msgs::Bool toggle);
 		double getActualCurrent();
 		double getPercentOutput();
 
@@ -63,9 +63,11 @@ class Listener
 		float TrencherDrvPwr;
 		float pitchSpeed;
 		bool PIDEnable = false;
-		bool DrivePIDEnable;
+		bool initialSetPos = true;
+		//bool DrivePIDEnable;
 
-		int targetPos = -1000;
+		int initialTargetPos = -700;
+		int targetPos = -1200;
 		int wheelTargetPos = 0;
 		int targetCurrent = 3;
 		int maxDepth = -2400;
@@ -99,6 +101,7 @@ int main (int argc, char **argv)
 	ros::Publisher drive_current_pub = n.advertise<std_msgs::Float32>("ExcvDrvCurrent", 100);
 	ros::Publisher l_speed_pub = n.advertise<std_msgs::Float32>("ExcvLDrvPwr", 100);
     ros::Publisher r_speed_pub = n.advertise<std_msgs::Float32>("ExcvRDrvPwr", 100);
+	ros::Publisher actuatorExtend_pub = n.advertise<std_msgs::Float32>("ExcvTrencherPos", 100);
 	ros::Publisher angPos_pub = n.advertise<std_msgs::Int32>("ExcvPitchPos", 100);
 
 	// sets the message type to the message variable
@@ -106,16 +109,16 @@ int main (int argc, char **argv)
 	std_msgs::Float32 drive_current_msg;
 	std_msgs::Float32 l_speed_msg;
 	std_msgs::Float32 r_speed_msg;
+	std_msgs::Float32 actuatorExtend_msg;
 	std_msgs::Int32 angPos_msg;
 	
 	Listener listener;
 
-	//ExcvConveyorPitchPwr
 	// get speeds from listeners
 	ros::Subscriber pitchSpeedSub = n.subscribe("ExcvTrencherPitchPwr", 100, &Listener::setPitchSpeed, &listener);
 	ros::Subscriber driveSpeedSub = n.subscribe("ExcvTrencherDrvPwr", 100, &Listener::getDriveSpeed, &listener);
 	ros::Subscriber trencherToggleSub = n.subscribe("ExcvTrencherToggle", 100, &Listener::trencherToggle, &listener);
-	ros::Subscriber trencherDriveToggleSub = n.subscribe("ExcvTrencherDriveToggle", 100, &Listener::trencherDriveToggle, &listener);
+	//ros::Subscriber trencherDriveToggleSub = n.subscribe("ExcvTrencherDriveToggle", 100, &Listener::trencherDriveToggle, &listener);
 
 	ros::Timer timer = n.createTimer(ros::Duration(0.35), &Listener::decrementPosition, &listener);
 
@@ -124,10 +127,12 @@ int main (int argc, char **argv)
 		if(listener.PIDEnable == true)
 		{		
 			
-			listener.setPosition();
+			listener.setPosition(actuatorExtend_msg);
 			
 			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
 			angPos_pub.publish(angPos_msg);
+
+			actuatorExtend_pub.publish(actuatorExtend_msg);
 
 			listener.setDrivePID(l_speed_msg, r_speed_msg);
 			
@@ -137,8 +142,6 @@ int main (int argc, char **argv)
 		}
 		else
 		{
-			//cout << listener.driveTalon.GetOutputCurrent() << endl;
-			//cout << listener.pitchTalon.GetSensorCollection().GetQuadraturePosition() << endl;
 			angPos_msg.data = listener.pitchTalon.GetSensorCollection().GetQuadraturePosition();
 			angPos_pub.publish(angPos_msg);
 
@@ -202,7 +205,7 @@ void Listener::decrementPosition(const ros::TimerEvent& event)
 
 	avgCurrent = currentSum/arrayL;
 
-	if(motorSpeed == 0 && angPos < -760)
+	if(!initialSetPos && motorSpeed == 0 && angPos < -780)
 	{
 		driveTalon.Set(ControlMode::PercentOutput, 0.75);
 
@@ -220,18 +223,38 @@ void Listener::decrementPosition(const ros::TimerEvent& event)
 
 	}
 
-	cout << targetPos << " " << angPos << " " << excvMotorCurrent << " " << avgCurrent << " " << wheelTargetPos << " " << wheelLTalon.GetSensorCollection().GetQuadraturePosition() << wheelRTalon.GetSensorCollection().GetQuadraturePosition() << endl;
+	//cout << targetPos << " " << angPos << " " << excvMotorCurrent << " " << avgCurrent << " " << wheelTargetPos << " " << wheelLTalon.GetSensorCollection().GetQuadraturePosition() << wheelRTalon.GetSensorCollection().GetQuadraturePosition() << endl;
 
 }
 
 
-void Listener::setPosition()
+void Listener::setPosition(std_msgs::Float32 &actuatorExtend_msg)
 {
 	int angPos = pitchTalon.GetSensorCollection().GetQuadraturePosition();
+	int motorSpeed = pitchTalon.GetSensorCollection().GetQuadratureVelocity();
 
 	//variables to store error between target and current positions + value for motor current
 	float driveOut;
-	float eT = targetPos - angPos;
+	float eT;
+
+	if(initialSetPos)
+		actuatorExtend_msg.data = 0;
+	
+
+	if(initialSetPos && motorSpeed == 0 && angPos < -600)
+	{
+		ROS_INFO("start");
+		actuatorExtend_msg.data = 1;
+		ros::Duration(5).sleep();
+		ROS_INFO("end");
+		initialSetPos = false;
+		//extend actuator & initialSetPos = false;
+	}
+
+	if(initialSetPos)
+		eT = initialTargetPos - angPos;
+	else
+		eT = targetPos - angPos;
 
 	float P = angPos > -760 ? 0.001 : 0.002;
 	float I = angPos > -760 ? 0.004 : 0.008;
@@ -377,10 +400,10 @@ void Listener::trencherToggle(const std_msgs::Bool toggle)
 	PIDEnable = toggle.data;
 }
 
-void Listener::trencherDriveToggle(const std_msgs::Bool toggle)
+/*void Listener::trencherDriveToggle(const std_msgs::Bool toggle)
 {
 	DrivePIDEnable = toggle.data;
-}
+}*/
 
 double Listener::getActualCurrent()
 {
