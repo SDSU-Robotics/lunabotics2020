@@ -285,6 +285,55 @@ class DriveForward : public Task
     }
 };
 
+class TurnBack : public Task
+{
+    public:
+    TurnBack(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+    {
+        
+    }
+
+    bool basic() override
+    {
+         if (transformStamped->transform.rotation.y >= (tan(transformStamped->transform.translation.x/transformStamped->transform.translation.z)+TOLERANCE))
+         {
+            //write publisher for lspeed and rspeed
+            float32 -> data = -0.3;  // left
+            float32_2 -> data = -0.6;  // right
+            
+         }   
+         else if (transformStamped->transform.rotation.y <= (tan((transformStamped->transform.translation.x/transformStamped->transform.translation.z)-TOLERANCE)))
+         {
+            float32 -> data = -0.6;  // left
+            float32_2 -> data = -0.3;  // right
+         }
+         else
+         {
+             return false;
+         }
+         return true;
+    }
+};
+
+class DriveBack : public Task
+{
+    public:
+    bool basic() override
+    {
+
+        if (transformStamped->transform.translation.x <= 0.01)
+        {
+            float32 -> data = -0.5;  // left
+            float32_2 -> data = -0.5;  // right
+        }
+        else
+        {
+            return false;
+        }
+        return true;
+    }
+};
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "DugNewNode");
@@ -323,7 +372,7 @@ int main(int argc, char **argv)
     
 
     // Class instances
-    ExtLinAct extLinAct(extend_pwr);
+    ExtLinAct *extLinAct(extend_pwr);
     RetractLinAct retractLinAct(extend_pwr);
     ExtFlags extFlags(flag_pwr);
     StartConveyor startConveyor(conveyor_pwr);
@@ -353,7 +402,7 @@ int main(int argc, char **argv)
     tm.addTask(hopperServoOff);
     // micro adjust 
     tm.addTask(startToSieve);
-    tm.addTask(extLinAct);
+    tm.addTask(extLinAct = new Task(extend_pwr));
     tm.addTask(wait10sec);  // adjust time waiting as needed
     tm.addTask(startConveyor);
     tm.addTask(wait15sec);  // adjust time waiting as needed
@@ -368,6 +417,24 @@ int main(int argc, char **argv)
     {
         tm.cycle();
 
+        if (tm.done)
+        {
+            tm.reset();
+            tm.addTask(startToDig);
+            // micro adjust 
+            tm.addTask(hopperServoOn);
+            tm.addTask(wait5sec);  // adjust time waiting as needed
+            tm.addTask(hopperServoOff);
+            // micro adjust 
+            tm.addTask(startToSieve);
+            tm.addTask(extLinAct);
+            tm.addTask(wait10sec);  // adjust time waiting as needed
+            tm.addTask(startConveyor);
+            tm.addTask(wait15sec);  // adjust time waiting as needed
+            tm.addTask(stopConveyor);
+            tm.addTask(retractLinAct);
+        }
+
         // Get transform tree
         try
         {
@@ -380,6 +447,8 @@ int main(int argc, char **argv)
             continue;
         }
 
+
+
         extend_pub.publish(extend_pwr);
         flag_pub.publish(flag_pwr);
         conveyor_current_pub.publish(conveyor_pwr);
@@ -387,6 +456,7 @@ int main(int argc, char **argv)
         sieve_path_pub.publish(to_sieve);
         //lSpeed.publish();
         //rSpeed.publish();
+
 
 
         ros::spinOnce();
