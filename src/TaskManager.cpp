@@ -35,14 +35,12 @@ Task* TaskManager::getTask(int element)
 bool TaskManager::cycle()
 {
     if(!done)
-    {
+    {   
         // call Initialize
         if(isFirstTime)
         {
-
-             // get next taks from manager list
+             // get next task from manager list
             currentTask = getTask(taskListElement);
-
             currentTask->initialize();
             isFirstTime = false;
         }
@@ -59,9 +57,7 @@ bool TaskManager::cycle()
                 done = true;
                 ROS_INFO("Task Manager Done");
             }
-
             taskListElement++;
-            
             isTaskRunning = true;
             isFirstTime = true;
         }
@@ -86,7 +82,10 @@ bool TaskManager::cycle()
 void TaskManager::reset()
     {
         TaskList.clear();
-        taskListElement = 0;
-        done = false;
+        int taskListElement = 0;
+        bool isTaskRunning = true;
+        bool isFirstTime = true;
+        bool isDone = false;
+        bool done = false;
     }
 
