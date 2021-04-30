@@ -234,10 +234,10 @@ class Print : public Task
     }
 };
 
-class DigOrientation : public Task
+class DugOrientation : public Task
 {
     public:
-    DigOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+    DugOrientation(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
     {
         
     }
@@ -252,7 +252,7 @@ class DigOrientation : public Task
             float32_2 -> data = 0.6;  // right
             
          }   
-         else if (transformStamped->transform.rotation.y <= 
+         else if (transformStamped->transform.rotation.y >= 
          ((PI/2)-atan((transformStamped->transform.translation.z-WIGGLEROOM)/transformStamped->transform.translation.x))-TOLERANCE)
          {
             float32 -> data = 0.6;  // left
@@ -306,7 +306,7 @@ class TurnBack : public Task
             float32_2 -> data = -0.6;  // right
             
          }   
-         else if (transformStamped->transform.rotation.y <= (tan((transformStamped->transform.translation.x/transformStamped->transform.translation.z)-TOLERANCE)))
+         else if (transformStamped->transform.rotation.y >= (tan((transformStamped->transform.translation.x/transformStamped->transform.translation.z)-TOLERANCE)))
          {
             float32 -> data = -0.6;  // left
             float32_2 -> data = -0.3;  // right
@@ -329,7 +329,7 @@ class DriveBack : public Task
     bool basic() override
     {
 
-        if (transformStamped->transform.translation.x <= 0.01)
+        if (transformStamped->transform.translation.x >= 0.01)
         {
             float32 -> data = -0.5;  // left
             float32_2 -> data = -0.5;  // right
@@ -414,8 +414,8 @@ int main(int argc, char **argv)
     // adding task object to task manager
     // runs in the order listed
     TaskManager tm;
-
     
+    tm.addTask(dugOrientation);
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
     wait5sec = new Wait(true, 5);
@@ -423,7 +423,6 @@ int main(int argc, char **argv)
 
     while (ros::ok())
     {
-
         if (tm.done)
         {/*
             startToDig = new StartToDig(to_dig);
@@ -469,7 +468,7 @@ int main(int argc, char **argv)
         // Get transform tree
         try
         {
-            dugTf = tfBuffer.lookupTransform("map", "back_cam", ros::Time(0));
+            dugTf = tfBuffer.lookupTransform("map", "ar_marker_5", ros::Time(0));
         }
         catch (tf2::TransformException &ex)
         {
