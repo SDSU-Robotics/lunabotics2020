@@ -33,10 +33,13 @@ public:
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
 	void updateEnableSpeed(const std_msgs::Bool &message);
 	void callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPub);
+	void callTaskMan(const bool keys, bool &currentButton, bool &on, std_msgs::Bool call_taskman_msg, ros::Publisher taskman_pub, bool enableTPortController);
+	void updateEnableTPortController(const std_msgs::Bool &message);
 	//void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 	
 	//initialize speed pub enable variable
 	bool enableSpeedPub = true;
+	bool enableTPortController = true;
 
 	void toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher extend_pub);
 	void toggleIntFlag(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher flag_pub);
@@ -68,20 +71,16 @@ void Listener::getJoyVals(bool buttons[], double axes[]) const
 
 void Listener::updateEnableSpeed(const std_msgs::Bool &message)
 {
-	/*
-    if(message.data)
-		enableSpeedPubCollect = false;
-	else
-		enableSpeedPubCollect = true;
-		*/
 
 	enableSpeedPub = message.data;
 
-	//toggle message using odomButtonValue
-		//listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub, listener.enableSpeedPub);
-		
-		//toggle message using odomButtonValue
-		//listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub, listener.enableSpeedPub);
+}
+
+void Listener::updateEnableTPortController(const std_msgs::Bool &message)
+{
+
+	enableTPortController = message.data;
+
 }
 
 /*
@@ -107,6 +106,7 @@ int main (int argc, char **argv)
 
 	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
 	ros::Subscriber enablePubSub = n.subscribe("enableSpeedPub", 100, &Listener::updateEnableSpeed, &listener);
+	ros::Subscriber enableTPortControllerSub = n.subscribe("enableTPortController", 100, &Listener::updateEnableTPortController, &listener);
 
 	bool buttons[12];
 	double axes[8];
@@ -155,11 +155,14 @@ int main (int argc, char **argv)
 	ros::Publisher collectData_pub = n.advertise<std_msgs::Bool>("CollectData", 100);
 	ros::Publisher extend_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
 	ros::Publisher flag_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
+	ros::Publisher taskman_pub = n.advertise<std_msgs::Bool>("TaskMan", 100);
+
   
 	std_msgs::Bool conveyor_pwr;
 	std_msgs::Bool save_odomData_msg;
 	std_msgs::Bool digData_msg;
 	std_msgs::Bool collectData_msg;
+	std_msgs::Bool call_taskman_msg;
 
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
@@ -168,40 +171,43 @@ int main (int argc, char **argv)
 	
 	while (ros::ok())
 	{
-        listener.getJoyVals(buttons, axes);
-		listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
-
-		//toggle message using odomButtonValue
-		dpadOdomValue = axes[SaveOdomData] == 1? 1 : 0;
-		listener.toggle(dpadOdomValue, odomButton, onOdomButton, save_odomData_msg);
-
-		//toggle message using odomButtonValue
-		dpadDigValue = axes[SaveDigCollectData] == 1? 1 : 0;
-		listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub, listener.enableSpeedPub);
-		
-		//toggle message using odomButtonValue
-		dpadCollectValue = axes[SaveDigCollectData] == -1? 1 : 0;
-		listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub, listener.enableSpeedPub);
-
-		listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr, extend_pub);
-		listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr, flag_pub);
-
-		
-
-		l_speed_msg.data = pow(axes[ForwardAxis], 3.0) * DRIVE_SCALE; // left Y
-		r_speed_msg.data = pow(axes[TurnAxis], 3.0) * DRIVE_SCALE; // right Y
-		
-		if(listener.enableSpeedPub == true)
+		if(listener.enableTPortController == true)
 		{
-			l_speed_pub.publish(l_speed_msg);
-			r_speed_pub.publish(r_speed_msg);
-		}
-		conveyor_pub.publish(conveyor_pwr); // conveyor power
+        	listener.getJoyVals(buttons, axes);
+			listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
 
-		save_odomData_pub.publish(save_odomData_msg);
+			//toggle message using odomButtonValue
+			dpadOdomValue = axes[SaveOdomData] == 1? 1 : 0;
+			listener.toggle(dpadOdomValue, odomButton, onOdomButton, save_odomData_msg);
+
+			//toggle message using odomButtonValue
+			dpadDigValue = axes[SaveDigCollectData] == 1? 1 : 0;
+			listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub, listener.enableSpeedPub);
 		
-		ros::spinOnce();
-		loop_rate.sleep();
+			//toggle message using odomButtonValue
+			dpadCollectValue = axes[SaveDigCollectData] == -1? 1 : 0;
+			listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub, listener.enableSpeedPub);
+
+			listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr, extend_pub);
+			listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr, flag_pub);
+
+		
+
+			l_speed_msg.data = pow(axes[ForwardAxis], 3.0) * DRIVE_SCALE; // left Y
+			r_speed_msg.data = pow(axes[TurnAxis], 3.0) * DRIVE_SCALE; // right Y
+		
+			if(listener.enableSpeedPub == true)
+			{
+				l_speed_pub.publish(l_speed_msg);
+				r_speed_pub.publish(r_speed_msg);
+			}
+			conveyor_pub.publish(conveyor_pwr); // conveyor power
+
+			save_odomData_pub.publish(save_odomData_msg);
+		
+			ros::spinOnce();
+			loop_rate.sleep();
+		}
 	}
 
 	return 0;
@@ -301,13 +307,43 @@ void Listener::callTo(const bool keys, bool &currentButton, bool &on, std_msgs::
 
 		message.data = 1;
 		pub.publish(message);
-		ros::Duration(0.5).sleep();		//pause for enable speed message to update
+		ros::Duration(0.5).sleep();		//pause for enable message to update
 
 		if(enableSpeedPub == true)
 		{
 			on = !on;
 			message.data = 0;
 			pub.publish(message);
+		}
+	}
+}
+
+
+void Listener::callTaskMan(const bool keys, bool &currentButton, bool &on, std_msgs::Bool call_taskman_msg, ros::Publisher taskman_pub, bool enableTPortController)
+{
+	bool lastButton;
+	lastButton = currentButton;
+	currentButton = keys;
+
+	if (lastButton && !currentButton)
+	{
+		on = !on;
+		//ROS_INFO(" button released");
+	}
+		
+	if (on)
+	{
+		//ROS_INFO(" button on");
+
+		call_taskman_msg.data = 1;
+		taskman_pub.publish(call_taskman_msg);
+		ros::Duration(0.5).sleep();		//pause for enable message to update (not sure but it works)
+
+		if(enableTPortController == true)
+		{
+			on = !on;
+			call_taskman_msg.data = 0;
+			taskman_pub.publish(call_taskman_msg);
 		}
 	}
 }
