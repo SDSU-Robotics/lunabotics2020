@@ -79,7 +79,14 @@ bool TaskManager::cycle()
             }
         }
     }
+
+    
 }
 
-
+void TaskManager::reset()
+    {
+        TaskList.clear();
+        taskListElement = 0;
+        done = false;
+    }
 
