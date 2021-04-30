@@ -244,7 +244,7 @@ class DugOrientation : public Task
 
     bool basic() override
     {
-         if (transformStamped->transform.rotation.y >= 
+         if (transformStamped->transform.rotation.y <= 
          ((PI/2)-atan((transformStamped->transform.translation.z-WIGGLEROOM)/transformStamped->transform.translation.x))+TOLERANCE)
          {
             //write publisher for lspeed and rspeed
@@ -446,6 +446,7 @@ int main(int argc, char **argv)
         {
            // ROS_WARN("%s", ex.what());
             //ros::Duration(1.0).sleep();
+            dugTf.transform.rotation.y = 0;
             continue;
         }
 
