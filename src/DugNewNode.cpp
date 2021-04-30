@@ -137,7 +137,6 @@ class StartToDig : public Task
     {
         // Topic: 
         // Message: to_dig
-
         boolean -> data = 1;
     }
 };
@@ -187,6 +186,7 @@ class Wait : public Task
         cbool = false;
     }
 };
+
 class HopperServoOn : public Task
 {
     public:
@@ -269,6 +269,10 @@ class DugOrientation : public Task
 class DriveForward : public Task
 {
     public:
+    DriveForward(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+    {
+        
+    }
     bool basic() override
     {
 
@@ -318,6 +322,10 @@ class TurnBack : public Task
 class DriveBack : public Task
 {
     public:
+    DriveBack(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2) : Task(tf, f1, f2)
+    {
+        
+    }
     bool basic() override
     {
 
@@ -372,71 +380,91 @@ int main(int argc, char **argv)
     
 
     // Class instances
-    //ExtLinAct *extLinAct(extend_pwr);
+    /*ExtLinAct extLinAct(extend_pwr);
     RetractLinAct retractLinAct(extend_pwr);
     ExtFlags extFlags(flag_pwr);
     StartConveyor startConveyor(conveyor_pwr);
     StopConveyor stopConveyor(conveyor_pwr);
     StartToDig startToDig(to_dig);
     StartToSieve startToSieve(to_sieve);
-    DugOrientation dugOrientation(dugTf, lSpeed, rSpeed);
-
     HopperServoOn hopperServoOn(OnOff);
     HopperServoOff hopperServoOff(OnOff);
     Wait wait5sec(true, 5);
     Wait wait10sec(true, 10);
     Wait wait15sec(true, 15);
+    DigOrientation digAdjust(dugTf, lSpeed, rSpeed);*/
 
-
-    DugOrientation digAdjust(dugTf, lSpeed, rSpeed);
+    Task *startToDig;
+    Task *digAdjust;
+    Task *driveForward;
+    Task *hopperServoOn;
+    Task *wait5sec;
+    Task *hopperServoOff;
+    Task *driveBack;
+    Task *turnBack;
+    Task *startToSieve;
+    Task *extLinAct;
+    Task *wait10sec;
+    Task *startConveyor;
+    Task *wait15sec;
+    Task *stopConveyor;
+    Task *retractLinAct;
 
 
     // adding task object to task manager
     // runs in the order listed
     TaskManager tm;
-/*
-    //tm.addTask(extFlags);
-    tm.addTask(startToDig);
-    // micro adjust 
-    tm.addTask(hopperServoOn);
-    tm.addTask(wait5sec);  // adjust time waiting as needed
-    tm.addTask(hopperServoOff);
-    // micro adjust 
-    tm.addTask(startToSieve);
-   // tm.addTask(extLinAct = new Task(extend_pwr));
-    tm.addTask(wait10sec);  // adjust time waiting as needed
-    tm.addTask(startConveyor);
-    tm.addTask(wait15sec);  // adjust time waiting as needed
-    tm.addTask(stopConveyor);
-    tm.addTask(retractLinAct);
-*/
     
     tm.addTask(dugOrientation);
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
+    wait5sec = new Wait(true, 5);
+    tm.addTask(*wait5sec);  // adjust time waiting as needed
 
     while (ros::ok())
     {
-        tm.cycle();
-/*
         if (tm.done)
-        {
+        {/*
+            startToDig = new StartToDig(to_dig);
+            digAdjust = new DigOrientation(dugTf, lSpeed, rSpeed);
+            driveForward = new DriveForward(dugTf, lSpeed, rSpeed);
+            hopperServoOn = new HopperServoOn(OnOff);
+            wait5sec = new Wait(true, 5);
+            hopperServoOff = new HopperServoOff(OnOff);
+            driveBack = new DriveBack(dugTf, lSpeed, rSpeed);
+            turnBack = new TurnBack(dugTf, lSpeed, rSpeed);
+            startToSieve = new StartToSieve(to_sieve);
+            extLinAct = new ExtLinAct(extend_pwr);
+            wait10sec = new Wait(true, 10);
+            startConveyor = new StartConveyor(conveyor_pwr);
+            wait15sec = new Wait(true, 15);
+            stopConveyor = new StopConveyor(conveyor_pwr);
+            retractLinAct = new RetractLinAct(extend_pwr);
+
             tm.reset();
-            tm.addTask(startToDig);
-            // micro adjust 
-            tm.addTask(hopperServoOn);
-            tm.addTask(wait5sec);  // adjust time waiting as needed
-            tm.addTask(hopperServoOff);
-            // micro adjust 
-            tm.addTask(startToSieve);
-            //tm.addTask(extLinAct);
-            tm.addTask(wait10sec);  // adjust time waiting as needed
-            tm.addTask(startConveyor);
-            tm.addTask(wait15sec);  // adjust time waiting as needed
-            tm.addTask(stopConveyor);
-            tm.addTask(retractLinAct);
+            tm.addTask(*startToDig);
+            tm.addTask(*digAdjust);
+            tm.addTask(*driveForward);
+            tm.addTask(*hopperServoOn);
+            tm.addTask(*wait5sec);  // adjust time waiting as needed
+            tm.addTask(*hopperServoOff);
+            tm.addTask(*driveBack);
+            tm.addTask(*turnBack);
+            tm.addTask(*startToSieve);
+            tm.addTask(*extLinAct);
+            tm.addTask(*wait10sec);  // adjust time waiting as needed
+            tm.addTask(*startConveyor);
+            tm.addTask(*wait15sec);  // adjust time waiting as needed
+            tm.addTask(*stopConveyor);
+            tm.addTask(*retractLinAct);
+            */
+            
         }
-*/
+
+           
+
+        tm.cycle();
+
         // Get transform tree
         try
         {
@@ -444,7 +472,7 @@ int main(int argc, char **argv)
         }
         catch (tf2::TransformException &ex)
         {
-           // ROS_WARN("%s", ex.what());
+            //ROS_WARN("%s", ex.what());
             //ros::Duration(1.0).sleep();
             dugTf.transform.rotation.y = 0;
             continue;
