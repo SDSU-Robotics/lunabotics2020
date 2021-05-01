@@ -24,6 +24,7 @@ namespace JoyMap
     static const int ExcvConveyorToggle = 0;
     static const int ExcvTrencherToggle = 1;
     static const int ExcvTrencherDriveToggle = 2;
+    static const int ExcvDoor = 3;
     static const int ExcvTrencherDriveDecrease = 4;
     static const int ExcvTrencherDriveIncrease = 5;
     static const int ExcvTrencherExtend = 7;

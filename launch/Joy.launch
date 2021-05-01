@@ -12,5 +12,6 @@
 
     <node pkg="lunabotics2020" type="ExcvController" name="ExcvController" />
     <node pkg="lunabotics2020" type= "TPortController" name= "TPortController" />
+    <node pkg="lunabotics2020" type= "DugOdometry"  name= "DugOdometry"/>
 
 </launch>

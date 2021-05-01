@@ -7,31 +7,33 @@
     <param name="pixel_format" value="yuyv" />
     <param name="camera_frame_id" value="front_cam" />
     <param name="io_method" value="mmap"/>
+    <param name="framerate" value="60"/>
   </node>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame1_broadcaster" args="0 0 0 0 0 0 1 /map /front_cam" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame1_broadcaster" args="0.154 -0.027 0.244 0 0 0 /transportation /front_cam" />
+
 
   <node name="ar_track_front" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
     <param name="marker_size"           type="double" value="5.0" />
     <param name="max_new_marker_error"  type="double" value="0.05" />
     <param name="max_track_error"       type="double" value="0.05" />
     <param name="output_frame"          type="string" value="/front_cam" />
-    
     <remap from="camera_image"  to="/front_cam/image_raw" />
     <remap from="camera_info"   to="/front_cam/camera_info" />
   </node>
 
-<!--
+
   <node name="back_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
-    <param name="video_device" value="/dev/video4" />
+    <param name="video_device" value="/dev/video0" />
     <param name="image_width" value="1920" />
     <param name="image_height" value="1080" />
     <param name="pixel_format" value="yuyv" />
     <param name="camera_frame_id" value="back_cam" />
     <param name="io_method" value="mmap"/>
+    <param name="framerate" value="60"/>
   </node>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame2_broadcaster" args="0 0 0 0 0 0 1 /map /back_cam" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame2_broadcaster" args="0.154 -0.1705 0.235 0 0 3.14 /transportation /back_cam" />
 
   <node name="ar_track_back" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
     <param name="marker_size"           type="double" value="5.0" />
@@ -42,5 +44,6 @@
     <remap from="camera_image"  to="/back_cam/image_raw" />
     <remap from="camera_info"   to="/back_cam/camera_info" />
   </node>
-  -->
+
 </launch>
+

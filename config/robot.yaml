@@ -1,0 +1,19 @@
+point_cloud_topic: "/perception_cloud"
+map_frame_id: map
+robot_base_frame_id: "perception_frame"
+robot_pose_with_covariance_topic: "/flagPose"
+robot_pose_cache_size: 200
+track_point_frame_id: "perception_frame"
+min_update_rate: 200.0
+fused_map_publishing_rate: 200.0
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0
+
+robot_pose_cache_size: 10000
+
+scanning_duration: 0.1
+relocate_rate: 200.0
+enable_visibility_cleanup: false
+visibility_cleanup_rate: 0.1
+time_tolerance: 0.5

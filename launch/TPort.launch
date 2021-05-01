@@ -9,6 +9,19 @@
 
     <node pkg="lunabotics2020" type="TPortConveyorHW" name= "TPortConveyorHW" />
     <node pkg="lunabotics2020" type= "TPortDriveBaseHW" name= "TPortDriveBaseHW" />
+	<node pkg="lunabotics2020" type= "DugOdometry" name= "DugOdometry" />
+	<!--<node pkg="lunabotics2020" type= "TPortController" name= "TPortController" />-->
 	<!--include file="$(find lunabotics2020)/launch/test.launch" /-->
+
+	<!--<node name="perceptionLidar"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+		<param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
+		<param name="serial_baudrate"     type="int"    value="256000"/>
+		<param name="frame_id"            type="string" value="perception_frame"/>
+		<param name="inverted"            type="bool"   value="false"/>
+		<param name="angle_compensate"    type="bool"   value="true"/>
+		<param name="scan_mode"			  type="string" value="DenseBoost"/>
+
+		<remap from="scan" to="perception_scan"/>
+	</node>-->
     
 </launch>
