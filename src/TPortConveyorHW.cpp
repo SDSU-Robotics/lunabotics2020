@@ -32,8 +32,10 @@ class Listener
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
 
-        void setDriveSpeed(const std_msgs::Bool drivespeed);
-        void setExtendPos(std_msgs::UInt16 &extend_pos);
+        void setFlagSpeed(const std_msgs::Int8 msg);
+        void setDriveSpeed(const std_msgs::Float32 drivespeed);
+        //void setExtendPos(std_msgs::UInt16 &extend_pos);
+        //void setFlagPos(std_msgs::UInt16 &flag_pos);
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
 
     private:
@@ -46,7 +48,6 @@ void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
 {
     int maxPos = 150;
     int minPos = 45;
-
     if(extendVal == 1)
     {
         extend_pos.data = maxPos;
@@ -106,11 +107,25 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void Listener::setDriveSpeed(const std_msgs::Bool msg)
-
+/*
+void Listener::setExtendSpeed(const std_msgs::Int8 msg)
+{
+	// limit values
+	extendVal = msg.data;
+    setExtendPos(extend_pos);
+    extendPos_pub.publish(extend_pos);
+}
+void Listener::setFlagSpeed(const std_msgs::Int8 msg)
+{
+	// limit values
+	flagVal = msg.data;
+    setFlagPos(flag_pos);
+    flagPos_pub.publish(flag_pos);
+}
+*/
+void Listener::setDriveSpeed(const std_msgs::Float32 msg)
 {
     TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
 
     ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
-
