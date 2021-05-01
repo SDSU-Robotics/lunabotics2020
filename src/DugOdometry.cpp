@@ -102,6 +102,11 @@ int main (int argc, char **argv)
             dugOdometry.disableCallToMsg.data = true;
             disableCallToPub.publish(dugOdometry.disableCallToMsg);     //tells tport to update digdata to 0 so function stops running
 
+            ros::Duration(0.1).sleep();     //allows message to update in TPort Controller
+
+            dugOdometry.disableCallToMsg.data = false;
+            disableCallToPub.publish(dugOdometry.disableCallToMsg);
+            
             dugOdometry.enablePubMsg.data = true;
             enablePubPub.publish(dugOdometry.enablePubMsg);     //tells tport to publish motor speed again
         }
