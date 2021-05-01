@@ -4,8 +4,10 @@
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/UInt16.h"
+
 #include "std_msgs/Int8.h"
 #include "std_msgs/Bool.h"
+#include "std_msgs/UInt16.h"
 #include <sensor_msgs/Joy.h>
 #include "JoyMap.h"
 
@@ -19,7 +21,7 @@ using namespace std;
 ****     Publishers:                                                     ****
 ****          std_msgs/Float32 TPortRDrvPwr - tport right motor power    ****
 ****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     ****
-****          std_msgs/Bool TPortConveyorDrvPwr - conveyor motor power****
+****          std_msgs/Bool TPortConveyorDrvPwr - conveyor motor power   ****
 ****          std_msgs/Int8 TportExtendPwr - extender true/false value   ****
 ****************************************************************************/
 
@@ -46,6 +48,7 @@ public:
 	void toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher extend_pub);
 	void toggleIntFlag(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher flag_pub);
 	
+
 
 private:
     bool _buttons[12] = { 0 };
@@ -90,6 +93,7 @@ void Listener::updateDisableCallTo(const std_msgs::Bool &message)
 
 	disableCallTo = message.data;
 }
+
 
 
 /*
@@ -180,6 +184,7 @@ int main (int argc, char **argv)
     std_msgs::Float32 r_speed_msg;
 		std_msgs::UInt16 extend_pwr;
 	  std_msgs::UInt16 flag_pwr;
+
 	
 	while (ros::ok())
 	{
@@ -214,9 +219,14 @@ int main (int argc, char **argv)
 				r_speed_pub.publish(r_speed_msg);
 			}
 
+
 			conveyor_pub.publish(conveyor_pwr); // conveyor power
 
-			save_odomData_pub.publish(save_odomData_msg);
+
+		save_odomData_pub.publish(save_odomData_msg);
+		digData_pub.publish(digData_msg);
+		collectData_pub.publish(collectData_msg);
+
 		
 			ros::spinOnce();
 			loop_rate.sleep();
@@ -274,6 +284,7 @@ void Listener::toggleIntFlag(const bool keys, bool &currentButton, bool &on, std
 	{
 		ROS_INFO("Extend button off");
 		message.data = 35;
+
 	}
 }
 
@@ -374,3 +385,4 @@ void Listener::callTaskMan(const bool keys, bool &currentButton, bool &on, std_m
 		}
 	}
 }
+
