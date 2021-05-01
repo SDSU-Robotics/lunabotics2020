@@ -1,6 +1,7 @@
 #include "ctre/Phoenix.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Bool.h"
 #include "std_msgs/Int8.h"
 #include "std_msgs/UInt16.h"
 #include "ctre/phoenix/platform/Platform.h"
@@ -30,6 +31,7 @@ class Listener
 {
     public:
         void setExtendSpeed(const std_msgs::Int8 msg);
+
         void setFlagSpeed(const std_msgs::Int8 msg);
         void setDriveSpeed(const std_msgs::Float32 drivespeed);
         //void setExtendPos(std_msgs::UInt16 &extend_pos);
@@ -55,10 +57,12 @@ void Listener::setExtendPos(std_msgs::UInt16 &extend_pos)
         extend_pos.data = minPos;
     }
 }
+
 void Listener::setFlagPos(std_msgs::UInt16 &flag_pos)
 {
     int maxPos = 140;
     int minPos = 45;
+
     if(flagVal == 1)
     {
         flag_pos.data = maxPos;
@@ -102,6 +106,7 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
 /*
 void Listener::setExtendSpeed(const std_msgs::Int8 msg)
 {

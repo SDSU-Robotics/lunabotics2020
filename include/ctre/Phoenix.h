@@ -23,11 +23,10 @@
 #include "ctre/phoenix/motorcontrol/SensorCollection.h"
 #include "ctre/phoenix/sensors/PigeonIMU.h"
 #include "ctre/phoenix/signals/MovingAverage.h"
-#include "ctre/phoenix/tasking/Schedulers/ConcurrentScheduler.h"
+#include "ctre/phoenix/tasking/schedulers/ConcurrentScheduler.h"
 #include "ctre/phoenix/tasking/ILoopable.h"
 #include "ctre/phoenix/tasking/IProcessable.h"
 #include "ctre/phoenix/Utilities.h"
-
 
 /*
 #ifdef Phoenix_WPI

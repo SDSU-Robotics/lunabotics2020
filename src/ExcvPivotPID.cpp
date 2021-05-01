@@ -24,12 +24,12 @@ using namespace ctre::phoenix::motorcontrol::can;
 //Subscribe to the actualPosition topic and manually extend and retract the linear actuator
 //		set these values equal to the max and min potentiometer values recorded 
 //		*(numbers are flipped so that 1.0 is full extension and 0.0 is full retraction)
-#define MIN_POT_READING -215
-#define MAX_POT_READING -680
 
+#define MIN_QUAD_READING 0
+#define MAX_QUAD_READING -2400
 
 //Minimum and maximum input values for the actuator position EX: value sent from controller.
-//		These will map to the above values respectively
+//		These will map tThreads::Threadso the above values respectively
 #define MIN_LINEAR_INPUT 0.0
 #define MAX_LINEAR_INPUT 1.0
 
@@ -41,28 +41,28 @@ public:
 	void setPosition(const std_msgs::Float32 msg);
 	double getActualPosition();
 	double getPercentOutput();
-	TalonSRX _motor = {DeviceIDs::ExcvExtendTal};
+	TalonSRX _motor = {DeviceIDs::ExcvPitchTal};
 };
 
 
 int main (int argc, char **argv)
 {
-	ros::init(argc, argv, "ExcvLinearActuatorHW");
+	ros::init(argc, argv, "ExcvPivotPID");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 	
 	ctre::phoenix::platform::can::SetCANInterface("can0");
 
-	ros::Publisher extend_current_pub = n.advertise<std_msgs::Float32>("ExcvExtendCurrent", 100);
+	ros::Publisher extend_current_pub = n.advertise<std_msgs::Float32>("ExcvPivotCurrent", 100);
 
 	std_msgs::Float32 extend_current_msg;
 
 	Listener listener;
 
-	ros::Subscriber position_sub = n.subscribe("ExcvTrencherPos", 1000, &Listener::setPosition, &listener);
+	ros::Subscriber position_sub = n.subscribe("ExcvPivotPos", 1000, &Listener::setPosition, &listener);
 
-	ros::Publisher actualPosition_pub = n.advertise<std_msgs::Float32>("actualPosition", 100);
-	ros::Publisher controlEffort_pub = n.advertise<std_msgs::Float32>("controlEffort", 100);
+	ros::Publisher actualPosition_pub = n.advertise<std_msgs::Float32>("actualPositionPivot", 100);
+	ros::Publisher controlEffort_pub = n.advertise<std_msgs::Float32>("controlEffortPivot", 100);
 
 	std_msgs::Float32 actualPosition_msg;
 	std_msgs::Float32 controlEffort_msg;
@@ -92,11 +92,11 @@ void Listener::setPosition(const std_msgs::Float32 msg)
 	float pos = msg.data;
 
 	//Safeguarding addressing values that are larger or smaller than the defined input min/max
-	if (pos < MIN_LINEAR_INPUT)	pos = MIN_LINEAR_INPUT;
-	if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
+	//if (pos < MIN_LINEAR_INPUT)	pos = MIN_LINEAR_INPUT;
+	//if (pos > MAX_LINEAR_INPUT)	pos = MAX_LINEAR_INPUT;
 
 	//Linearly maps pos between MIN_POT_READING and MAX_POT_READING
-	pos = LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_POT_READING, MAX_LINEAR_INPUT, MAX_POT_READING);
+	pos = pos*-1;//LinearInterpolation::Calculate(pos, MIN_LINEAR_INPUT, MIN_QUAD_READING, MAX_LINEAR_INPUT, MAX_QUAD_READING);
 
 	//Set motor to newly mapped position
 	_motor.Set(ControlMode::Position, pos);
@@ -123,14 +123,14 @@ Listener::Listener()
 			
 	//PID Config - These will determine how the the PID breakout board is wired, lookup a pinout and these will match the pins
 	//motorProfile.primaryPID.selectedFeedbackSensor = FeedbackDevice::QuadEncoder;
-	motorProfile.primaryPID.selectedFeedbackSensor = FeedbackDevice::Analog;
+	motorProfile.primaryPID.selectedFeedbackSensor = FeedbackDevice::QuadEncoder;
 
 	motorProfile.primaryPID.selectedFeedbackCoefficient = 1.0f;//0.25f;// 0.328293f;
 
 	//PID Constants
-	motorProfile.slot0.kP                       = 10.0f; //0.01f; //Propotional Constant.  Controls the speed of error correction.
-	motorProfile.slot0.kI                       = 0.01f; //Integral Constant.     Controls the steady-state error correction.
-	motorProfile.slot0.kD                       = 0.0f; //Derivative Constant.   Controls error oscillation.
+	motorProfile.slot0.kP                       = 0.01f; //0.01f; //Propotional Constant.  Controls the speed of error correction.
+	motorProfile.slot0.kI                       = 0.005f; //Integral Constant.     Controls the steady-state error correction.
+	motorProfile.slot0.kD                       = 0.001f; //Derivative Constant.   Controls error oscillation.
 	motorProfile.slot0.kF                       = 0.0f; //Feed Forward Constant. (IDK what this does)
 	motorProfile.slot0.integralZone             = 100000;   //Maximum value for the integral error accumulator. Automatically cleared when exceeded.
 	motorProfile.slot0.maxIntegralAccumulator   = 10000;   //Maximum value for the integral error accumulator. (IDK what this does)
