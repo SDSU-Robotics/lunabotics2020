@@ -25,25 +25,57 @@
 ros::NodeHandle  nh;
 
 Servo servo;
+Servo flag1;
+Servo flag2;
+
+int extendPos;
+int flag1Pos = 0;
+int flag2Pos = 0;
 
 void servo_cb( const std_msgs::UInt16& cmd_msg){
-  servo.write(cmd_msg.data); //set servo angle, should be from 0-180  
-  digitalWrite(13, HIGH-digitalRead(13));  //toggle led  
+  extendPos = cmd_msg.data; //set servo angle, should be from 0-180
+    //toggle led  
+}
+
+void flag_cb( const std_msgs::UInt16& msg){
+  flag1Pos = msg.data; //set servo angle, should be from 0-180  
+  flag2Pos = msg.data;
+  digitalWrite(13, HIGH-digitalRead(13));
 }
 
 
+
 ros::Subscriber<std_msgs::UInt16> sub("TPortExtendPos", servo_cb);
+ros::Subscriber<std_msgs::UInt16> flagsub("TPortFlagPos", flag_cb);
 
 void setup(){
   pinMode(13, OUTPUT);
 
+  servo.attach(9); //attach it to pin 9
+  flag1.attach(11); //attach it to pin 11
+  flag2.attach(5); //attach it to pin 5
+
   nh.initNode();
   nh.subscribe(sub);
+  nh.subscribe(flagsub);
   
-  servo.attach(9); //attach it to pin 9
+  
+
 }
 
 void loop(){
   nh.spinOnce();
-  delay(1);
+  servo.write(extendPos); //set servo angle, should be from 0-180
+  if(flag1Pos > 90)
+  {
+    flag1.write(0); //set servo angle, should be from 0-180  
+    flag2.write(70);
+  }
+  else
+  {
+    flag1.write(180);
+    flag2.write(160);  
+  }
+    
+  //delay(1);
 }

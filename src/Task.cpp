@@ -54,6 +54,12 @@ Task::Task(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs:
     float32_2 = &f2;
 }
 
+Task::Task(std_msgs::Bool &msg, std_msgs::Bool &msg2)
+{
+    boolean = &msg;
+    boolean_2 = &msg2;
+}
+
 
 void Task::callback(const ros::TimerEvent&)
 {

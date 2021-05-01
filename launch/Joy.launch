@@ -1,0 +1,17 @@
+<launch>
+    <node respawn="true" pkg="joy" type="joy_node" name="ExcvJoyNode" >
+		<param name="dev" type="string" value="/dev/input/js0" />
+		<param name="deadzone" value="0.05" />
+        <remap from="/joy" to="/Excv/joy" />
+	</node>
+    <node respawn="true" pkg="joy" type="joy_node" name="TPortJoyNode" >
+		<param name="dev" type="string" value="/dev/input/js1" />
+		<param name="deadzone" value="0.05" />
+        <remap from="/joy" to="/TPort/joy" />
+	</node>
+
+    <node pkg="lunabotics2020" type="ExcvController" name="ExcvController" />
+    <node pkg="lunabotics2020" type= "TPortController" name= "TPortController" />
+    <node pkg="lunabotics2020" type= "DugOdometry"  name= "DugOdometry"/>
+
+</launch>

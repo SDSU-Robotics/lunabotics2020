@@ -1,0 +1,11 @@
+<launch>
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+    	<param name="port" value="/dev/ttyUSB0"/>
+    </node>
+
+    <node pkg="lunabotics2020" type="ExcvConveyorHW" name="ExcvConveyorHW" />
+    <node pkg="lunabotics2020" type="ExcvDriveBaseHW" name="ExcvDriveBaseHW" />
+    <node pkg="lunabotics2020" type="ExcvTrencherHW" name="ExcvTrencherHW" />
+    <node pkg="lunabotics2020" type="ExcvLinearActuatorHW" name="ExcvLinearActuatorHW" />
+    
+</launch>

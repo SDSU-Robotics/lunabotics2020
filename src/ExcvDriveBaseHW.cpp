@@ -76,8 +76,6 @@ int main (int argc, char **argv)
 	ros::Subscriber twistSpeedSub = n.subscribe("cmd_vel", 100, &Listener::getTwistSpeed, &listener);
 	// Right and Left speed of excavator drive power
 
-	
-
 	int x;
 	string mssg;
 

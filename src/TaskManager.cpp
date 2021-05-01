@@ -13,13 +13,6 @@ void TaskManager::addTask(Task &T)
     TaskList.push_back(&T);
     return;
 }
-void TaskManager::recallFunc(int taskListElement, bool done)
-{
-    taskListElement = 0;
-    done = false;
-    return;
-}
-
 
 Task* TaskManager::getTask(int element)
 {
@@ -41,7 +34,10 @@ bool TaskManager::cycle()
         {
              // get next task from manager list
             currentTask = getTask(taskListElement);
+            //ROS_INFO("A");
             currentTask->initialize();
+            //ROS_INFO("A");
+
             isFirstTime = false;
         }
 
@@ -57,6 +53,7 @@ bool TaskManager::cycle()
                 done = true;
                 ROS_INFO("Task Manager Done");
             }
+            ROS_INFO("TASK DONE");
             taskListElement++;
             isTaskRunning = true;
             isFirstTime = true;
@@ -75,17 +72,16 @@ bool TaskManager::cycle()
             }
         }
     }
-
-    
 }
 
 void TaskManager::reset()
-    {
-        TaskList.clear();
-        int taskListElement = 0;
-        bool isTaskRunning = true;
-        bool isFirstTime = true;
-        bool isDone = false;
-        bool done = false;
-    }
+{
+    //ROS_INFO("reset called");
+    TaskList.clear();
+    taskListElement = 0;
+    isTaskRunning = true;
+    isFirstTime = true;
+    done = false;
+    //cout << done << endl; 
+}
 
