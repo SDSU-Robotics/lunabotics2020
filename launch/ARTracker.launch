@@ -1,5 +1,7 @@
 <launch>
 
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find lunabotics2020)/config/ARviz.rviz" />
+
   <node name="front_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video2" />
     <param name="image_width" value="1920" />
@@ -10,7 +12,7 @@
     <param name="framerate" value="60"/>
   </node>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame1_broadcaster" args="0.154 -0.027 0.244 0 0 0 /transportation /front_cam" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame1_broadcaster" args="0.154 -0.027 0.244 0 0 -1.57 /transportation /front_cam" />
 
   <node name="ar_track_front" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
     <param name="marker_size"           type="double" value="5.0" />
@@ -32,7 +34,7 @@
     <param name="framerate" value="60"/>
   </node>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame2_broadcaster" args="0.154 -0.1705 0.235 0 0 3.14 /transportation /back_cam" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="ar_tag_frame2_broadcaster" args="0.154 -0.1705 0.235 3.14 6.28 -1.57 /transportation /back_cam" />
 
   <node name="ar_track_back" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
     <param name="marker_size"           type="double" value="5.0" />
