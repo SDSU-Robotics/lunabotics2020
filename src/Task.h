@@ -21,6 +21,7 @@ class Task
         Task(std_msgs::Bool &msg);
         Task(bool otherbool, float otherfloat);
         Task(geometry_msgs::TransformStamped &tf, std_msgs::Float32 &f1, std_msgs::Float32 &f2);
+        Task(std_msgs::Bool &msg, std_msgs::Bool &msg2);
 
         virtual bool initialize();
         virtual bool onFinish();
@@ -35,6 +36,7 @@ class Task
         std_msgs::Float32 *float32; // left
         std_msgs::Float32 *float32_2; // right
         std_msgs::Bool *boolean;
+        std_msgs::Bool *boolean_2;
         geometry_msgs::TransformStamped *transformStamped;
         bool cbool;
         float cfloat;

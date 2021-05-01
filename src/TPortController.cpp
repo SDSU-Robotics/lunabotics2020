@@ -21,7 +21,6 @@ using namespace std;
 ****          std_msgs/Float32 TPortLDrvPwr - tport left motor power     ****
 ****          std_msgs/Bool TPortConveyorDrvPwr - conveyor motor power   ****
 ****          std_msgs/Int8 TportExtendPwr - extender true/false value   ****
-
 ****************************************************************************/
 
 #define DRIVE_SCALE 1
@@ -266,27 +265,3 @@ void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, s
 	}
 }
 
-void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher extend_pub)
-{
-	bool lastButton;
-	lastButton = currentButton;
-	currentButton = keys;
-
-	if (lastButton && !currentButton)
-	{
-		on = !on;
-		ROS_INFO("Extend button released");
-		extend_pub.publish(message);
-	}
-		
-	if (on)
-	{
-		ROS_INFO("Extend button on");
-		message.data = 150;
-	}
-	else
-	{
-		ROS_INFO("Extend button off");
-		message.data = 45;
-	}
-}

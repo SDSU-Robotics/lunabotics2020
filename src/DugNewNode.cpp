@@ -128,18 +128,35 @@ class StopConveyor : public Task
 class StartToDig : public Task
 {
     public:
-    StartToDig(std_msgs::Bool &msg) : Task(msg)
+    StartToDig(std_msgs::Bool &msg, std_msgs::Bool &msg2) : Task(msg, msg2)
     {
 
+    }
+    
+    bool initialize() override
+    {
+        boolean -> data = 1; // tells Dug to go to Dig
     }
 
     bool basic() override
     {
-        // Topic: 
+        // Topic: DigData 
         // Message: to_dig
-        boolean -> data = 1;
+        return boolean_2; // tells task manager DugOdometry is done
     }
 };
+
+class Listener
+{
+    public:
+    void SetDigData(const std_msgs::Bool &msg);
+    std_msgs::Bool DigData;
+};
+
+void Listener::SetDigData(const std_msgs::Bool &msg)
+{
+    DigData = msg;
+}
 
 class StartToSieve : public Task
 {
@@ -366,7 +383,14 @@ int main(int argc, char **argv)
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
     ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("DigData", 100);
     ros::Publisher sieve_path_pub = n.advertise<std_msgs::Bool>("CollectData", 100);
-    
+
+    Listener listener;
+    //Publishers
+    ros::Publisher digData_pub = n.advertise<std_msgs::Bool>("DigData", 100);
+
+
+    // Subscribers
+    ros::Subscriber dug_odom_sub = n.subscribe("DigData", 100, &Listener::SetDigData, &listener);
 
     // Messages
 	std_msgs::UInt16 extend_pwr;
@@ -423,6 +447,8 @@ int main(int argc, char **argv)
     Task *stopConveyor;
     Task *retractLinAct;
 
+    
+
 
     // adding task object to task manager
     // runs in the order listed
@@ -438,7 +464,7 @@ int main(int argc, char **argv)
     {
         if (tm.done)
         {
-            startToDig = new StartToDig(to_dig);
+            startToDig = new StartToDig(to_dig, listener.DigData);
             digAdjust = new DugOrientation(dugTf, lSpeed, rSpeed);
             driveForward = new DriveForward(dugTf, lSpeed, rSpeed);
             hopperServoOn = new HopperServoOn(OnOff);
