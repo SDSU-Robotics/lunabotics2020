@@ -32,14 +32,16 @@ public:
 	void getJoyVals(bool buttons[], double axes[]) const;
 	void toggle(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message);
 	void updateEnableSpeed(const std_msgs::Bool &message);
-	void callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPub);
+	void callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPub, std_msgs::Bool enableSpeedPubMsg, ros::Publisher enable_speed_pub);
 	void callTaskMan(const bool keys, bool &currentButton, bool &on, std_msgs::Bool call_taskman_msg, ros::Publisher taskman_pub, bool enableTPortController);
 	void updateEnableTPortController(const std_msgs::Bool &message);
+	void updateDisableCallTo(const std_msgs::Bool &message);
 	//void whileHeld(bool button, std_msgs::Int8 & msg, double value);
 	
 	//initialize speed pub enable variable
 	bool enableSpeedPub = true;
 	bool enableTPortController = true;
+	bool disableCallTo = false;
 
 	void toggleIntExtend(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher extend_pub);
 	void toggleIntFlag(const bool keys, bool &currentButton, bool &on, std_msgs::UInt16 &message, ros::Publisher flag_pub);
@@ -83,6 +85,13 @@ void Listener::updateEnableTPortController(const std_msgs::Bool &message)
 
 }
 
+void Listener::updateDisableCallTo(const std_msgs::Bool &message)
+{
+
+	disableCallTo = message.data;
+}
+
+
 /*
 void Listener::whileHeld(bool button, std_msgs::UInt16 & msg, double value)
 {
@@ -105,8 +114,9 @@ int main (int argc, char **argv)
 	Listener listener;
 
 	ros::Subscriber joySub = n.subscribe("TPort/joy", 100, &Listener::joyListener, &listener);
-	ros::Subscriber enablePubSub = n.subscribe("enableSpeedPub", 100, &Listener::updateEnableSpeed, &listener);
-	ros::Subscriber enableTPortControllerSub = n.subscribe("enableTPortController", 100, &Listener::updateEnableTPortController, &listener);
+	ros::Subscriber enablePubSub = n.subscribe("EnableSpeedPub", 100, &Listener::updateEnableSpeed, &listener);
+	ros::Subscriber enableTPortControllerSub = n.subscribe("EnableTPortController", 100, &Listener::updateEnableTPortController, &listener);
+	ros::Subscriber disableCallToSub = n.subscribe("DisableCallTo", 100, &Listener::updateDisableCallTo, &listener);
 
 	bool buttons[12];
 	double axes[8];
@@ -155,6 +165,7 @@ int main (int argc, char **argv)
 	ros::Publisher collectData_pub = n.advertise<std_msgs::Bool>("CollectData", 100);
 	ros::Publisher extend_pub = n.advertise<std_msgs::UInt16>("TPortExtendPos", 100);
 	ros::Publisher flag_pub = n.advertise<std_msgs::UInt16>("TPortFlagPos", 100);
+	ros::Publisher enable_speed_pub = n.advertise<std_msgs::Bool>("EnableSpeedPub", 100);
 	ros::Publisher taskman_pub = n.advertise<std_msgs::Bool>("TaskMan", 100);
 
   
@@ -163,6 +174,7 @@ int main (int argc, char **argv)
 	std_msgs::Bool digData_msg;
 	std_msgs::Bool collectData_msg;
 	std_msgs::Bool call_taskman_msg;
+	std_msgs::Bool enableSpeedPubMsg;
 
     std_msgs::Float32 l_speed_msg;
     std_msgs::Float32 r_speed_msg;
@@ -171,8 +183,8 @@ int main (int argc, char **argv)
 	
 	while (ros::ok())
 	{
-		if(listener.enableTPortController == true)
-		{
+		//if(listener.enableTPortController == true)
+		//{
         	listener.getJoyVals(buttons, axes);
 			listener.toggle(buttons[ConveyorToggle], currentButton, on, conveyor_pwr);
 
@@ -182,11 +194,11 @@ int main (int argc, char **argv)
 
 			//toggle message using odomButtonValue
 			dpadDigValue = axes[SaveDigCollectData] == 1? 1 : 0;
-			listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub, listener.enableSpeedPub);
+			listener.callTo(dpadDigValue, digButton, onDigButton, digData_msg, digData_pub, listener.enableSpeedPub, enableSpeedPubMsg, enable_speed_pub);
 		
 			//toggle message using odomButtonValue
 			dpadCollectValue = axes[SaveDigCollectData] == -1? 1 : 0;
-			listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub, listener.enableSpeedPub);
+			listener.callTo(dpadCollectValue, collectButton, onCollectButton, collectData_msg, collectData_pub, listener.enableSpeedPub, enableSpeedPubMsg, enable_speed_pub);
 
 			listener.toggleIntExtend(buttons[ToggleExtension], currentButtonExtend, onExtend, extend_pwr, extend_pub);
 			listener.toggleIntFlag(buttons[JoyMap::TPortToggleFlags], currentButtonFlag, onFlag, flag_pwr, flag_pub);
@@ -201,13 +213,14 @@ int main (int argc, char **argv)
 				l_speed_pub.publish(l_speed_msg);
 				r_speed_pub.publish(r_speed_msg);
 			}
+
 			conveyor_pub.publish(conveyor_pwr); // conveyor power
 
 			save_odomData_pub.publish(save_odomData_msg);
 		
 			ros::spinOnce();
 			loop_rate.sleep();
-		}
+		//}
 	}
 
 	return 0;
@@ -289,7 +302,7 @@ void Listener::toggleIntExtend(const bool keys, bool &currentButton, bool &on, s
 	}
 }
 
-void Listener::callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPub)
+void Listener::callTo(const bool keys, bool &currentButton, bool &on, std_msgs::Bool &message, ros::Publisher &pub, bool enableSpeedPub, std_msgs::Bool enableSpeedPubMsg, ros::Publisher enable_speed_pub)
 {
 	bool lastButton;
 	lastButton = currentButton;
@@ -303,19 +316,33 @@ void Listener::callTo(const bool keys, bool &currentButton, bool &on, std_msgs::
 		
 	if (on)
 	{
-		//ROS_INFO(" button on");
 
-		message.data = 1;
-		pub.publish(message);
-		ros::Duration(0.5).sleep();		//pause for enable message to update
-
-		if(enableSpeedPub == true)
+		if(disableCallTo)
 		{
-			on = !on;
-			message.data = 0;
+			message.data = false;
 			pub.publish(message);
+
+			enableSpeedPub = true;		//disables speed publishers in TPortController
+			enableSpeedPubMsg.data = enableSpeedPub;
+			enable_speed_pub.publish(enableSpeedPubMsg);
+
+			disableCallTo = false;
+
+			on = !on;
 		}
+		else
+		{
+			message.data = true;		//enables functions ToDig and ToCollector in DugOdometry 
+			pub.publish(message);
+
+			enableSpeedPub = false;		//disables speed publishers in TPortController
+			enableSpeedPubMsg.data = enableSpeedPub;
+			enable_speed_pub.publish(enableSpeedPubMsg);
+		}
+
+
 	}
+	
 }
 
 
