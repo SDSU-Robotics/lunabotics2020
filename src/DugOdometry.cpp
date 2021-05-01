@@ -34,6 +34,7 @@ class DugOdometry
 
         int size = 0;
 
+        bool clearList = false;
         bool saveData = 0;
         bool saveDigData = 0;
         bool saveCollectData = 0;
@@ -105,8 +106,8 @@ int main (int argc, char **argv)
             ros::Duration(0.1).sleep();     //allows message to update in TPort Controller
 
             dugOdometry.disableCallToMsg.data = false;
-            disableCallToPub.publish(dugOdometry.disableCallToMsg);
-            
+            disableCallToPub.publish(dugOdometry.disableCallToMsg);     //resets condition to be in agreement with tport
+
             dugOdometry.enablePubMsg.data = true;
             enablePubPub.publish(dugOdometry.enablePubMsg);     //tells tport to publish motor speed again
         }
@@ -144,6 +145,14 @@ float getListElement(std::list<float> l, int element)
 //set list values to msg data
 void DugOdometry::getLSpeed(const std_msgs::Float32 lspeed)
 {
+    bool last = clearList;      //sets the current clear condition to be previous
+    clearList = saveData;       //sets the new clear condition to be current
+    
+    if(!last && clearList)      //if the previous clear condition was false, and the current clear condition is true
+    {
+        LSpeedList.clear();
+    }
+
     if(saveData)
     {
         lSpeed = lspeed.data;
@@ -155,6 +164,14 @@ void DugOdometry::getLSpeed(const std_msgs::Float32 lspeed)
 //set list values to msg data
 void DugOdometry::getRSpeed(const std_msgs::Float32 rspeed)
 {
+    bool last = clearList;      //sets the current clear condition to be previous
+    clearList = saveData;       //sets the new clear condition to be current
+
+    if(!last && clearList)      //if previous condition was false and current condition is true
+    {
+        LSpeedList.clear();     //clear list
+    }
+
     if(saveData)
     {
         rSpeed = rspeed.data;
@@ -182,13 +199,13 @@ void DugOdometry::setCollectData(const std_msgs::Bool saving)
 
 void DugOdometry::save()
 {
-    if(saveData == 1)
+    if(saveData)
     {
         LSpeedList.push_back(lSpeed);
         RSpeedList.push_back(rSpeed);
         ros::Duration(1/100).sleep();
     }
-   
+    
 }
 
 
