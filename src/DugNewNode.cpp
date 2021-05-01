@@ -165,26 +165,28 @@ class Wait : public Task
     {
 
     }
+    void callback(const ros::TimerEvent& event) override
+    {
+        ROS_INFO("callback called");
+        cbool = false;
+    }
     bool initialize() override
     {
         //ROS_INFO("bool initialize() override called");
-       // timer = n->createTimer(ros::Duration(cfloat), &Task::callback, &this, true);
-        timer = n->createTimer(ros::Duration(cfloat), boost::bind(&Task::callback, this, _1), true);
+        
+        //timer = n->createTimer(ros::Duration(cfloat), boost::bind(&Task::callback, this, _1), true);
 
         ROS_INFO("Timer made");
     } 
     
     bool basic() override
     {
+        ros::Duration(cfloat).sleep();
         
-        return cbool;
+        return false;
     }
 
-    void callback(const ros::TimerEvent&) override
-    {
-        ROS_INFO("callback called");
-        cbool = false;
-    }
+   
 };
 
 class HopperServoOn : public Task
@@ -287,6 +289,11 @@ class DriveForward : public Task
         }
         return true;
     }
+    bool onFinish() override
+    {
+        float32 -> data = 0; // left
+        float32_2 -> data = 0; // right
+    }
 };
 
 class TurnBack : public Task
@@ -339,6 +346,11 @@ class DriveBack : public Task
             return false;
         }
         return true;
+    }
+    bool onFinish() override
+    {
+        float32 -> data = 0; // left
+        float32_2 -> data = 0; // right
     }
 };
 
@@ -400,6 +412,7 @@ int main(int argc, char **argv)
     Task *hopperServoOn;
     Task *wait5sec;
     Task *hopperServoOff;
+    Task *wait2sec;
     Task *driveBack;
     Task *turnBack;
     Task *startToSieve;
@@ -415,22 +428,23 @@ int main(int argc, char **argv)
     // runs in the order listed
     TaskManager tm;
     
-    tm.addTask(dugOrientation);
+   // tm.addTask(dugOrientation);
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
-    wait5sec = new Wait(true, 5);
-    tm.addTask(*wait5sec);  // adjust time waiting as needed
+    //wait5sec = new Wait(true, 5);
+    //tm.addTask(*wait5sec);  // adjust time waiting as needed
 
     while (ros::ok())
     {
         if (tm.done)
-        {/*
+        {
             startToDig = new StartToDig(to_dig);
-            digAdjust = new DigOrientation(dugTf, lSpeed, rSpeed);
+            digAdjust = new DugOrientation(dugTf, lSpeed, rSpeed);
             driveForward = new DriveForward(dugTf, lSpeed, rSpeed);
             hopperServoOn = new HopperServoOn(OnOff);
             wait5sec = new Wait(true, 5);
             hopperServoOff = new HopperServoOff(OnOff);
+            wait2sec = new Wait(true, 2);
             driveBack = new DriveBack(dugTf, lSpeed, rSpeed);
             turnBack = new TurnBack(dugTf, lSpeed, rSpeed);
             startToSieve = new StartToSieve(to_sieve);
@@ -448,6 +462,7 @@ int main(int argc, char **argv)
             tm.addTask(*hopperServoOn);
             tm.addTask(*wait5sec);  // adjust time waiting as needed
             tm.addTask(*hopperServoOff);
+            tm.addTask(*wait2sec);
             tm.addTask(*driveBack);
             tm.addTask(*turnBack);
             tm.addTask(*startToSieve);
@@ -456,13 +471,14 @@ int main(int argc, char **argv)
             tm.addTask(*startConveyor);
             tm.addTask(*wait15sec);  // adjust time waiting as needed
             tm.addTask(*stopConveyor);
-            tm.addTask(*retractLinAct);
-            */
-            
+            tm.addTask(*retractLinAct); 
+           
+            //cout << tm.done << endl;  
+            //tm.done = false;       
         }
 
            
-
+        
         tm.cycle();
 
         // Get transform tree

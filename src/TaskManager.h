@@ -19,18 +19,16 @@ class TaskManager
         void addTask(Task &T);
         void addTask(TaskLoop Tl);
         Task* getTask(int element);
-        void recallFunc(int taskListElement, bool done);
         void reset();
-
         bool cycle();
-        bool done = false;
+        bool done = true;
+        
 
     private:
         int taskListElement = 0;
         bool isTaskRunning = true;
         bool isFirstTime = true;
-        bool isDone = false;
-        Task* currentTask;
+        Task *currentTask;
         std::list<Task*> TaskList;
 };
 
