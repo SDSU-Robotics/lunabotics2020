@@ -35,6 +35,7 @@ class DugOdometry
         int size = 0;
 
         bool clearList = false;
+
         bool saveData = 0;
         bool saveDigData = 0;
         bool saveCollectData = 0;
@@ -42,6 +43,7 @@ class DugOdometry
         std_msgs::Bool saveCollectDataMsg;
         std_msgs::Bool enablePubMsg;
         std_msgs::Bool disableCallToMsg;
+
 };
 
 
@@ -60,6 +62,7 @@ int main (int argc, char **argv)
     ros::Publisher rSpeedPub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);   
     ros::Publisher enablePubPub = n.advertise<std_msgs::Bool>("EnableSpeedPub", 100);
     ros::Publisher disableCallToPub = n.advertise<std_msgs::Bool>("DisableCallTo", 100);    
+
 
     ros::Subscriber lSpeedSub = n.subscribe("TPortLDrvPwr", 100, &DugOdometry::getLSpeed, &dugOdometry);
 	ros::Subscriber rSpeedSub = n.subscribe("TPortRDrvPwr", 100, &DugOdometry::getRSpeed, &dugOdometry);
@@ -112,6 +115,7 @@ int main (int argc, char **argv)
             enablePubPub.publish(dugOdometry.enablePubMsg);     //tells tport to publish motor speed again
         }
 
+
 		ros::spinOnce();
 		loop_rate.sleep();
         saveDataLast = dugOdometry.saveData;
@@ -153,6 +157,7 @@ void DugOdometry::getLSpeed(const std_msgs::Float32 lspeed)
         LSpeedList.clear();
     }
 
+
     if(saveData)
     {
         lSpeed = lspeed.data;
@@ -171,6 +176,7 @@ void DugOdometry::getRSpeed(const std_msgs::Float32 rspeed)
     {
         LSpeedList.clear();     //clear list
     }
+
 
     if(saveData)
     {
@@ -196,6 +202,7 @@ void DugOdometry::setCollectData(const std_msgs::Bool saving)
     saveCollectData = saving.data;
 
 }
+
 
 void DugOdometry::save()
 {
@@ -233,11 +240,10 @@ void DugOdometry::toDig(std::list<float> LSpeedList, std::list<float> RSpeedList
         lSpeedPub.publish(lspeedmsg);
         rSpeedPub.publish(rspeedmsg);    
         usleep(10000);
+
         ros::spinOnce();        //Publishes during the same ROS Spin cycle as needed by TPortController::callTo
 
     }
-
-
 }
 
 void DugOdometry::toCollector(std::list<float> LSpeedList, std::list<float> RSpeedList, ros::Publisher lSpeedPub, ros::Publisher rSpeedPub, ros::Publisher enablePubPub)
@@ -261,6 +267,7 @@ void DugOdometry::toCollector(std::list<float> LSpeedList, std::list<float> RSpe
   //Publishes during the same ROS Spin cycle as needed by TPortController::callTo
 
 
+
     for(int i = size; i >= 1; i--)
     {
         lspeedmsg.data = getListElement(LSpeedList, i) * -1;
@@ -268,8 +275,12 @@ void DugOdometry::toCollector(std::list<float> LSpeedList, std::list<float> RSpe
         lSpeedPub.publish(lspeedmsg);
         rSpeedPub.publish(rspeedmsg);
         usleep(10000);      
+
         ros::spinOnce();        //Publishes during the same ROS Spin cycle as needed by TPortController::callTo
 
     }
+
+    enablePubMsg.data = true;
+    enablePubPub.publish(enablePubMsg);
 
 }
