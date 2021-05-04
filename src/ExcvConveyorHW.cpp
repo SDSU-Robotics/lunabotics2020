@@ -18,7 +18,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 ****          std_msgs/Float32 ExcvConveyorDrvPwr - conveyor power value ****
 ****************************************************************************/
 
-#define CONVEYOR_SPEED 0.3
+#define CONVEYOR_SPEED 0.15
 
 class Listener
 {
