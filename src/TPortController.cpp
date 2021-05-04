@@ -223,9 +223,9 @@ int main (int argc, char **argv)
 			conveyor_pub.publish(conveyor_pwr); // conveyor power
 
 
-		save_odomData_pub.publish(save_odomData_msg);
-		digData_pub.publish(digData_msg);
-		collectData_pub.publish(collectData_msg);
+			save_odomData_pub.publish(save_odomData_msg);
+			digData_pub.publish(digData_msg);
+			collectData_pub.publish(collectData_msg);
 
 		
 			ros::spinOnce();

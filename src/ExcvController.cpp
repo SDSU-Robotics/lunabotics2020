@@ -181,13 +181,13 @@ void Listener::toggleLinearActuator(const bool keys, bool &currentButton, bool &
 	if (on)
 	{
 		ROS_INFO("Button on");
-		message.data = 1;
+		message.data = 0;
 
 	}
 	else
 	{
 		ROS_INFO("Button off");
-		message.data = 0;
+		message.data = 1;
 	}
 	
 }

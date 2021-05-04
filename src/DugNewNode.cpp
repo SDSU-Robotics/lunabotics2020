@@ -383,6 +383,9 @@ int main(int argc, char **argv)
     ros::Publisher conveyor_current_pub = n.advertise<std_msgs::Float32>("TPortConveyorDrvCurrent", 100);
     ros::Publisher dig_path_pub = n.advertise<std_msgs::Bool>("DigData", 100);
     ros::Publisher sieve_path_pub = n.advertise<std_msgs::Bool>("CollectData", 100);
+    ros::Publisher lSpeed_pub = n.advertise<std_msgs::Float32>("TPortLDrvPwr", 100);
+    ros::Publisher rSpeed_pub = n.advertise<std_msgs::Float32>("TPortRDrvPwr", 100);
+
 
     Listener listener;
     //Publishers
@@ -412,7 +415,7 @@ int main(int argc, char **argv)
     conveyor_pwr.data = 0;
     to_dig.data = 0;
     to_sieve.data = 0;
-    OnOff.data == 0;
+    OnOff.data = 0;
     
 
     // Class instances
@@ -482,9 +485,9 @@ int main(int argc, char **argv)
             retractLinAct = new RetractLinAct(extend_pwr);
 
             tm.reset();
-            tm.addTask(*startToDig);
+            //tm.addTask(*startToDig);
             tm.addTask(*digAdjust);
-            tm.addTask(*driveForward);
+            /*tm.addTask(*driveForward);
             tm.addTask(*hopperServoOn);
             tm.addTask(*wait5sec);  // adjust time waiting as needed
             tm.addTask(*hopperServoOff);
@@ -497,7 +500,7 @@ int main(int argc, char **argv)
             tm.addTask(*startConveyor);
             tm.addTask(*wait15sec);  // adjust time waiting as needed
             tm.addTask(*stopConveyor);
-            tm.addTask(*retractLinAct); 
+            tm.addTask(*retractLinAct); */
            
             //cout << tm.done << endl;  
             //tm.done = false;       
@@ -527,8 +530,8 @@ int main(int argc, char **argv)
         conveyor_current_pub.publish(conveyor_pwr);
         dig_path_pub.publish(to_dig);
         sieve_path_pub.publish(to_sieve);
-        //lSpeed.publish();
-        //rSpeed.publish();
+        lSpeed_pub.publish(lSpeed);
+        rSpeed_pub.publish(rSpeed);
 
 
 
