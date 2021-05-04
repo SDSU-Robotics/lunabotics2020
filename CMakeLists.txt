@@ -30,7 +30,8 @@ include_directories (src include ${catkin_INCLUDE_DIRS})
 # NON EXECUTABLES (Classes. Not ROS Nodes, no main function)
 add_library(Task ${PROJECT_SOURCE_DIR}/src/Task.cpp)
 add_library(TaskManager ${PROJECT_SOURCE_DIR}/src/TaskManager.cpp)
-add_library(TaskTypes ${PROJECT_SOURCE_DIR}/src/TaskTypes.cpp)
+add_library(TaskLoop ${PROJECT_SOURCE_DIR}/src/TaskLoop.cpp)
+
 
 
 # EXECUTABLES (ROS nodes, main function)
@@ -46,8 +47,8 @@ add_executable(TPortConveyorHW ${PROJECT_SOURCE_DIR}/src/TPortConveyorHW.cpp)
 add_executable(TPortDriveBaseHW ${PROJECT_SOURCE_DIR}/src/TPortDriveBaseHW.cpp)
 add_executable(TPortController ${PROJECT_SOURCE_DIR}/src/TPortController.cpp)
 add_executable(ExcvLinearActuatorHW ${PROJECT_SOURCE_DIR}/src/ExcvLinearActuatorHW.cpp)
-add_executable(NewNode ${PROJECT_SOURCE_DIR}/src/NewNode.cpp)
 add_executable(DugOdometry ${PROJECT_SOURCE_DIR}/src/DugOdometry.cpp)
+add_executable(DugNewNode ${PROJECT_SOURCE_DIR}/src/DugNewNode.cpp)
 
 target_link_libraries(FlagLocalization ${catkin_LIBRARIES})
 target_link_libraries(DriveController ${catkin_LIBRARIES})
@@ -61,11 +62,11 @@ target_link_libraries(TPortConveyorHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortDriveBaseHW ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(TPortController ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(ExcvLinearActuatorHW ${catkin_LIBRARIES} Threads::Threads)
-target_link_libraries(NewNode ${catkin_LIBRARIES} Threads::Threads)
 target_link_libraries(DugOdometry ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(DugNewNode ${catkin_LIBRARIES} Threads::Threads)
 
 #Tasking, Task Includes
-target_link_libraries(NewNode Task TaskManager TaskTypes ${catkin_LIBRARIES})
+target_link_libraries(DugNewNode Task TaskManager TaskLoop ${catkin_LIBRARIES})
 
 message("<> ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}") # Display Architecture
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "aarch64-linux-gnu") # Jetson TK1 / Pi
