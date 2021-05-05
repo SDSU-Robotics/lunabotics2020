@@ -222,7 +222,7 @@ void Listener::toggleDoor (const bool keys, bool &currentButton, bool &on, std_m
 	if (on)
 	{
 		ROS_INFO("Button on");
-		message.data = 145;
+		message.data = 100;
 
 	}
 	else

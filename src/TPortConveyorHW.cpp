@@ -33,7 +33,7 @@ class Listener
         void setExtendSpeed(const std_msgs::Int8 msg);
 
         void setFlagSpeed(const std_msgs::Int8 msg);
-        void setDriveSpeed(const std_msgs::Float32 drivespeed);
+        void setDriveSpeed(const std_msgs::Bool drivespeed);
         //void setExtendPos(std_msgs::UInt16 &extend_pos);
         //void setFlagPos(std_msgs::UInt16 &flag_pos);
         VictorSPX TPortConveyorDrvVic = {DeviceIDs::TPortConveyorDrvVic};   
@@ -123,9 +123,17 @@ void Listener::setFlagSpeed(const std_msgs::Int8 msg)
     flagPos_pub.publish(flag_pos);
 }
 */
-void Listener::setDriveSpeed(const std_msgs::Float32 msg)
+void Listener::setDriveSpeed(const std_msgs::Bool msg)
 {
-    TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
+    if(msg.data)
+    {
+        TPortConveyorDrvVic.Set(ControlMode::PercentOutput, msg.data * CONVEYOR_SPEED_SCALE);
+
+    }
+    else
+    {
+        TPortConveyorDrvVic.Set(ControlMode::PercentOutput, 0);
+    }
 
     ctre::phoenix::unmanaged::FeedEnable(100); // feed watchdog
 }
